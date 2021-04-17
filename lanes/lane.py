@@ -48,7 +48,7 @@ class Lane(ILane):
         res = list()
 
         for car in reversed(self.__cars):
-            position_in_line = car.position.y if self.is_vertical else car.position.x
+            position_in_line = self.car_position_in_lane(car)
 
             if start <= position_in_line <= end:
                 res.append(car)
@@ -57,4 +57,7 @@ class Lane(ILane):
                 break
 
         return res
+
+    def car_position_in_lane(self, car):
+        return car.position.y if self.is_vertical else car.position.x
 

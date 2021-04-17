@@ -34,7 +34,7 @@ class Car(ICar):
 
     def stop(self, location: float):
         self.__state.stopping = True
-        position_in_lane = self.position.y if self.__current_lane.is_vertical else self.position.x
+        position_in_lane = self.__current_lane.car_position_in_lane(self)
 
         # We want, where currentPosition = location then speed = 0
         # Gives us:

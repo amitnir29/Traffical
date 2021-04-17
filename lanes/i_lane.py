@@ -76,3 +76,7 @@ class ILane(ABC):
     @abstractmethod
     def is_vertical(self):
         pass
+
+    @abstractmethod
+    def car_position_in_lane(self, car):
+        pass
