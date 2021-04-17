@@ -71,3 +71,7 @@ class ILane(ABC):
         :return: amount of cars in the lane within the distance given from the end of the lane.
         """
         return len(self.cars_from_end(distance))
+
+    @property
+    def is_vertical(self):
+        pass

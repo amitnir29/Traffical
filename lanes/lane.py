@@ -16,3 +16,8 @@ class Lane(ILane):
         self.__cars: List[ICar] = list()  # TODO should be a linked list?
         self.__goes_to: Dict[IRoadSection] = dict()
         self.__light: ITrafficLight  # TODO
+        self.__vertical: bool
+
+    @property
+    def is_vertical(self):
+        return self.__vertical

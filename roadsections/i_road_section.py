@@ -22,7 +22,7 @@ class IRoadSection(ABC):
         pass
 
     @abstractmethod
-    def get_lane_from_right(self, index: int):
+    def get_lane_from_right(self, index: int) -> ILane:
         pass
 
     @property

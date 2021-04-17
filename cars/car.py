@@ -25,7 +25,19 @@ class Car(ICar):
         self.__current_road = road
         self.__current_lane = road.get_lane_from_right(lanes_from_right)
 
-    def activate(self) -> None:
-        self.__iteration += 1
-        # TODO rest
+    def activate(self):
         pass
+
+    def stop(self, location: float):
+        self.__state.stopping = True
+        position_in_lane = self.__position.y if self.__current_lane.is_vertical else self.__position.x
+
+        # We want, where currentPosition = location then speed = 0
+        # Gives us:
+        # 0 = speed + a * t
+        # location - currentPosition = speed * t + 0.5 * a * t ^ 2
+        #
+        # Results in:
+        # a = -speed ^ 2 / (2 * (location - currentPosition))
+
+        self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
