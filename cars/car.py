@@ -1,4 +1,3 @@
-from numbers import Real
 from typing import List
 
 from cars.i_car import ICar
@@ -9,20 +8,22 @@ from roadsections.i_road_section import IRoadSection
 
 
 class Car(ICar):
-    def __init__(self):
+    def __init__(self, length: float, path: List[IRoadSection], destination: Position):
         # TODO enter values
-        self.__state: CarState
-        self.__length: Real
-        self.__position: Position
-        self.__currentRoad: IRoadSection
-        self.__currentLane: ILane
-        self.__currentLinePart: int
-        self.__path: List[IRoadSection]
-        self.__destination: Position
-        self.__speed: Real
-        self.__iteration: int = 0
-        self.__maxAcceleration: Real
-        self.__maxDeceleration: Real
+        self.__state = CarState()
+        self.__length = length
+        self.__path: path
+        self.__destination = destination
+        self.__speed = 0
+        self.__acceleration = 0
+
+        assert len(path) > 0
+        self._enter_road_section(path[0], 0)
+
+    def _enter_road_section(self, road: IRoadSection, lanes_from_right: int):
+        self.__position = Position(0, 0)
+        self.__current_road = road
+        self.__current_lane = road.get_lane_from_right(lanes_from_right)
 
     def activate(self) -> None:
         self.__iteration += 1

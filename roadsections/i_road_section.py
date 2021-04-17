@@ -21,6 +21,10 @@ class IRoadSection(ABC):
         """
         pass
 
+    @abstractmethod
+    def get_lane_from_right(self, index: int):
+        pass
+
     @property
     @abstractmethod
     def max_speed(self) -> Real:
