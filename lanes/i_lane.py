@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from numbers import Real
-from typing import List
+from typing import List, Optional
 
 from cars.i_car import ICar
 
@@ -17,7 +17,7 @@ class ILane(ABC):
     """
 
     @abstractmethod
-    def get_car_ahead(self, car: ICar) -> ICar:
+    def get_car_ahead(self, car: ICar) -> Optional[ICar]:
         """
         :param car: a car in the lane
         :return: the car ahead of the input car, in the lane
@@ -73,5 +73,6 @@ class ILane(ABC):
         return len(self.cars_from_end(distance))
 
     @property
+    @abstractmethod
     def is_vertical(self):
         pass

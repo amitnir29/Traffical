@@ -8,6 +8,12 @@ from lanes.i_lane import ILane
 
 class ICar(ABC):
 
+
+    @property
+    @abstractmethod
+    def position(self):
+        pass
+
     @abstractmethod
     def activate(self) -> None:
         """

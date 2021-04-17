@@ -12,13 +12,17 @@ class Car(ICar):
         # TODO enter values
         self.__state = CarState()
         self.__length = length
-        self.__path: path
+        self.__path = path
         self.__destination = destination
         self.__speed = 0
         self.__acceleration = 0
 
         assert len(path) > 0
         self._enter_road_section(path[0], 0)
+
+    @property
+    def position(self):
+        return self.__position
 
     def _enter_road_section(self, road: IRoadSection, lanes_from_right: int):
         self.__position = Position(0, 0)
@@ -30,7 +34,7 @@ class Car(ICar):
 
     def stop(self, location: float):
         self.__state.stopping = True
-        position_in_lane = self.__position.y if self.__current_lane.is_vertical else self.__position.x
+        position_in_lane = self.position.y if self.__current_lane.is_vertical else self.position.x
 
         # We want, where currentPosition = location then speed = 0
         # Gives us:
