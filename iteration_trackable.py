@@ -2,8 +2,8 @@ from functools import partialmethod
 
 
 def activate(self, *args, activation_method, **kwargs):
-    self._iteration += 1
     activation_method(self, *args, **kwargs)
+    self._iteration += 1
 
 
 @property
