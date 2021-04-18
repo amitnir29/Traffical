@@ -6,16 +6,17 @@ from lanes.i_lane import ILane
 from roadsections.i_road_section import IRoadSection
 from trafficlights.i_traffic_light import ITrafficLight
 
+Identity = str
 
 class Lane(ILane):
-    def __init__(self, associated_traffic_light: ITrafficLight, vertical: bool, length: float):
+    def __init__(self, associated_traffic_light: ITrafficLight, goes_to: List[Identity], vertical: bool, length: float):
         """
         public LinkedList<ICar> cars = new LinkedList<ICar>();
         public Dictionary<RoadSection, Lane> goesTo = new Dictionary<RoadSection, Lane>();
         public TrafficLight light;
         """
         self.__cars = deque()
-        self.__goes_to: Dict[IRoadSection] = dict()  # TODO init properly
+        self.__goes_to: goes_to
         self.__light = associated_traffic_light
         self.__vertical = vertical
         self.__length = length
