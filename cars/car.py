@@ -3,10 +3,12 @@ from typing import List
 from cars.i_car import ICar
 from cars.car_state import CarState
 from cars.position import Position
+from iteration_trackable import iteration_trackable
 from lanes.i_lane import ILane
 from roadsections.i_road_section import IRoadSection
 
 
+@iteration_trackable
 class Car(ICar):
     def __init__(self, length: float, path: List[IRoadSection], destination: Position):
         # TODO enter values
