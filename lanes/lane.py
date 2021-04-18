@@ -8,17 +8,17 @@ from trafficlights.i_traffic_light import ITrafficLight
 
 
 class Lane(ILane):
-    def __init__(self):
+    def __init__(self, associated_traffic_light: ITrafficLight, vertical: bool, length: float):
         """
         public LinkedList<ICar> cars = new LinkedList<ICar>();
         public Dictionary<RoadSection, Lane> goesTo = new Dictionary<RoadSection, Lane>();
         public TrafficLight light;
         """
         self.__cars = deque()
-        self.__goes_to: Dict[IRoadSection] = dict()
-        self.__light: ITrafficLight  # TODO
-        self.__vertical: bool
-        self.__length: float
+        self.__goes_to: Dict[IRoadSection] = dict()  # TODO init properly
+        self.__light = associated_traffic_light
+        self.__vertical = vertical
+        self.__length = length
 
     @property
     def is_vertical(self):
