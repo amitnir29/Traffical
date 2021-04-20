@@ -8,7 +8,9 @@ from trafficlights.i_traffic_light import ITrafficLight
 
 Identity = str
 
+
 class Lane(ILane):
+
     def __init__(self, associated_traffic_light: ITrafficLight, goes_to: List[Identity], vertical: bool, length: float):
         """
         public LinkedList<ICar> cars = new LinkedList<ICar>();
@@ -24,6 +26,10 @@ class Lane(ILane):
     @property
     def is_vertical(self):
         return self.__vertical
+
+    @property
+    def traffic_light(self):
+        return self.__light
 
     def get_car_ahead(self, car: ICar) -> Optional[ICar]:
         car_index = self.__cars.index(car)
@@ -61,4 +67,3 @@ class Lane(ILane):
 
     def car_position_in_lane(self, car):
         return car.position.y if self.is_vertical else car.position.x
-

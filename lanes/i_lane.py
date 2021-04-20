@@ -3,6 +3,7 @@ from numbers import Real
 from typing import List, Optional
 
 from cars.i_car import ICar
+from trafficlights.i_traffic_light import ITrafficLight
 
 
 class ILane(ABC):
@@ -79,4 +80,9 @@ class ILane(ABC):
 
     @abstractmethod
     def car_position_in_lane(self, car):
+        pass
+
+    @property
+    @abstractmethod
+    def traffic_light(self) -> ITrafficLight:
         pass

@@ -7,8 +7,6 @@ from lanes.i_lane import ILane
 
 
 class ICar(ABC):
-
-
     @property
     @abstractmethod
     def position(self):
@@ -21,6 +19,29 @@ class ICar(ABC):
         """
         pass
 
+    @abstractmethod
+    def notified(self) -> None:
+        """
+        getting a light notification
+        """
+        pass
+
+    # car driving functions
+    @abstractmethod
+    def stop(self, location: Real) -> None:
+        """
+        :param location: #TODO
+        :return: stops the car until it reaches the location.
+        """
+        pass
+
+    @abstractmethod
+    def move_forward(self) -> None:
+        """
+        move one step forward depending on the speed of the car, cars around it, and junctions.
+        """
+
+    # Lane moving functions
     @abstractmethod
     def should_move_lane(self) -> bool:
         """
@@ -36,26 +57,11 @@ class ICar(ABC):
         pass
 
     @abstractmethod
-    def moveLane(self) -> None:
+    def move_lane(self) -> None:
         """
         moves a lane. when done - returns.
         for the future us - when we get a premission to move a line, make sure to add the car to the moved laned, and
         to only delete the car from the current lane, when we are completly done with the transaction. #TODO
-        """
-        pass
-
-    @abstractmethod
-    def stop(self, location: Real) -> None:
-        """
-        :param location: #TODO
-        :return: stops the car until it reaches the location.
-        """
-        pass
-
-    @abstractmethod
-    def notified(self) -> None:
-        """
-        getting a light notification
         """
         pass
 

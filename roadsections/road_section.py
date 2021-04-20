@@ -9,4 +9,8 @@ class RoadSection(IRoadSection):
 
     def __init__(self, new_lanes: List[ILane]):
         self.__lanes = new_lanes
-        self.__coordinates: List[Tuple[Point, Point]]  # TODO
+        self.__coordinates: List[Tuple[Point, Point]] = None  # TODO
+
+    @property
+    def points_pairs(self) -> List[Tuple[Point, Point]]:
+        return self.__coordinates
