@@ -13,8 +13,6 @@ from roadsections.i_road_section import IRoadSection
 from trafficlights.i_traffic_light import ITrafficLight
 
 
-# access using self.iteration
-@iteration_trackable
 class Car(ICar):
     def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float, path: List[IRoadSection],
                  destination: Position):
@@ -33,6 +31,10 @@ class Car(ICar):
         initial_road_section = path[0]
         self._enter_road_section(initial_road_section, initial_road_section.get_most_right_lane_index())
 
+    @property
+    def speed(self) -> float:
+        return self.__speed
+
     def activate(self):
         """
         this is the main function of the car.
@@ -41,29 +43,40 @@ class Car(ICar):
         """
         state = self.get_state()
 
-        self.move_forward()
+        self._set_acceleration()  # TODO this method should only control acceleration
+        self._update_speed()
+        self._advance()
+
+    def _update_speed(self):
+        self.__speed += self.__acceleration
+        self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
 
     def get_state(self) -> CarState:
         # if we cant move from this lane to the next RoadSection in our path:
-
         pass
 
-    def move_forward(self) -> None:
+    def _full_gass(self):
+        if self.speed + self.__max_speed_change <= self.__current_road.max_speed:
+            self.__acceleration = self.__max_speed_change
+        else:
+            self.__acceleration = self.__current_road.max_speed - self.speed
+
+    def _set_acceleration(self):
         front_car = self.get_next_car()
         red_light = self.get_closest_red_light()
-        next_speed = None
+
         if front_car is None:
-            if red_light is None:
+            if red_light is None or red_light.can_pass:
                 # update speed s.t. we do not pass the max speed and the max acceleration.
-                next_speed = min(self.speed + self.__max_speed_change, self.__current_road.max_speed)
+                self._full_gass()
             else:
                 # there is a red light.
                 # update speed s.t. we do not pass the max speed, max deceleration, and light distance
-                next_speed = self.get_valid_speed(self.distance_to_light(red_light))
+                self.stop(self.__distance_from_lane_end)
         else:
             # we are not alone in the path
             # TODO fix all pass ifs, and fix the ICar interface s.t. we can apply front_car_speed on ICar
-            front_car_speed, is_front_car_speed_real = self.front_car_speed(front_car)
+            front_car_speed, is_front_car_speed_real = self._front_car_speed(front_car)
             if red_light is None:
                 if is_front_car_speed_real:
                     # calculate next speed s.t. we do not pass the:
@@ -98,6 +111,7 @@ class Car(ICar):
         self.__current_road = road
         self.__current_lane = road.get_lane(lanes_from_left)
         self.__current_lane_part = 0
+        self.__distance_from_lane_end = ... # TODO
 
     def stop(self, location: float):
         self.__state.stopping = True
@@ -122,21 +136,18 @@ class Car(ICar):
         """
         pass
 
-    def is_car_done_this_iter(self, test_car: Car) -> bool:
+    def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
-        something like:
-        return testCar.iteration == this.iteration;
-        //else, testCar.iteration == this.iteration-1.
         :param test_car: input car
         :return: true if the input car has already done this iteration.
         """
-        pass
+        return test_car.iteration == self.iteration + 1
 
     def estimated_speed(self) -> float:
         """
         :return: estimated speed that the car will have in this iteration
         """
-        pass
+        return self.__speed + self.__acceleration
 
     def distance_to_light(self, light: ITrafficLight) -> float:
         """
@@ -146,13 +157,13 @@ class Car(ICar):
         """
         pass
 
-    def front_car_speed(self, front: Car) -> (float, bool):
+    def _front_car_speed(self, front: ICar) -> Tuple[float, bool]:
         """
         :param front: car in front of self
         :return: (real speed, True) if already calculated. (estimated velocity, False) if not calculated.
         """
-        if self.is_car_done_this_iter(front):
-            return front.__speed, True
+        if self._is_car_done_this_iter(front):
+            return front.speed, True
         return front.estimated_speed(), False
 
     def get_closest_red_light(self) -> Optional[ITrafficLight]:

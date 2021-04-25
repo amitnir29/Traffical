@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Tuple
 
+from iteration_trackable import iteration_trackable
 from lanes.i_lane import ILane
 
 
+@iteration_trackable
 class ICar(ABC):
     @property
     @abstractmethod
@@ -71,4 +74,9 @@ class ICar(ABC):
         be nice to it!
         :param car: the car that wants to enter
         """
+        pass
+
+    @property
+    @abstractmethod
+    def speed(self) -> float:
         pass
