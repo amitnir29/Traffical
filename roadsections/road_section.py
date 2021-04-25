@@ -65,6 +65,9 @@ class RoadSection(IRoadSection):
             raise Exception("already at most left lane")
         return self.__lanes[curr_index - 1]
 
+    def get_most_right_lane_index(self) -> int:
+        return len(self.__lanes) - 1
+
     def get_right_lane(self, curr: ILane) -> ILane:
         curr_index = self.__lanes.index(curr)
         if curr_index == len(self.__lanes) - 1:

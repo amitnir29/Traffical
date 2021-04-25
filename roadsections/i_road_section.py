@@ -30,6 +30,13 @@ class IRoadSection(ABC):
         """
         pass
 
+    @abstractmethod
+    def get_most_right_lane_index(self) -> int:
+        """
+        :return: The index of the most right lane in the road section.
+        """
+        pass
+
     @property
     @abstractmethod
     def max_speed(self) -> float:
