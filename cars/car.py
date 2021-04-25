@@ -62,7 +62,7 @@ class Car(ICar):
             self.__acceleration = self.__current_road.max_speed - self.speed
 
     def _set_acceleration(self):
-        front_car = self.get_next_car()
+        front_car = self.__current_lane.get_car_ahead(self)
         red_light = self.get_closest_red_light()
 
         if front_car is None:
@@ -127,15 +127,6 @@ class Car(ICar):
 
         self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
 
-    def get_valid_speed(self, distance: float) -> float:
-        """
-        get a valid speed s.t. we do not pass the max speed, max deceleration,
-        and can be able to stop by the input distance (possibly in next iters).
-        :param distance: distance to
-        :return: the speed to have
-        """
-        pass
-
     def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
         :param test_car: input car
@@ -170,13 +161,6 @@ class Car(ICar):
         """
         should also depend on lane switching.
         :return: closest red light that affects the car.
-        """
-        pass
-
-    def get_next_car(self) -> Optional[ICar]:
-        """
-        dependent also on lane switchig.
-        :return: next car for us. None if no car at all in the path until the destination
         """
         pass
 
