@@ -27,7 +27,8 @@ class Car(ICar):
         self.__acceleration = 0
 
         assert len(path) > 0
-        self._enter_road_section(path[0], 0)
+        initial_road_section = path[0]
+        self._enter_road_section(initial_road_section, initial_road_section.get_most_right_lane_index())
 
     def activate(self):
         """
@@ -91,7 +92,6 @@ class Car(ICar):
         return self.__position
 
     def _enter_road_section(self, road: IRoadSection, lanes_from_left: int):
-        self.__position = Position(0, 0)  # TODO change
         self.__current_road = road
         self.__current_lane = road.get_lane(lanes_from_left)
         self.__current_lane_part = 0
