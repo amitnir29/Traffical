@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from typing import List
+from math import sqrt
+from typing import List, Optional, Tuple
 
 from cars.car_state import CarState
 from cars.i_car import ICar
 from cars.position import Position
+from geometry.line import Line
+from geometry.point import Point
 from iteration_trackable import iteration_trackable
 from roadsections.i_road_section import IRoadSection
 from trafficlights.i_traffic_light import ITrafficLight
@@ -46,9 +49,9 @@ class Car(ICar):
         pass
 
     def move_forward(self) -> None:
-        front_car: ICar = self.get_next_car()
-        red_light: ITrafficLight = self.get_closest_red_light()
-        next_speed: float = None
+        front_car = self.get_next_car()
+        red_light = self.get_closest_red_light()
+        next_speed = None
         if front_car is None:
             if red_light is None:
                 # update speed s.t. we do not pass the max speed and the max acceleration.
