@@ -12,7 +12,7 @@ def iteration(self):
 
 
 def iteration_trackable(cls):
-    assert hasattr(cls, "activate") and not hasattr(cls, "_activate")
+    assert hasattr(cls, "activate")
     assert not hasattr(cls, "iteration") and not hasattr(cls, "_iteration")
 
     cls._iteration = 0

@@ -1,20 +1,16 @@
 from __future__ import annotations
 
-from math import sqrt
-from numbers import Real
-from typing import List, Tuple, Optional
+from typing import List
 
-from cars.i_car import ICar
 from cars.car_state import CarState
+from cars.i_car import ICar
 from cars.position import Position
-from geometry.line import Line
-from geometry.point import Point
 from iteration_trackable import iteration_trackable
-from lanes.i_lane import ILane
 from roadsections.i_road_section import IRoadSection
 from trafficlights.i_traffic_light import ITrafficLight
 
 
+# access using self.iteration
 @iteration_trackable
 class Car(ICar):
     def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float, path: List[IRoadSection],
@@ -32,6 +28,21 @@ class Car(ICar):
 
         assert len(path) > 0
         self._enter_road_section(path[0], 0)
+
+    def activate(self):
+        """
+        this is the main function of the car.
+        the function evaluates the state of the car relative to other cars, red lights, lane switching etc.
+        then, the function uses a function for the correct state.
+        """
+        state = self.get_state()
+
+        self.move_forward()
+
+    def get_state(self) -> CarState:
+        # if we cant move from this lane to the next RoadSection in our path:
+
+        pass
 
     def move_forward(self) -> None:
         front_car: ICar = self.get_next_car()
@@ -74,6 +85,30 @@ class Car(ICar):
                     pass
         # now we should also depend on lane switching.
         pass
+
+    @property
+    def position(self):
+        return self.__position
+
+    def _enter_road_section(self, road: IRoadSection, lanes_from_left: int):
+        self.__position = Position(0, 0)  # TODO change
+        self.__current_road = road
+        self.__current_lane = road.get_lane(lanes_from_left)
+        self.__current_lane_part = 0
+
+    def stop(self, location: float):
+        self.__state.stopping = True
+        position_in_lane = self.__current_lane.car_position_in_lane(self)
+
+        # We want, where currentPosition = location then speed = 0
+        # Gives us:
+        # 0 = speed + a * t
+        # location - currentPosition = speed * t + 0.5 * a * t ^ 2
+        #
+        # Results in:
+        # a = -speed ^ 2 / (2 * (location - currentPosition))
+
+        self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
 
     def get_valid_speed(self, distance: float) -> float:
         """
@@ -139,7 +174,7 @@ class Car(ICar):
         """
         # We have the current part of the road, calculate the line to the next part.
         # We want to meet the next part's start line at the middle of the line.
-        next_line_points: Tuple[Point, Point] = self.__current_road.points_pairs[self.__current_lane_part + 1]
+        next_line_points: Tuple[Point, Point] = self.__current_road.coordinates[self.__current_lane_part + 1]
         next_line: Line = Line(next_line_points[0], next_line_points[1])
         # TODO not completely currect. should be relative to the lane, and not the whole road's width
         next_middle: Point = next_line.middle()
@@ -153,14 +188,14 @@ class Car(ICar):
             destination is a point (x,mx+b) s.t. the distance from curr pos to it is distToMove.
             we will have 2 result points - 2 different directions of movement along the line.
             we will choose the one that is closer to the othe point.
-            
+
             d = sqrt((x-x')^2+(mx+b-y')^2) = sqrt(x^2-2xx'+x'^2+(mx)^2+b^2+y'^2+2mxb-2mxy-2by)
             x^2-2xx'+x'^2+(mx)^2+b^2+y'^2+2mxb-2mxy'-2by' = d^2
             x^2*(1+m^2)+x*(2mb-2my'-2x')+(x'^2+b^2+y'^2-2by-d^2) = 0
-            
+
             delta = (2mb-2my'-2x')^2-4*(1+m^2)*(x'^2+b^2+y'^2-2by-d^2)
             x1,2 = (-(2mb-2my'-2x')+-sqrt(delta))/(2*(1+m^2))
-            
+
             choose xi that is closer to nextMiddle
             """
             m = moving_line.m
@@ -197,37 +232,16 @@ class Car(ICar):
         :return: the distance left to move, if got to end of the lane. 0 if finished inside the lane.
         """
         dist_left = self.move_in_part(dist_to_move)
-        number_of_parts = len(self.__current_road.points_pairs)
+        number_of_parts = len(self.__current_road.coordinates)
         while dist_left > 0 and self.__current_lane_part < number_of_parts - 1:
             # continue while we have distance to cover and parts to move forward to
             dist_left = self.move_in_part(dist_left)
         # return the distance left. if it is 0, we are done. else, we have to move to the next road.
         return dist_left
 
-    @property
-    def position(self):
-        return self.__position
-
-    def _enter_road_section(self, road: IRoadSection, lanes_from_right: int):
-        self.__position = Position(0, 0)
-        self.__current_road = road
-        self.__current_lane = road.get_lane_from_right(lanes_from_right)
-        self.__current_lane_part = 0
-
-    def activate(self):
-        # TODO
-        self.move_forward()
-
-    def stop(self, location: float):
-        self.__state.stopping = True
-        position_in_lane = self.__current_lane.car_position_in_lane(self)
-
-        # We want, where currentPosition = location then speed = 0
-        # Gives us:
-        # 0 = speed + a * t
-        # location - currentPosition = speed * t + 0.5 * a * t ^ 2
-        #
-        # Results in:
-        # a = -speed ^ 2 / (2 * (location - currentPosition))
-
-        self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
+    def should_move_lane(self) -> bool:
+        curr_road_index = self.__path.index(self.__current_road)
+        if curr_road_index == len(self.__path) - 1:
+            return False
+        next_road = self.__path[curr_road_index + 1]
+        return self.__current_lane.is_going_to_road(next_road)

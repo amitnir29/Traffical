@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from numbers import Real
 
 from lanes.i_lane import ILane
 
@@ -28,7 +27,7 @@ class ICar(ABC):
 
     # car driving functions
     @abstractmethod
-    def stop(self, location: Real) -> None:
+    def stop(self, location: float) -> None:
         """
         :param location: #TODO
         :return: stops the car until it reaches the location.

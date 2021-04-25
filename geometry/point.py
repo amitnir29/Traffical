@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from typing import NamedTuple, Optional, Union, NewType
-from math import inf, sqrt
-from numbers import Real
+from math import sqrt
 
 
 class Point:
-    def __init__(self, x: Real, y: Real):
-        self.__x: Real = x
-        self.__y: Real = y
+    def __init__(self, x: float, y: float):
+        self.__x: float = x
+        self.__y: float = y
 
     @property
     def x(self):

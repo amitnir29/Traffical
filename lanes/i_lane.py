@@ -1,9 +1,10 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from numbers import Real
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from cars.i_car import ICar
-from trafficlights.i_traffic_light import ITrafficLight
+from geometry.point import Point
+from roadsections.i_road_section import IRoadSection
 
 
 class ILane(ABC):
@@ -49,7 +50,7 @@ class ILane(ABC):
         pass
 
     @abstractmethod
-    def get_cars_between(self, start: Real, end: Real) -> List[ICar]:
+    def get_cars_between(self, start: float, end: float) -> List[ICar]:
         """
         we use this function when a car wants to know which car to talk with whenever it wants to move to their lane.
         :param start: distance from start of the lane
@@ -59,14 +60,14 @@ class ILane(ABC):
         pass
 
     @abstractmethod
-    def cars_from_end(self, distance: Real) -> List[ICar]:
+    def cars_from_end(self, distance: float) -> List[ICar]:
         """
         :param distance: a distance from the end of the lane
         :return: list of cars in the lane within the distance given from the end of the lane.
         """
         pass
 
-    def cars_from_end_amount(self, distance: Real) -> int:
+    def cars_from_end_amount(self, distance: float) -> int:
         """
         :param distance: a distance from the end of the lane
         :return: amount of cars in the lane within the distance given from the end of the lane.
@@ -84,5 +85,22 @@ class ILane(ABC):
 
     @property
     @abstractmethod
-    def traffic_light(self) -> ITrafficLight:
+    def coordinates(self) -> List[Tuple[Point, Point]]:
+        pass
+
+    @property
+    @abstractmethod
+    def road(self) -> IRoadSection:
+        pass
+
+    @abstractmethod
+    def is_going_to_road(self, road: IRoadSection):
+        pass
+
+    @abstractmethod
+    def add_movement(self, to_lane: ILane):
+        """
+        add a lane to go to from this lane
+        :param to_lane: the new lane to add
+        """
         pass

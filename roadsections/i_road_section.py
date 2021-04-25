@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from numbers import Real
 from typing import List, Tuple
 
 from geometry.point import Point
@@ -24,12 +23,16 @@ class IRoadSection(ABC):
         pass
 
     @abstractmethod
-    def get_lane_from_right(self, index: int) -> ILane:
+    def get_lane(self, index: int) -> ILane:
+        """
+        :param index: index of lane from left, 0 based.
+        :return: the lane in that index
+        """
         pass
 
     @property
     @abstractmethod
-    def max_speed(self) -> Real:
+    def max_speed(self) -> float:
         """
         :return: the max allowed speed of the road
         """
@@ -37,5 +40,5 @@ class IRoadSection(ABC):
 
     @property
     @abstractmethod
-    def points_pairs(self)->List[Tuple[Point, Point]]:
+    def coordinates(self) -> List[Tuple[Point, Point]]:
         pass

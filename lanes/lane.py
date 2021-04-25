@@ -1,35 +1,63 @@
-from typing import List, Dict, Optional
 from collections import deque
+from typing import List, Optional, Tuple
 
 from cars.i_car import ICar
+from db_dataclasses.road_lane import RoadLane
+from geometry.line import Line
+from geometry.point import Point
 from lanes.i_lane import ILane
 from roadsections.i_road_section import IRoadSection
-from trafficlights.i_traffic_light import ITrafficLight
-
-Identity = str
 
 
 class Lane(ILane):
 
-    def __init__(self, associated_traffic_light: ITrafficLight, goes_to: List[Identity], vertical: bool, length: float):
-        """
-        public LinkedList<ICar> cars = new LinkedList<ICar>();
-        public Dictionary<RoadSection, Lane> goesTo = new Dictionary<RoadSection, Lane>();
-        public TrafficLight light;
-        """
+    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]], vertical: bool = True):
         self.__cars = deque()
-        self.__goes_to: goes_to
-        self.__light = associated_traffic_light
         self.__vertical = vertical
-        self.__length = length
+        self.__coordinates = coordinates
+        self.__length = self.__calculate_lane_length(coordinates)
+        self.__goes_to: List[ILane] = list()
+        self.__road: IRoadSection = road
 
     @property
     def is_vertical(self):
         return self.__vertical
 
     @property
-    def traffic_light(self):
-        return self.__light
+    def coordinates(self) -> List[Tuple[Point, Point]]:
+        return self.__coordinates
+
+    @property
+    def road(self) -> IRoadSection:
+        return self.__road
+
+    def add_movement(self, to_lane: ILane):
+        self.__goes_to.append(to_lane)
+
+    def __calculate_part_length(self, start: Tuple[Point, Point], end: Tuple[Point, Point]):
+        """
+        calculate the lengtth of a lane part
+        :param start: the pair of points of the start
+        :param end: the pair of points of the end
+        :return: the length of the part
+        """
+        # calcualte the length of the line between the middle points of the start and end lines
+        start_line = Line(start[0], start[1])
+        end_line = Line(end[0], end[1])
+        start_middle = start_line.middle()
+        end_middle = end_line.middle()
+        main_line = Line(start_middle, end_middle)
+        return main_line.length()
+
+    def __calculate_lane_length(self, coordinates: List[Tuple[Point, Point]]) -> float:
+        """
+        :param coordinates: a list of pairs of points that represent the lane.
+        :return: total length of the lane
+        """
+        return sum([self.__calculate_part_length(c1, c2) for c1, c2 in zip(coordinates, coordinates[1:])])
+
+    def is_going_to_road(self, road: IRoadSection):
+        return road in [lane.road for lane in self.__goes_to]
 
     def get_car_ahead(self, car: ICar) -> Optional[ICar]:
         car_index = self.__cars.index(car)

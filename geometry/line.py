@@ -132,14 +132,6 @@ class Line:
         inter_y = self.m * inter_x + self.b
         return Point(inter_x, inter_y)
 
-    def middle(self) -> Point:
-        """
-        :return: middle Point of the line
-        """
-        middle_x = (self.p1.x + self.p2.x) / 2
-        middle_y = (self.p1.y + self.p2.y) / 2
-        return Point(middle_x, middle_y)
-
     def length(self) -> float:
         """
         :return: length of the line
@@ -148,3 +140,19 @@ class Line:
 
     def __repr__(self):
         return repr(self.p1) + "<->" + repr(self.p2)
+
+    def split_by_ratio(self, r):
+        """
+        get a point s.t. the distance between it to p1, divided by the total line length, is r
+        :param r: the ratio
+        :return: the point
+        """
+        new_x = r * self.p1.x + (1 - r) * self.p2.x
+        new_y = r * self.p1.y + (1 - r) * self.p2.y
+        return Point(new_x, new_y)
+
+    def middle(self) -> Point:
+        """
+        :return: middle Point of the line
+        """
+        return self.split_by_ratio(1 / 2)
