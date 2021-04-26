@@ -128,7 +128,7 @@ class Car(ICar):
         # Results in:
         # a = -speed ^ 2 / (2 * (location - currentPosition))
 
-        self.__acceleration = max(-pow(self.__speed, 2) / (2 * (location - position_in_lane)), self.__max_speed_change)
+        self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
 
     def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
