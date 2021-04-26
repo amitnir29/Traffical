@@ -179,43 +179,7 @@ class Car(ICar):
         moving_line: Line = Line(self.position, next_middle)
         dist: float = moving_line.length()
         if dist > dist_to_move:  # great, move just along the line
-            """
-            calculate the new position:
-            we are at pos = (x', y'). we have a movement line y=mx+b.
-            we want to move distToMove along the line towards the other point.
-            destination is a point (x,mx+b) s.t. the distance from curr pos to it is distToMove.
-            we will have 2 result points - 2 different directions of movement along the line.
-            we will choose the one that is closer to the othe point.
-
-            d = sqrt((x-x')^2+(mx+b-y')^2) = sqrt(x^2-2xx'+x'^2+(mx)^2+b^2+y'^2+2mxb-2mxy-2by)
-            x^2-2xx'+x'^2+(mx)^2+b^2+y'^2+2mxb-2mxy'-2by' = d^2
-            x^2*(1+m^2)+x*(2mb-2my'-2x')+(x'^2+b^2+y'^2-2by-d^2) = 0
-
-            delta = (2mb-2my'-2x')^2-4*(1+m^2)*(x'^2+b^2+y'^2-2by-d^2)
-            x1,2 = (-(2mb-2my'-2x')+-sqrt(delta))/(2*(1+m^2))
-
-            choose xi that is closer to nextMiddle
-            """
-            m = moving_line.m
-            b = moving_line.b
-            xt = self.position.x
-            yt = self.position.y
-
-            quad_a: float = 1 + m ** 2
-            quad_b = 2 * b * m - 2 * m * yt - 2 * xt
-            quad_c = xt ** 2 + b ** 2 + yt ** 2 - 2 * b * yt - dist_to_move ** 2
-            delta = quad_b ** 2 - 4 * quad_a * quad_c
-
-            x1 = (-quad_b + sqrt(delta)) / (2 * quad_a)
-            x2 = (-quad_b - sqrt(delta)) / (2 * quad_a)
-
-            dest1 = Point(x1, m * x1 + b)
-            dest2 = Point(x2, m * x2 + b)
-
-            if next_middle.distance(dest1) < next_middle.distance(dest2):
-                self.__position = Position(dest1.x, dest1.y)
-            else:
-                self.__position = Position(dest2.x, dest2.y)
+            self.__position = moving_line.split_by_ratio(dist_to_move / dist)
             return 0
 
         # else, move to next_middle and return distance left
@@ -229,11 +193,13 @@ class Car(ICar):
         :param dist_to_move: the distance to move
         :return: the distance left to move, if got to end of the lane. 0 if finished inside the lane.
         """
-        dist_left = self.move_in_part(dist_to_move)
+        dist_left = dist_to_move
         number_of_parts = len(self.__current_road.coordinates)
+
         while dist_left > 0 and self.__current_lane_part < number_of_parts - 1:
             # continue while we have distance to cover and parts to move forward to
             dist_left = self.move_in_part(dist_left)
+
         # return the distance left. if it is 0, we are done. else, we have to move to the next road.
         return dist_left
 
