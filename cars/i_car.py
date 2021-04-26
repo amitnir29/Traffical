@@ -80,3 +80,9 @@ class ICar(ABC):
     @abstractmethod
     def speed(self) -> float:
         pass
+
+    def estimated_speed(self) -> float:
+        """
+        :return: estimated speed that the car will have in this iteration
+        """
+        pass

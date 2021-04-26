@@ -14,13 +14,18 @@ from trafficlights.i_traffic_light import ITrafficLight
 
 
 class Car(ICar):
-    def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float, path: List[IRoadSection],
+    MIN_DISTANCE_TO_KEEP = ... #TODO
+    MIN_DISTANCE_CONFIDENCE_INTERVAL = ... #Todo
+
+    def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float,
+                 initial_position: Position, path: List[IRoadSection],
                  destination: Position):
         # TODO enter values
         self.__state = CarState()
         self.__length = length
         self.__width = width
         self.__path = path
+        self.__position = initial_position
         self.__destination = destination
         self.__max_speed = max_speed
         self.__speed = 0
@@ -72,34 +77,26 @@ class Car(ICar):
             else:
                 # there is a red light.
                 # update speed s.t. we do not pass the max speed, max deceleration, and light distance
-                self.stop(self.__distance_from_lane_end)
+                lane_end_coordinates = self.__current_road.coordinates[-1]
+                distance_to_stop = self._distance_to_part_end(self.position, lane_end_coordinates)
+                self.stop(distance_to_stop)
         else:
-            # we are not alone in the path
-            # TODO fix all pass ifs, and fix the ICar interface s.t. we can apply front_car_speed on ICar
-            front_car_speed, is_front_car_speed_real = self._front_car_speed(front_car)
-            if red_light is None:
-                if is_front_car_speed_real:
-                    # calculate next speed s.t. we do not pass the:
-                    # max speed, max de/acceleration, safe distance from car.
-                    pass
-                else:
-                    # calculate next speed s.t. we do not pass the:
-                    # max speed, max de/acceleration, safe distance from car.
-                    # using estimated speed
-                    pass
+            if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
+                distance_to_keep = self.MIN_DISTANCE_TO_KEEP
+                distance_to_move = Line(self.position, front_car.position).length() - distance_to_keep
+
             else:
-                # we are not first and there is a red light.
-                if is_front_car_speed_real:
-                    # calculate next speed s.t.we do not pass the:
-                    # max speed, max de/acceleration, safe distance from car.
-                    # also handle the red light deceleration.
-                    pass
-                else:
-                    # calculate next speed s.t.we do not pass the:
-                    # max speed, max de/acceleration, safe distance from car.
-                    # also handle the red light deceleration.
-                    # using estimated speed
-                    pass
+                distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
+                # TODO not completely correct. should be relative to the lane, and not the whole road's width
+                part_end = Line(*self.__current_road.coordinates[self.__current_lane_part]).middle()
+
+                estimated_front_car_speed = front_car.estimated_speed()
+                front_car_path = Line(front_car.position, part_end)
+                estimated_front_car_pos = front_car_path.split_by_ratio(estimated_front_car_speed / front_car_path.length())
+                distance_to_move = Line(self.position, estimated_front_car_pos).length() - distance_to_keep
+
+            required_speed = min(distance_to_move, self.__max_speed)
+            self.__acceleration = min(required_speed - self.__speed, self.__max_speed_change)
         # now we should also depend on lane switching.
         pass
 
@@ -111,7 +108,6 @@ class Car(ICar):
         self.__current_road = road
         self.__current_lane = road.get_lane(lanes_from_left)
         self.__current_lane_part = 0
-        self.__distance_from_lane_end = ... # TODO
 
     def stop(self, location: float):
         self.__state.stopping = True
@@ -125,7 +121,7 @@ class Car(ICar):
         # Results in:
         # a = -speed ^ 2 / (2 * (location - currentPosition))
 
-        self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
+        self.__acceleration = max(-pow(self.__speed, 2) / (2 * (location - position_in_lane)), self.__max_speed_change)
 
     def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
@@ -148,21 +144,21 @@ class Car(ICar):
         """
         pass
 
-    def _front_car_speed(self, front: ICar) -> Tuple[float, bool]:
-        """
-        :param front: car in front of self
-        :return: (real speed, True) if already calculated. (estimated velocity, False) if not calculated.
-        """
-        if self._is_car_done_this_iter(front):
-            return front.speed, True
-        return front.estimated_speed(), False
-
     def get_closest_red_light(self) -> Optional[ITrafficLight]:
         """
         should also depend on lane switching.
         :return: closest red light that affects the car.
         """
         pass
+
+
+    @staticmethod
+    def _distance_to_part_end(current_position: Point, coordinates: Tuple[Point, Point]) -> float:
+        # TODO not completely correct. should be relative to the lane, and not the whole road's width
+        next_middle = Line(*coordinates).middle()
+        path = Line(current_position, next_middle)
+
+        return path.length()
 
     def move_in_part(self, dist_to_move: float) -> float:
         """
@@ -172,14 +168,14 @@ class Car(ICar):
         """
         # We have the current part of the road, calculate the line to the next part.
         # We want to meet the next part's start line at the middle of the line.
-        next_line_points: Tuple[Point, Point] = self.__current_road.coordinates[self.__current_lane_part + 1]
-        next_line: Line = Line(next_line_points[0], next_line_points[1])
-        # TODO not completely currect. should be relative to the lane, and not the whole road's width
-        next_middle: Point = next_line.middle()
-        moving_line: Line = Line(self.position, next_middle)
-        dist: float = moving_line.length()
-        if dist > dist_to_move:  # great, move just along the line
-            self.__position = moving_line.split_by_ratio(dist_to_move / dist)
+        next_line_points = self.__current_road.coordinates[self.__current_lane_part + 1]
+
+        next_middle = Line(*next_line_points).middle()
+        path = Line(self.position, next_middle)
+        dist = path.length()
+
+        if dist > dist_to_move:
+            self.__position = path.split_by_ratio(dist_to_move / dist)
             return 0
 
         # else, move to next_middle and return distance left
