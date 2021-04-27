@@ -1,4 +1,7 @@
 from dataclasses import dataclass
+from typing import Optional
+
+from cars.i_car import ICar
 
 
 @dataclass(init=True, repr=True)
@@ -6,8 +9,8 @@ class CarState:
     driving: bool = True
     moving_lane: bool = False
     stopping: bool = False
-    letting_car_in: bool = False
+    letting_car_in: Optional[ICar] = None
 
     def __setattr__(self, key, value):
         super.__setattr__(self, key, value)
-        self.__dict__['driving'] = not (self.moving_lane or self.stopping or self.letting_car_in)
+        self.__dict__['driving'] = not (self.moving_lane or self.stopping or self.letting_car_in is not None)

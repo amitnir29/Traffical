@@ -72,12 +72,15 @@ class Car(ICar):
 
         if self.__state.moving_lane:
             pass  # TODO
-        elif self.__state.stopping:
-            if self.__speed == 0:
+        if self.__state.stopping:
+            if self.__speed == 0 or (red_light is not None and red_light.can_pass):
                 self.__state.stopping = False
-        elif self.__state.letting_car_in:
-            pass  # TODO
-        elif self.__state.driving:  # Equivalent to else
+        if self.__state.letting_car_in is not None:
+            moving_in_car = self.__state.letting_car_in
+            if front_car == moving_in_car:
+                # The car already moved into the lane
+                self.__state.letting_car_in = None
+        if self.__state.driving:  # Equivalent to else
             if front_car is None:
                 if red_light is None or red_light.can_pass:
                     # update speed s.t. we do not pass the max speed and the max acceleration.
@@ -94,7 +97,7 @@ class Car(ICar):
                     distance_to_move = Line(self.position, front_car.position).length() - distance_to_keep
 
                 else:
-                    distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
+                    distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL # TODO IN DISTANCE depends on velocity
                     # TODO not completely correct. should be relative to the lane, and not the whole road's width
                     part_end = Line(*self.__current_road.coordinates[self.__current_lane_part]).middle()
 
@@ -211,3 +214,7 @@ class Car(ICar):
             return False
         next_road = self.__path[curr_road_index + 1]
         return self.__current_lane.is_going_to_road(next_road)
+
+    @property
+    def current_part_in_lane(self):
+        return self.__current_lane_part
