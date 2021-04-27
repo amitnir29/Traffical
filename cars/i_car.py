@@ -28,29 +28,6 @@ class ICar(ABC):
         """
         pass
 
-    # car driving functions
-    @abstractmethod
-    def stop(self, location: float) -> None:
-        """
-        :param location: #TODO
-        :return: stops the car until it reaches the location.
-        """
-        pass
-
-    @abstractmethod
-    def move_forward(self) -> None:
-        """
-        move one step forward depending on the speed of the car, cars around it, and junctions.
-        """
-
-    # Lane moving functions
-    @abstractmethod
-    def should_move_lane(self) -> bool:
-        """
-        :return: True if we should move lane.
-        """
-        pass
-
     @abstractmethod
     def get_closest_valid_lane(self) -> ILane:
         """

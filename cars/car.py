@@ -64,7 +64,7 @@ class Car(ICar):
 
     def _set_acceleration(self):
         front_car = self.__current_lane.get_car_ahead(self)
-        red_light = self.get_closest_red_light()
+        red_light = self._get_closest_red_light()
 
         if self.__state.moving_lane:
             pass  # TODO
@@ -86,7 +86,7 @@ class Car(ICar):
                     # update speed s.t. we do not pass the max speed, max deceleration, and light distance
                     lane_end_coordinates = self.__current_road.coordinates[-1]
                     distance_to_stop = self._distance_to_part_end(self.position, lane_end_coordinates)
-                    self.stop(distance_to_stop)
+                    self._stop(distance_to_stop)
             else:
                 if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
                     distance_to_keep = self.MIN_DISTANCE_TO_KEEP
@@ -115,7 +115,7 @@ class Car(ICar):
         self.__current_lane = road.get_lane(lanes_from_left)
         self.__current_lane_part = 0
 
-    def stop(self, location: float):
+    def _stop(self, location: float):
         self.__state.stopping = True
         position_in_lane = self.__current_lane.car_position_in_lane(self)
 
@@ -142,7 +142,7 @@ class Car(ICar):
         """
         return self.__speed + self.__acceleration
 
-    def get_closest_red_light(self) -> Optional[ITrafficLight]:
+    def _get_closest_red_light(self) -> Optional[ITrafficLight]:
         """
         should also depend on lane switching.
         :return: closest red light that affects the car.
@@ -157,7 +157,7 @@ class Car(ICar):
 
         return path.length()
 
-    def move_in_part(self, dist_to_move: float) -> float:
+    def _move_in_part(self, dist_to_move: float) -> float:
         """
         move forward in the part of the lane
         :param dist_to_move: the distance to move
@@ -180,7 +180,7 @@ class Car(ICar):
         self.__current_lane_part += 1
         return dist_to_move - dist
 
-    def move_in_lane(self, dist_to_move: float) -> float:
+    def _move_in_lane(self, dist_to_move: float) -> float:
         """
         move through the parts of the lane until we finished the distance or the lane.
         :param dist_to_move: the distance to move
@@ -191,12 +191,12 @@ class Car(ICar):
 
         while dist_left > 0 and self.__current_lane_part < number_of_parts - 1:
             # continue while we have distance to cover and parts to move forward to
-            dist_left = self.move_in_part(dist_left)
+            dist_left = self._move_in_part(dist_left)
 
         # return the distance left. if it is 0, we are done. else, we have to move to the next road.
         return dist_left
 
-    def should_move_lane(self) -> bool:
+    def _should_move_lane(self) -> bool:
         curr_road_index = self.__path.index(self.__current_road)
         if curr_road_index == len(self.__path) - 1:
             return False
