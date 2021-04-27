@@ -36,10 +36,6 @@ class Car(ICar):
         initial_road_section = path[0]
         self._enter_road_section(initial_road_section, initial_road_section.get_most_right_lane_index())
 
-    @property
-    def speed(self) -> float:
-        return self.__speed
-
     def activate(self):
         """
         this is the main function of the car.
@@ -61,10 +57,10 @@ class Car(ICar):
         pass
 
     def _full_gass(self):
-        if self.speed + self.__max_speed_change <= self.__current_road.max_speed:
+        if self.__speed + self.__max_speed_change <= self.__current_road.max_speed:
             self.__acceleration = self.__max_speed_change
         else:
-            self.__acceleration = self.__current_road.max_speed - self.speed
+            self.__acceleration = self.__current_road.max_speed - self.__speed
 
     def _set_acceleration(self):
         front_car = self.__current_lane.get_car_ahead(self)
@@ -145,14 +141,6 @@ class Car(ICar):
         :return: estimated speed that the car will have in this iteration
         """
         return self.__speed + self.__acceleration
-
-    def distance_to_light(self, light: ITrafficLight) -> float:
-        """
-        not trivial - should depend on the shapes of the road parts in the way to the end of the road
-        :param light: a traffic light on the path
-        :return: distance to the input light
-        """
-        pass
 
     def get_closest_red_light(self) -> Optional[ITrafficLight]:
         """
