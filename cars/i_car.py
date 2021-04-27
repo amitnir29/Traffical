@@ -86,3 +86,8 @@ class ICar(ABC):
         :return: estimated speed that the car will have in this iteration
         """
         pass
+
+    @property
+    @abstractmethod
+    def current_part_in_lane(self):
+        pass

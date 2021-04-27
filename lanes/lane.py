@@ -11,17 +11,12 @@ from roadsections.i_road_section import IRoadSection
 
 class Lane(ILane):
 
-    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]], vertical: bool = True):
+    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]]):
         self.__cars = deque()
-        self.__vertical = vertical
         self.__coordinates = coordinates
-        self.__length = self.__calculate_lane_length(coordinates)
+        self.__length = self._calculate_lane_length(coordinates)
         self.__goes_to: List[ILane] = list()
         self.__road: IRoadSection = road
-
-    @property
-    def is_vertical(self):
-        return self.__vertical
 
     @property
     def coordinates(self) -> List[Tuple[Point, Point]]:
@@ -34,7 +29,8 @@ class Lane(ILane):
     def add_movement(self, to_lane: ILane):
         self.__goes_to.append(to_lane)
 
-    def __calculate_part_length(self, start: Tuple[Point, Point], end: Tuple[Point, Point]):
+    @staticmethod
+    def _calculate_part_length(start: Tuple[Point, Point], end: Tuple[Point, Point]):
         """
         calculate the lengtth of a lane part
         :param start: the pair of points of the start
@@ -49,12 +45,12 @@ class Lane(ILane):
         main_line = Line(start_middle, end_middle)
         return main_line.length()
 
-    def __calculate_lane_length(self, coordinates: List[Tuple[Point, Point]]) -> float:
+    def _calculate_lane_length(self, coordinates: List[Tuple[Point, Point]]) -> float:
         """
         :param coordinates: a list of pairs of points that represent the lane.
         :return: total length of the lane
         """
-        return sum([self.__calculate_part_length(c1, c2) for c1, c2 in zip(coordinates, coordinates[1:])])
+        return sum([self._calculate_part_length(c1, c2) for c1, c2 in zip(coordinates, coordinates[1:])])
 
     def is_going_to_road(self, road: IRoadSection):
         return road in [lane.road for lane in self.__goes_to]
@@ -94,4 +90,11 @@ class Lane(ILane):
         return res
 
     def car_position_in_lane(self, car):
-        return car.position.y if self.is_vertical else car.position.x
+        current_part = car.current_part_in_lane
+        distance_of_previous_parts = sum(
+            self._calculate_part_length(self.__coordinates[i], self.__coordinates[i + 1]) for i in range(current_part))
+
+        current_part_start = Line(*self.__coordinates[current_part]).middle()
+        distance_in_current_part = Line(current_part_start, car.position).length()
+
+        return distance_of_previous_parts + distance_in_current_part
