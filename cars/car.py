@@ -46,7 +46,15 @@ class Car(ICar):
 
         self._set_acceleration()  # TODO this method should only control acceleration
         self._update_speed()
-        self._advance()
+        self._advance(self.__speed)
+
+    def _advance(self, distance_to_move):
+        dist_left = distance_to_move
+        self._move_in_lane(dist_left)
+
+        while dist_left > 0:
+            self.move_lane()
+            self._move_in_lane(dist_left)
 
     def _update_speed(self):
         self.__speed += self.__acceleration
