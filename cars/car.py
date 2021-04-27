@@ -66,11 +66,12 @@ class Car(ICar):
         front_car = self.__current_lane.get_car_ahead(self)
         red_light = self._get_closest_red_light()
 
-        if self.__state.moving_lane:
-            pass  # TODO
+        if self.__state.moving_lane == self.__current_lane:
+            # Already moved lane
+            self.__state.moving_lane = None
         if self.__state.stopping and (self.__speed == 0 or (red_light is not None and red_light.can_pass)):
             self.__state.stopping = False
-        if self.__state.letting_car_in is not None and front_car == self.__state.letting_car_in:
+        if front_car == self.__state.letting_car_in:
             # The car already moved into the lane
             self.__state.letting_car_in = None
         if self.__state.driving:  # Equivalent to else
