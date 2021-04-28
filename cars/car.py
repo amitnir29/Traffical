@@ -2,24 +2,23 @@ from __future__ import annotations
 
 from typing import List, Optional, Tuple
 
+from cars.car_state import CarState
+from cars.i_car import ICar
+from cars.position import Position
 from geometry.line import Line
 from geometry.point import Point
-from cars.position import Position
-
-import cars.car_state as cs
-import cars.i_car as ic
-import roadsections.i_road_section as irs
-import trafficlights.i_traffic_light as itl
+from roadsections.i_road_section import IRoadSection
+from trafficlights.i_traffic_light import ITrafficLight
 
 
-class Car(ic.ICar):
+class Car(ICar):
     MIN_DISTANCE_TO_KEEP = ...  # TODO
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
     def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float,
-                 initial_position: Position, path: List[irs.IRoadSection],
+                 initial_position: Position, path: List[IRoadSection],
                  destination: Position):
-        self.__state = cs.CarState()
+        self.__state = CarState()
         self.__length = length
         self.__width = width
         self.__path = path
@@ -40,9 +39,7 @@ class Car(ic.ICar):
         the function evaluates the state of the car relative to other cars, red lights, lane switching etc.
         then, the function uses a function for the correct state.
         """
-        state = self.get_state()
-
-        self._set_acceleration()  # TODO this method should only control acceleration
+        self._set_acceleration()
         self._update_speed()
         self._advance(self.__speed)
 
@@ -58,10 +55,6 @@ class Car(ic.ICar):
         self.__speed += self.__acceleration
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
 
-    def get_state(self) -> cs.CarState:
-        # if we cant move from this lane to the next RoadSection in our path:
-        pass
-
     def _full_gass(self):
         if self.__speed + self.__max_speed_change <= self.__current_road.max_speed:
             self.__acceleration = self.__max_speed_change
@@ -70,7 +63,7 @@ class Car(ic.ICar):
 
     def _set_acceleration(self):
         front_car = self.__current_lane.get_car_ahead(self)
-        red_light = self._get_closest_red_light()
+        red_light = self._get_closest_traffic_light()
 
         if self.__state.moving_lane == self.__current_lane:
             # Already moved lane
@@ -115,7 +108,7 @@ class Car(ic.ICar):
     def position(self):
         return self.__position
 
-    def _enter_road_section(self, road: irs.IRoadSection, lanes_from_left: int):
+    def _enter_road_section(self, road: IRoadSection, lanes_from_left: int):
         self.__current_road = road
         self.__current_lane = road.get_lane(lanes_from_left)
         self.__current_lane_part = 0
@@ -134,7 +127,7 @@ class Car(ic.ICar):
 
         self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
 
-    def _is_car_done_this_iter(self, test_car: ic.ICar) -> bool:
+    def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
         :param test_car: input car
         :return: true if the input car has already done this iteration.
@@ -147,7 +140,7 @@ class Car(ic.ICar):
         """
         return self.__speed + self.__acceleration
 
-    def _get_closest_red_light(self) -> Optional[itl.ITrafficLight]:
+    def _get_closest_traffic_light(self) -> Optional[ITrafficLight]:
         """
         should also depend on lane switching.
         :return: closest red light that affects the car.
@@ -211,3 +204,6 @@ class Car(ic.ICar):
     @property
     def current_part_in_lane(self):
         return self.__current_lane_part
+
+    def wants_to_enter_lane(self, car: ICar) -> None:
+        pass

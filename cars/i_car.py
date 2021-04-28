@@ -3,7 +3,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from iteration_trackable import iteration_trackable
-import lanes.i_lane as il
 
 
 @iteration_trackable
@@ -17,29 +16,6 @@ class ICar(ABC):
     def activate(self) -> None:
         """
         commit one "step" of the car's action
-        """
-        pass
-
-    @abstractmethod
-    def notified(self) -> None:
-        """
-        getting a light notification
-        """
-        pass
-
-    @abstractmethod
-    def get_closest_valid_lane(self) -> il.ILane:
-        """
-        :return: the lane we should move to next
-        """
-        pass
-
-    @abstractmethod
-    def move_lane(self) -> None:
-        """
-        moves a lane. when done - returns.
-        for the future us - when we get a premission to move a line, make sure to add the car to the moved laned, and
-        to only delete the car from the current lane, when we are completly done with the transaction. #TODO
         """
         pass
 
