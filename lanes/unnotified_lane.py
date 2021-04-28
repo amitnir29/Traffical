@@ -6,5 +6,5 @@ from roadsections.i_road_section import IRoadSection
 
 
 class UnnotifiedLane(Lane):
-    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]], vertical: bool = False):
-        super().__init__(road, coordinates, vertical)
+    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]]):
+        super().__init__(road, coordinates)

@@ -14,4 +14,5 @@ class CarState:
 
     def __setattr__(self, key, value):
         super.__setattr__(self, key, value)
-        self.__dict__['driving'] = not (self.moving_lane is not None or self.stopping or self.letting_car_in is not None)
+        self.__dict__['driving'] = not (self.moving_lane is not None or
+                                        self.stopping or self.letting_car_in is not None)

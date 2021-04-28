@@ -1,12 +1,10 @@
-from typing import List, Dict
+from typing import List
 
 from db_dataclasses.junction_data import JunctionData
 from geometry.point import Point
 from junctions.i_junction import IJunction
 from roadsections.i_road_section import IRoadSection
-from roadsections.road_section import RoadSection
 from trafficlights.i_traffic_light import ITrafficLight
-from trafficlights.traffic_light import TrafficLight
 
 
 class Junction(IJunction):

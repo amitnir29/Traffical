@@ -9,8 +9,8 @@ from trafficlights.i_traffic_light import ITrafficLight
 
 class NotifiedLane(INotifiedLane, Lane):
 
-    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]], vertical: bool = False):
-        Lane.__init__(self, road, coordinates, vertical)
+    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]]):
+        Lane.__init__(self, road, coordinates)
         self.__light = None
 
     @property

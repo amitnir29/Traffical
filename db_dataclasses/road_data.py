@@ -10,7 +10,4 @@ class RoadData:
     coordinates: List[Tuple[Point, Point]]
     num_lanes: int
     max_speed: float
-    pcross: Tuple[bool, bool]
-    is_stop: bool
-    is_yield: bool
     is_parking: bool

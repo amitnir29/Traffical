@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from math import sqrt
 from typing import List, Optional, Tuple
 
 from cars.car_state import CarState
@@ -8,7 +7,6 @@ from cars.i_car import ICar
 from cars.position import Position
 from geometry.line import Line
 from geometry.point import Point
-from iteration_trackable import iteration_trackable
 from roadsections.i_road_section import IRoadSection
 from trafficlights.i_traffic_light import ITrafficLight
 
@@ -20,7 +18,6 @@ class Car(ICar):
     def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float,
                  initial_position: Position, path: List[IRoadSection],
                  destination: Position):
-        # TODO enter values
         self.__state = CarState()
         self.__length = length
         self.__width = width
@@ -99,7 +96,8 @@ class Car(ICar):
                     distance_to_move = Line(self.position, front_car.position).length() - distance_to_keep
 
                 else:
-                    distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL  # TODO IN DISTANCE depends on velocity
+                    # TODO MIN DISTANCE depends on velocity
+                    distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
                     # TODO not completely correct. should be relative to the lane, and not the whole road's width
                     part_end = Line(*self.__current_road.coordinates[self.__current_lane_part]).middle()
 

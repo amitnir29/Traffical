@@ -1,12 +1,11 @@
 from collections import defaultdict
-from typing import Dict, List, Tuple, Optional, Set
+from typing import Dict, List, Tuple, Set
 
 from db_dataclasses.junction_data import JunctionData
 from db_dataclasses.road_data import RoadData
 from db_dataclasses.road_lane import RoadLane
 from junctions.i_junction import IJunction
 from junctions.junction import Junction
-from lanes.i_notified_lane import INotifiedLane
 from roadsections.i_road_section import IRoadSection
 from roadsections.road_section import RoadSection
 from trafficlights.i_traffic_light import ITrafficLight
@@ -44,32 +43,6 @@ def create_map():
     set_lane_movements(roads, from_roads)
     # part 5
     all_junctions = get_all_junctions(junctions_data, roads)
-
-
-'''def __create_junc(all_roads: Dict[int, RoadSection],
-                  roads_movements: List[Tuple[Tuple[int, int], Tuple[int, int]]],
-                  traffic_lights: Optional[List[List[Tuple[int, int]]]]) -> Junction:
-    """
-    :param all_roads: a dict of roads, from road_id to RoadSection object
-    :param roads_movements: a list of (from: (road_id,lane_num), to: (road_id,lane_num)). all ints
-    :param traffic_lights: a list of lists of (road_id,lane_num), which are all ints.
-                        each sub list is a traffic light, and its list contains lanes listening to it.
-                        if the junction has no traffic lights, traffic_lights is None
-    :return: a junction that matches all data
-    """
-    # assume all road in the junctions have any movement from/to, a reasonable assumption
-    roads_ids = {pair[0] for double_pair in roads_movements for pair in double_pair}
-    roads = all_roads.values()
-    # now,
-
-    evens = []
-    for i in range(100):
-        if i % 2 == 0:
-            evens.append(i)
-
-    evens = [i for i in range(100) if i % 2 == 0]
-
-    pass'''
 
 
 def get_junctions_data():

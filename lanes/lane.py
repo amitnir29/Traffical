@@ -2,7 +2,6 @@ from collections import deque
 from typing import List, Optional, Tuple
 
 from cars.i_car import ICar
-from db_dataclasses.road_lane import RoadLane
 from geometry.line import Line
 from geometry.point import Point
 from lanes.i_lane import ILane

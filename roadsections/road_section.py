@@ -1,14 +1,12 @@
-from typing import List, Tuple, Optional, Set
+from typing import List, Tuple, Set
 
 from db_dataclasses.road_data import RoadData
 from geometry.line import Line
 from geometry.point import Point
 from lanes.i_lane import ILane
-from lanes.lane import Lane
 from lanes.notified_lane import NotifiedLane
 from lanes.unnotified_lane import UnnotifiedLane
 from roadsections.i_road_section import IRoadSection
-from trafficlights.i_traffic_light import ITrafficLight
 
 
 class RoadSection(IRoadSection):
@@ -19,9 +17,6 @@ class RoadSection(IRoadSection):
         self.__coordinates: List[Tuple[Point, Point]] = road_data.coordinates
         self.__number_of_lanes: int = road_data.num_lanes
         self.__max_speed: float = road_data.max_speed
-        self.__pcross: Tuple[bool, bool] = road_data.pcross
-        self.__is_stop: bool = road_data.is_stop
-        self.__is_yield: bool = road_data.is_yield
         self.__is_parking: bool = road_data.is_parking
         # else
         self.__lanes: List[ILane] = self.__create_lanes(road_data.num_lanes, notified_lanes_nums)

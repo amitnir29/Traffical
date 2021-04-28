@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Tuple
 
 from iteration_trackable import iteration_trackable
 from lanes.i_lane import ILane
