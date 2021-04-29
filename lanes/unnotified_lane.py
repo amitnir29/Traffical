@@ -1,10 +1,10 @@
 from typing import List, Tuple
 
 from geometry.point import Point
-from lanes.lane import Lane
-from roadsections.i_road_section import IRoadSection
+import lanes.lane as lane
+import roadsections.i_road_section as irs
 
 
-class UnnotifiedLane(Lane):
-    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]]):
+class UnnotifiedLane(lane.Lane):
+    def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
         super().__init__(road, coordinates)

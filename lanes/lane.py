@@ -1,31 +1,32 @@
 from collections import deque
 from typing import List, Optional, Tuple
 
-from cars.i_car import ICar
 from geometry.line import Line
 from geometry.point import Point
-from lanes.i_lane import ILane
-from roadsections.i_road_section import IRoadSection
+
+import cars.i_car as ic
+import lanes.i_lane as il
+import roadsections.i_road_section as irs
 
 
-class Lane(ILane):
+class Lane(il.ILane):
 
-    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]]):
+    def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
         self.__cars = deque()
         self.__coordinates = coordinates
         self.__length = self._calculate_lane_length(coordinates)
-        self.__goes_to: List[ILane] = list()
-        self.__road: IRoadSection = road
+        self.__goes_to: List[il.ILane] = list()
+        self.__road: irs.IRoadSection = road
 
     @property
     def coordinates(self) -> List[Tuple[Point, Point]]:
         return self.__coordinates
 
     @property
-    def road(self) -> IRoadSection:
+    def road(self) -> irs.IRoadSection:
         return self.__road
 
-    def add_movement(self, to_lane: ILane):
+    def add_movement(self, to_lane: il.ILane):
         self.__goes_to.append(to_lane)
 
     @staticmethod
@@ -51,10 +52,10 @@ class Lane(ILane):
         """
         return sum([self._calculate_part_length(c1, c2) for c1, c2 in zip(coordinates, coordinates[1:])])
 
-    def is_going_to_road(self, road: IRoadSection):
+    def is_going_to_road(self, road: irs.IRoadSection):
         return road in [lane.road for lane in self.__goes_to]
 
-    def get_car_ahead(self, car: ICar) -> Optional[ICar]:
+    def get_car_ahead(self, car: ic.ICar) -> Optional[ic.ICar]:
         car_index = self.__cars.index(car)
 
         if car_index == 0:
@@ -71,10 +72,10 @@ class Lane(ILane):
     def remove_car(self, car):
         self.__cars.remove(car)
 
-    def cars_from_end(self, distance: float) -> List[ICar]:
+    def cars_from_end(self, distance: float) -> List[ic.ICar]:
         return self.get_cars_between(self.__length - distance, self.__length)
 
-    def get_cars_between(self, start: float, end: float) -> List[ICar]:
+    def get_cars_between(self, start: float, end: float) -> List[ic.ICar]:
         res = list()
 
         for car in reversed(self.__cars):

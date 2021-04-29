@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from trafficlights.traffic_light import TrafficLight
+import trafficlights.traffic_light as tl
 
 
 class IJunction(ABC):
     @abstractmethod
-    def update_traffic_lights(self, change: List[TrafficLight]) -> None:
+    def update_traffic_lights(self, change: List[tl.TrafficLight]) -> None:
         """
         :param change: the traffic lights of the junctions
         """

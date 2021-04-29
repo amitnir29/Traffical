@@ -1,6 +1,7 @@
 from collections import defaultdict
 from typing import Dict, List, Tuple, Set
 
+from db import get_db_junctions, get_db_road_sections
 from db_dataclasses.junction_data import JunctionData
 from db_dataclasses.road_data import RoadData
 from db_dataclasses.road_lane import RoadLane
@@ -139,3 +140,7 @@ def get_all_junctions(junctions_data: List[JunctionData], roads: Dict[int, IRoad
         junction_lights = [lane.traffic_light for lane in first_lane_of_light]
         all_junctions.append(Junction(junction_data, in_roads, out_roads, junction_lights))
     return all_junctions
+
+
+if __name__ == '__main__':
+    create_map()

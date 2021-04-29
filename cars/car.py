@@ -2,23 +2,24 @@ from __future__ import annotations
 
 from typing import List, Optional, Tuple
 
-from cars.car_state import CarState
-from cars.i_car import ICar
-from cars.position import Position
 from geometry.line import Line
 from geometry.point import Point
-from roadsections.i_road_section import IRoadSection
-from trafficlights.i_traffic_light import ITrafficLight
+from cars.position import Position
+
+import cars.car_state as cs
+import cars.i_car as ic
+import roadsections.i_road_section as irs
+import trafficlights.i_traffic_light as itl
 
 
-class Car(ICar):
+class Car(ic.ICar):
     MIN_DISTANCE_TO_KEEP = ...  # TODO
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
     def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float,
-                 initial_position: Position, path: List[IRoadSection],
+                 initial_position: Position, path: List[irs.IRoadSection],
                  destination: Position):
-        self.__state = CarState()
+        self.__state = cs.CarState()
         self.__length = length
         self.__width = width
         self.__path = path
@@ -57,7 +58,7 @@ class Car(ICar):
         self.__speed += self.__acceleration
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
 
-    def get_state(self) -> CarState:
+    def get_state(self) -> cs.CarState:
         # if we cant move from this lane to the next RoadSection in our path:
         pass
 
@@ -114,7 +115,7 @@ class Car(ICar):
     def position(self):
         return self.__position
 
-    def _enter_road_section(self, road: IRoadSection, lanes_from_left: int):
+    def _enter_road_section(self, road: irs.IRoadSection, lanes_from_left: int):
         self.__current_road = road
         self.__current_lane = road.get_lane(lanes_from_left)
         self.__current_lane_part = 0
@@ -133,7 +134,7 @@ class Car(ICar):
 
         self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
 
-    def _is_car_done_this_iter(self, test_car: ICar) -> bool:
+    def _is_car_done_this_iter(self, test_car: ic.ICar) -> bool:
         """
         :param test_car: input car
         :return: true if the input car has already done this iteration.
@@ -146,7 +147,7 @@ class Car(ICar):
         """
         return self.__speed + self.__acceleration
 
-    def _get_closest_red_light(self) -> Optional[ITrafficLight]:
+    def _get_closest_red_light(self) -> Optional[itl.ITrafficLight]:
         """
         should also depend on lane switching.
         :return: closest red light that affects the car.

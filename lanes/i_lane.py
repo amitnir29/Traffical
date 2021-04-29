@@ -2,9 +2,9 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 
-from cars.i_car import ICar
 from geometry.point import Point
-from roadsections.i_road_section import IRoadSection
+import cars.i_car as ic
+import roadsections.i_road_section as irs
 
 
 class ILane(ABC):
@@ -19,7 +19,7 @@ class ILane(ABC):
     """
 
     @abstractmethod
-    def get_car_ahead(self, car: ICar) -> Optional[ICar]:
+    def get_car_ahead(self, car: ic.ICar) -> Optional[ic.ICar]:
         """
         :param car: a car in the lane
         :return: the car ahead of the input car, in the lane
@@ -50,7 +50,7 @@ class ILane(ABC):
         pass
 
     @abstractmethod
-    def get_cars_between(self, start: float, end: float) -> List[ICar]:
+    def get_cars_between(self, start: float, end: float) -> List[ic.ICar]:
         """
         we use this function when a car wants to know which car to talk with whenever it wants to move to their lane.
         :param start: distance from start of the lane
@@ -60,7 +60,7 @@ class ILane(ABC):
         pass
 
     @abstractmethod
-    def cars_from_end(self, distance: float) -> List[ICar]:
+    def cars_from_end(self, distance: float) -> List[ic.ICar]:
         """
         :param distance: a distance from the end of the lane
         :return: list of cars in the lane within the distance given from the end of the lane.
@@ -85,11 +85,11 @@ class ILane(ABC):
 
     @property
     @abstractmethod
-    def road(self) -> IRoadSection:
+    def road(self) -> irs.IRoadSection:
         pass
 
     @abstractmethod
-    def is_going_to_road(self, road: IRoadSection):
+    def is_going_to_road(self, road: irs.IRoadSection):
         pass
 
     @abstractmethod

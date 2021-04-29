@@ -1,20 +1,20 @@
 from typing import List, Tuple
 
 from geometry.point import Point
-from lanes.i_notified_lane import INotifiedLane
-from lanes.lane import Lane
-from roadsections.i_road_section import IRoadSection
-from trafficlights.i_traffic_light import ITrafficLight
+import lanes.i_notified_lane as inlane
+import lanes.lane as lane
+import roadsections.i_road_section as irs
+import trafficlights.i_traffic_light as itl
 
 
-class NotifiedLane(INotifiedLane, Lane):
+class NotifiedLane(inlane.INotifiedLane, lane.Lane):
 
-    def __init__(self, road: IRoadSection, coordinates: List[Tuple[Point, Point]]):
-        Lane.__init__(self, road, coordinates)
+    def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
+        lane.Lane.__init__(self, road, coordinates)
         self.__light = None
 
     @property
-    def traffic_light(self) -> ITrafficLight:
+    def traffic_light(self) -> itl.ITrafficLight:
         return self.__light
 
     @traffic_light.setter

@@ -2,12 +2,13 @@ from abc import ABC, abstractmethod
 from typing import List, Tuple
 
 from geometry.point import Point
-from lanes.i_lane import ILane
+
+import lanes.i_lane as il
 
 
 class IRoadSection(ABC):
     @abstractmethod
-    def get_left_lane(self, curr: ILane) -> ILane:
+    def get_left_lane(self, curr: il.ILane) -> il.ILane:
         """
         :param curr: a lane in the road section
         :return: the lane to the left of curr
@@ -15,7 +16,7 @@ class IRoadSection(ABC):
         pass
 
     @abstractmethod
-    def get_right_lane(self, curr: ILane) -> ILane:
+    def get_right_lane(self, curr: il.ILane) -> il.ILane:
         """
         :param curr: a lane in the road section
         :return: the lane to the right of curr
@@ -23,7 +24,7 @@ class IRoadSection(ABC):
         pass
 
     @abstractmethod
-    def get_lane(self, index: int) -> ILane:
+    def get_lane(self, index: int) -> il.ILane:
         """
         :param index: index of lane from left, 0 based.
         :return: the lane in that index

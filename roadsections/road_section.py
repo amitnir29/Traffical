@@ -3,13 +3,14 @@ from typing import List, Tuple, Set
 from db_dataclasses.road_data import RoadData
 from geometry.line import Line
 from geometry.point import Point
-from lanes.i_lane import ILane
-from lanes.notified_lane import NotifiedLane
-from lanes.unnotified_lane import UnnotifiedLane
-from roadsections.i_road_section import IRoadSection
+
+import lanes.i_lane as il
+import lanes.notified_lane as nlane
+import lanes.unnotified_lane as unlane
+import roadsections.i_road_section as irs
 
 
-class RoadSection(IRoadSection):
+class RoadSection(irs.IRoadSection):
 
     def __init__(self, road_data: RoadData, notified_lanes_nums: Set[int]):
         # data from road_data
@@ -19,13 +20,13 @@ class RoadSection(IRoadSection):
         self.__max_speed: float = road_data.max_speed
         self.__is_parking: bool = road_data.is_parking
         # else
-        self.__lanes: List[ILane] = self.__create_lanes(road_data.num_lanes, notified_lanes_nums)
+        self.__lanes: List[il.ILane] = self.__create_lanes(road_data.num_lanes, notified_lanes_nums)
 
     @property
     def coordinates(self) -> List[Tuple[Point, Point]]:
         return self.__coordinates
 
-    def __create_lanes(self, number_of_lanes: int, notified_lanes_nums: Set[int]) -> List[ILane]:
+    def __create_lanes(self, number_of_lanes: int, notified_lanes_nums: Set[int]) -> List[il.ILane]:
         # split the coordinates based on the number of lanes. also works for single laned road
         # first, one-time calculate the line of each points pair
         coordinates_lines = [Line(pair[0], pair[1]) for pair in self.__coordinates]
@@ -38,23 +39,23 @@ class RoadSection(IRoadSection):
                               for points_pair_index in range(len(self.__coordinates))]
                              for lane_left_index in range(number_of_lanes)]
         # now, each index in the lanes_coordinates list is a list of coordinates points, as we wanted
-        lanes: List[ILane] = list()
+        lanes: List[il.ILane] = list()
         for i in range(number_of_lanes):
             # now check if the lane should have a traffic light, and act accordingly
             if i in notified_lanes_nums:
-                lanes.append(NotifiedLane(self, lanes_coordinates[i]))
+                lanes.append(nlane.NotifiedLane(self, lanes_coordinates[i]))
             else:
-                lanes.append(UnnotifiedLane(self, lanes_coordinates[i]))
+                lanes.append(unlane.UnnotifiedLane(self, lanes_coordinates[i]))
         return lanes
 
-    def get_lane(self, index: int) -> ILane:
+    def get_lane(self, index: int) -> il.ILane:
         """
         :param index: index of lane from left, 0 based.
         :return: the lane in that index
         """
         return self.__lanes[index]
 
-    def get_left_lane(self, curr: ILane) -> ILane:
+    def get_left_lane(self, curr: il.ILane) -> il.ILane:
         curr_index = self.__lanes.index(curr)
         if curr_index == 0:
             raise Exception("already at most left lane")
@@ -63,7 +64,7 @@ class RoadSection(IRoadSection):
     def get_most_right_lane_index(self) -> int:
         return len(self.__lanes) - 1
 
-    def get_right_lane(self, curr: ILane) -> ILane:
+    def get_right_lane(self, curr: il.ILane) -> il.ILane:
         curr_index = self.__lanes.index(curr)
         if curr_index == len(self.__lanes) - 1:
             raise Exception("already at most right lane")

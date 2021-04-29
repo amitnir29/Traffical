@@ -1,13 +1,13 @@
-from lanes.i_lane import ILane
 from abc import abstractmethod
 
-from trafficlights.i_traffic_light import ITrafficLight
+import lanes.i_lane as il
+import trafficlights.i_traffic_light as itl
 
 
-class INotifiedLane(ILane):
+class INotifiedLane(il.ILane):
     @property
     @abstractmethod
-    def traffic_light(self) -> ITrafficLight:
+    def traffic_light(self) -> itl.ITrafficLight:
         pass
 
     @traffic_light.setter

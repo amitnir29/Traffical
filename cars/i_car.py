@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from iteration_trackable import iteration_trackable
-from lanes.i_lane import ILane
+import lanes.i_lane as il
 
 
 @iteration_trackable
@@ -28,7 +28,7 @@ class ICar(ABC):
         pass
 
     @abstractmethod
-    def get_closest_valid_lane(self) -> ILane:
+    def get_closest_valid_lane(self) -> il.ILane:
         """
         :return: the lane we should move to next
         """

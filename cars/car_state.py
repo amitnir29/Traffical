@@ -1,16 +1,16 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from cars.i_car import ICar
-from lanes.i_lane import ILane
+import cars.i_car as ic
+import lanes.i_lane as il
 
 
 @dataclass(init=True, repr=True)
 class CarState:
     driving: bool = True
-    moving_lane: Optional[ILane] = None
+    moving_lane: Optional[il.ILane] = None
     stopping: bool = False
-    letting_car_in: Optional[ICar] = None
+    letting_car_in: Optional[ic.ICar] = None
 
     def __setattr__(self, key, value):
         super.__setattr__(self, key, value)
