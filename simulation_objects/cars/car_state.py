@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import cars.i_car as ic
-import lanes.i_lane as il
+import simulation_objects.cars.i_car as ic
+import simulation_objects.lanes.i_lane as il
 
 
 @dataclass(init=True, repr=True)

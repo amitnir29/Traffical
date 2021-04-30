@@ -2,9 +2,9 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 
-from geometry.point import Point
-import cars.i_car as ic
-import roadsections.i_road_section as irs
+from simulation_objects.geometry.point import Point
+import simulation_objects.cars.i_car as ic
+import simulation_objects.roadsections.i_road_section as irs
 
 
 class ILane(ABC):

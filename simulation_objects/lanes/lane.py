@@ -1,12 +1,12 @@
 from collections import deque
 from typing import List, Optional, Tuple
 
-from geometry.line import Line
-from geometry.point import Point
+from simulation_objects.geometry.line import Line
+from simulation_objects.geometry.point import Point
 
-import cars.i_car as ic
-import lanes.i_lane as il
-import roadsections.i_road_section as irs
+import simulation_objects.cars.i_car as ic
+import simulation_objects.lanes.i_lane as il
+import simulation_objects.roadsections.i_road_section as irs
 
 
 class Lane(il.ILane):

@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-import trafficlights.traffic_light as tl
+import simulation_objects.trafficlights.traffic_light as tl
+from simulation_objects.geometry.point import Point
 
 
 class IJunction(ABC):
@@ -17,4 +18,9 @@ class IJunction(ABC):
         """
         algorithm1 - naive
         """
+        pass
+
+    @property
+    @abstractmethod
+    def coordinates(self)->List[Point]:
         pass

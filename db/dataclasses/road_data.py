@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple, List
 
-from geometry.point import Point
+from simulation_objects.geometry.point import Point
 
 
 @dataclass(init=True, repr=True)
@@ -10,4 +10,3 @@ class RoadData:
     coordinates: List[Tuple[Point, Point]]
     num_lanes: int
     max_speed: float
-    is_parking: bool

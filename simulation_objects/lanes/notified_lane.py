@@ -1,13 +1,17 @@
 from typing import List, Tuple
 
-from geometry.point import Point
-import lanes.i_notified_lane as inlane
-import lanes.lane as lane
-import roadsections.i_road_section as irs
-import trafficlights.i_traffic_light as itl
+from simulation_objects.geometry.point import Point
+import simulation_objects.lanes.i_notified_lane as inlane
+import simulation_objects.lanes.lane as lane
+import simulation_objects.roadsections.i_road_section as irs
+import simulation_objects.trafficlights.i_traffic_light as itl
 
 
 class NotifiedLane(inlane.INotifiedLane, lane.Lane):
+
+    def notified(self) -> None:
+        # TODO
+        pass
 
     def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
         lane.Lane.__init__(self, road, coordinates)

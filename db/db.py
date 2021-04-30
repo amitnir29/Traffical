@@ -2,13 +2,13 @@ from typing import List, Tuple
 import pandas as pd
 import ast
 
-from db_dataclasses.junction_data import JunctionData
-from db_dataclasses.road_data import RoadData
-from db_dataclasses.road_lane import RoadLane
-from geometry.point import Point
+from db.dataclasses.junction_data import JunctionData
+from db.dataclasses.road_data import RoadData
+from db.dataclasses.road_lane import RoadLane
+from simulation_objects.geometry.point import Point
 
 
-def get_db_road_sections(path: str = "RoadSections.csv") -> List[RoadData]:
+def get_db_road_sections(path: str = "db/data/RoadSections.csv") -> List[RoadData]:
     df = pd.read_csv(path)
     roads_data = []
     for index, row in df.iterrows():
@@ -22,23 +22,17 @@ def get_db_road_sections(path: str = "RoadSections.csv") -> List[RoadData]:
                 continue
             coordinates += [(Point(coords[i][0], coords[i][1]), Point(coords[i + 1][0], coords[i + 1][1]))]
 
-        # is_stop: bool = bool(row['Stop Sign'])
-        # is_yield: bool = bool(row['Yield'])
-        # pcroos01: Tuple[int, int] = ast.literal_eval(row['Pcross'])
-        # pcross: Tuple[bool, bool] = (bool(pcroos01[0]), bool(pcroos01[1]))
         num_lanes: int = row['Number of lanes']
-        is_parking: bool = bool(row['Parking'])
         max_speed: float = float(row['Max Speed'])
 
-        road_data: RoadData = RoadData(idnum=idnum, coordinates=coordinates, num_lanes=num_lanes,
-                                       is_parking=is_parking, max_speed=max_speed)
+        road_data: RoadData = RoadData(idnum=idnum, coordinates=coordinates, num_lanes=num_lanes, max_speed=max_speed)
 
         roads_data += [road_data]
 
     return roads_data
 
 
-def get_db_junctions(path: str = "Junctions.csv"):
+def get_db_junctions(path: str = "db/data/Junctions.csv"):
     df = pd.read_csv(path)
     junctions_data: List[JunctionData] = []
     for index, row in df.iterrows():
@@ -90,6 +84,7 @@ def get_db_junctions(path: str = "Junctions.csv"):
 
         junction_data: JunctionData = JunctionData(idnum=idnum, coordinates=coordinates,
                                                    goes_to=goes_to, traffic_lights=traffic_lights,
+                                                   traffic_lights_coords=traffic_lights_coords,
                                                    num_traffic_lights=num_traffic_lights)
 
         junctions_data += [junction_data]

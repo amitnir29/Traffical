@@ -1,9 +1,11 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from geometry.point import Point
+from simulation_objects.geometry.line import Line
+from simulation_objects.geometry.point import Point
 
-import lanes.i_lane as il
+import simulation_objects.lanes.i_lane as il
 
 
 class IRoadSection(ABC):
@@ -49,4 +51,17 @@ class IRoadSection(ABC):
     @property
     @abstractmethod
     def coordinates(self) -> List[Tuple[Point, Point]]:
+        pass
+
+    @property
+    @abstractmethod
+    def lanes(self)->List[il.ILane]:
+        pass
+
+    @abstractmethod
+    def get_lines_between_lanes(self) -> List[List[Point]]:
+        """
+        :return: for each seperating line (number_of_lanes - 1),
+                a list of points that represent the seperating line coordinates
+        """
         pass

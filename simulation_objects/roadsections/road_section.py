@@ -1,13 +1,13 @@
 from typing import List, Tuple, Set
 
-from db_dataclasses.road_data import RoadData
-from geometry.line import Line
-from geometry.point import Point
+from db.dataclasses.road_data import RoadData
+from simulation_objects.geometry.line import Line
+from simulation_objects.geometry.point import Point
 
-import lanes.i_lane as il
-import lanes.notified_lane as nlane
-import lanes.unnotified_lane as unlane
-import roadsections.i_road_section as irs
+import simulation_objects.lanes.i_lane as il
+import simulation_objects.lanes.notified_lane as nlane
+import simulation_objects.lanes.unnotified_lane as unlane
+import simulation_objects.roadsections.i_road_section as irs
 
 
 class RoadSection(irs.IRoadSection):
@@ -18,8 +18,6 @@ class RoadSection(irs.IRoadSection):
         self.__coordinates: List[Tuple[Point, Point]] = road_data.coordinates
         self.__number_of_lanes: int = road_data.num_lanes
         self.__max_speed: float = road_data.max_speed
-        self.__is_parking: bool = road_data.is_parking
-        # else
         self.__lanes: List[il.ILane] = self.__create_lanes(road_data.num_lanes, notified_lanes_nums)
 
     @property
@@ -73,3 +71,15 @@ class RoadSection(irs.IRoadSection):
     @property
     def max_speed(self) -> float:
         return self.__max_speed
+
+    @property
+    def lanes(self) -> List[il.ILane]:
+        return self.__lanes
+
+    def get_lines_between_lanes(self) -> List[List[Point]]:
+        # main list's length is number of lanes - 1, number of points for each line is length of coordinates list
+        lines = list()
+        for line_num in range(self.__number_of_lanes - 1):
+            # add the right side points of the lanes, except from the most right lane
+            lines.append([pair[1] for pair in self.__lanes[line_num].coordinates])
+        return lines

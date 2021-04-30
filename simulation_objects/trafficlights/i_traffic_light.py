@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from simulation_objects.geometry.point import Point
+
 
 class ITrafficLight(ABC):
 
@@ -16,4 +18,9 @@ class ITrafficLight(ABC):
         """
         return True if cars can pass (green light), False otherwise
         """
+        pass
+
+    @property
+    @abstractmethod
+    def coordinate(self) -> Point:
         pass

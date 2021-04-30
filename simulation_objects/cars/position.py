@@ -1,4 +1,4 @@
-from geometry.point import Point
+from simulation_objects.geometry.point import Point
 
 
 class Position(Point):

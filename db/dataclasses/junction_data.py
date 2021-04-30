@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Tuple, List
 
-from db_dataclasses.road_lane import RoadLane
-from geometry.point import Point
+from db.dataclasses.road_lane import RoadLane
+from simulation_objects.geometry.point import Point
 
 
 @dataclass(init=True, repr=True)
@@ -11,4 +11,5 @@ class JunctionData:
     coordinates: List[Point]
     goes_to: List[Tuple[RoadLane, RoadLane]]
     traffic_lights: List[List[RoadLane]]
+    traffic_lights_coords: List[Point]
     num_traffic_lights: int
