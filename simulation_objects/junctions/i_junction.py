@@ -22,5 +22,5 @@ class IJunction(ABC):
 
     @property
     @abstractmethod
-    def coordinates(self)->List[Point]:
+    def coordinates(self) -> List[Point]:
         pass

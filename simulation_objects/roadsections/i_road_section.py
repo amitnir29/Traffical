@@ -1,11 +1,10 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from simulation_objects.geometry.line import Line
-from simulation_objects.geometry.point import Point
-
 import simulation_objects.lanes.i_lane as il
+from simulation_objects.geometry.point import Point
 
 
 class IRoadSection(ABC):
@@ -55,7 +54,7 @@ class IRoadSection(ABC):
 
     @property
     @abstractmethod
-    def lanes(self)->List[il.ILane]:
+    def lanes(self) -> List[il.ILane]:
         pass
 
     @abstractmethod

@@ -60,20 +60,8 @@ def normalize_data(roads, traffic_lights, all_junctions, x_border, y_border):
     for road in roads.values():
         all_points += [point for pair in road.coordinates for point in pair]
         all_points += [point for line in road.get_lines_between_lanes() for point in line]
-    x_values = [p.x for p in all_points]
-    y_values = [p.y for p in all_points]
-    min_x = min(x_values)
-    min_y = min(y_values)
-    max_x = max(x_values)
-    max_y = max(y_values)
     for light in traffic_lights:
         all_points.append(light.coordinate)
-    x_values = [p.x for p in all_points]
-    y_values = [p.y for p in all_points]
-    min_x = min(x_values)
-    min_y = min(y_values)
-    max_x = max(x_values)
-    max_y = max(y_values)
     for junc in all_junctions:
         all_points += junc.coordinates
     # get min and max x,y values of the whole map

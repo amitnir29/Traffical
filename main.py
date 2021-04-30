@@ -1,19 +1,10 @@
-from db.dataclasses.road_data import RoadData
 from graphics.graphics_manager import GraphicsManager
 from map_creation import create_map, normalize_data
-from simulation_objects.geometry.point import Point
-from simulation_objects.roadsections.road_section import RoadSection
-from simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 def main():
     # get the simulation map
     roads, traffic_lights, all_junctions = create_map()
-    # TODO this is a test road section
-    # points = [(Point(0, 0), Point(200, 0)), (Point(0, 400), Point(200, 400)), (Point(300, 800), Point(400, 650))]
-    # roads = {1: RoadSection(RoadData(1, points, 15, 100), set())}
-    # TODO this is a test light
-    # traffic_lights = [TrafficLight(list(), Point(400, 400))]
     # create the graphics object
     WIDTH = 800
     HEIGHT = 800
