@@ -8,6 +8,7 @@ from graphics.drawables.road import DrawableRoad
 from graphics.drawables.traffic_light import DrawableLight
 from graphics.window import Window
 from simulation_objects.cars.i_car import ICar
+from simulation_objects.geometry.point import Point
 from simulation_objects.roadsections.i_road_section import IRoadSection
 from simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
@@ -62,14 +63,12 @@ class GraphicsManager:
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
-            # self.window.draw_road(road)
             road.draw(self.window)
 
     def draw_cars(self, cars, x):
-        self.window.draw_car(150, 150 + x, 180)
+        c = DrawableCar(Point(150, 150 + x), 180)
+        c.draw(self.window)
 
     def draw_lights(self, traffic_lights: List[DrawableLight]):
-        # self.window.draw_light(400, 400, True)
         for light in traffic_lights:
             light.draw(self.window)
-            # self.window.draw_light(light)
