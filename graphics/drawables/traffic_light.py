@@ -46,3 +46,6 @@ class DrawableLight(Drawable):
     @staticmethod
     def from_server_obj(obj: ITrafficLight) -> DrawableLight:
         return DrawableLight(obj.coordinate, obj.can_pass)
+
+    def get_all_points(self) -> List[Point]:
+        return [self.center]

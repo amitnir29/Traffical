@@ -32,3 +32,6 @@ class DrawableRoad(Drawable):
     @staticmethod
     def from_server_obj(obj: IRoadSection) -> DrawableRoad:
         return DrawableRoad(obj.coordinates, obj.get_lines_between_lanes())
+
+    def get_all_points(self) -> List[Point]:
+        return [p for pair in self.border_coordinates for p in pair] + [p for line in self.inner_lines for p in line]

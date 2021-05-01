@@ -1,5 +1,5 @@
 from graphics.graphics_manager import GraphicsManager
-from simulation_objects.map_creation import create_map, normalize_data
+from simulation_objects.map_creation import create_map
 
 
 def main():
@@ -9,7 +9,6 @@ def main():
     WIDTH = 800
     HEIGHT = 800
     gm = GraphicsManager(width=WIDTH, height=HEIGHT)
-    normalize_data(roads, traffic_lights, all_junctions, WIDTH, HEIGHT)
     # get cars TODO create function that generates cars every once in a while
     cars = list()
     # while the screen is not closed, draw the current state and calculate the next state

@@ -36,6 +36,9 @@ class Line:
     def b(self):
         return self.__b
 
+    def value_at_x(self, x):
+        return self.m * x + self.b
+
     def __calc_mb(self) -> (float, float):
         """
         :return: m,b values for the line equation, such that y=mx+b
@@ -78,7 +81,7 @@ class Line:
             return False
         if self.m == inf:
             return True
-        return p.y == self.m * p.x + self.b
+        return p.y == self.value_at_x(p.x)
 
     def is_intersecting(self, other: Line) -> bool:
         """
@@ -100,11 +103,11 @@ class Line:
         elif other.m == inf:
             # get the y of the other line at the x value of the inf line
             line2_x = other.p1.x
-            inter_y = self.m * line2_x + self.b
+            inter_y = self.value_at_x(line2_x)
             return self.__is_in_range(line2_x, inter_y) and other.__is_in_range(line2_x, inter_y)
         # calculate the x,y of the intersection based on the known formula, but the point may be anywhere in the grid
         inter_x: float = (other.b - self.b) / (self.m - other.m)
-        inter_y: float = self.m * inter_x + self.b
+        inter_y: float = self.value_at_x(inter_x)
         # return True if the point of intersection is exactly on the line cuts that are self and other
         return self.__is_in_range(inter_x, inter_y) and other.__is_in_range(inter_x, inter_y)
 
@@ -129,7 +132,7 @@ class Line:
                 return self.p2
         # else, regular calculation
         inter_x = (other.b - self.b) / (other.m - self.m)
-        inter_y = self.m * inter_x + self.b
+        inter_y = self.value_at_x(inter_x)
         return Point(inter_x, inter_y)
 
     def length(self) -> float:

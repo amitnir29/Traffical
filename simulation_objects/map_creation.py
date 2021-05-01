@@ -49,35 +49,6 @@ def create_map():
     return list(roads.values()), traffic_lights, all_junctions
 
 
-def normalize_data(roads, traffic_lights, all_junctions, x_border, y_border):
-    """
-    get min and max x,y values of the whole map and normalize all points accordingly
-    :param x_border: max x value to convert to
-    :param y_border: max y value to convert to
-    """
-    all_points: List[Point] = list()
-    # get all points of the simulation
-    for road in roads:
-        all_points += [point for pair in road.coordinates for point in pair]
-        all_points += [point for line in road.get_lines_between_lanes() for point in line]
-    for light in traffic_lights:
-        all_points.append(light.coordinate)
-    for junc in all_junctions:
-        all_points += junc.coordinates
-    # get min and max x,y values of the whole map
-    x_values = [p.x for p in all_points]
-    y_values = [p.y for p in all_points]
-    min_x = min(x_values)
-    min_y = min(y_values)
-    max_x = max(x_values)
-    max_y = max(y_values)
-    # create the normalization function:
-    norm_x = lambda x: (x - min_x) * (x_border / (max_x - min_x))
-    norm_y = lambda y: (y - min_y) * (y_border / (max_y - min_y))
-    for point in all_points:
-        point.normalize(norm_x, norm_y)
-
-
 def __get_junctions_data():
     # from_roads: a dictionary from road id to a list of all road movements that are from the road.
     #   they are of form: (from: (road_id,lane_num), to: (road_id,lane_num)). all ints
