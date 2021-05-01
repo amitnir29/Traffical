@@ -1,9 +1,11 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Tuple
 
 import pygame
 
 from graphics.drawables.drawable import Drawable
+from simulation_objects.cars.i_car import ICar
 from simulation_objects.geometry.point import Point
 
 
@@ -19,3 +21,8 @@ class DrawableCar(Drawable):
         rect = img.get_rect()
         rect.center = self.center.to_tuple()
         screen.blit(img, rect)
+
+    @staticmethod
+    def from_server_obj(obj: ICar) -> DrawableCar:
+        # TODO
+        pass

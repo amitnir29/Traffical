@@ -53,9 +53,9 @@ class GraphicsManager:
 
     def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight], cars: List[ICar]) \
             -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar]]:
-        roads = [DrawableRoad(road.coordinates, road.get_lines_between_lanes()) for road in roads]
-        lights = [DrawableLight(tl.coordinate, tl.can_pass) for tl in lights]
-        cars = [DrawableCar(None, None) for car in cars]  # TODO
+        roads = [DrawableRoad.from_server_obj(road) for road in roads]
+        lights = [DrawableLight.from_server_obj(tl) for tl in lights]
+        cars = [DrawableCar.from_server_obj(car) for car in cars]  # TODO
         return roads, lights, cars
 
     def check_stop(self):

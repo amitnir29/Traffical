@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -7,6 +8,7 @@ from pygame import Rect
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from simulation_objects.geometry.point import Point
+from simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
 
 @dataclass(init=True, repr=True)
@@ -40,3 +42,7 @@ class DrawableLight(Drawable):
         pygame.draw.circle(screen, red_color, red_center, circle_radius)
         pygame.draw.circle(screen, yellow_color, yellow_center, circle_radius)
         pygame.draw.circle(screen, green_color, green_center, circle_radius)
+
+    @staticmethod
+    def from_server_obj(obj: ITrafficLight) -> DrawableLight:
+        return DrawableLight(obj.coordinate, obj.can_pass)

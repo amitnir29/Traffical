@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -6,6 +7,7 @@ import pygame
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from simulation_objects.geometry.point import Point
+from simulation_objects.roadsections.i_road_section import IRoadSection
 
 
 @dataclass(init=True, repr=True)
@@ -26,3 +28,7 @@ class DrawableRoad(Drawable):
         for line in self.inner_lines:
             for i in range(len(line) - 1):
                 pygame.draw.line(screen, WHITE, line[i].to_tuple(), line[i + 1].to_tuple())
+
+    @staticmethod
+    def from_server_obj(obj: IRoadSection) -> DrawableRoad:
+        return DrawableRoad(obj.coordinates, obj.get_lines_between_lanes())
