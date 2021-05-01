@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from iteration_trackable import iteration_trackable
+from simulation_objects.iteration_trackable import iteration_trackable
 
 
 @iteration_trackable

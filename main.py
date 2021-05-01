@@ -1,5 +1,5 @@
 from graphics.graphics_manager import GraphicsManager
-from map_creation import create_map, normalize_data
+from simulation_objects.map_creation import create_map, normalize_data
 
 
 def main():

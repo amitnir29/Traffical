@@ -17,7 +17,7 @@ class GraphicsManager:
     def __init__(self, background=GREEN, width=800, height=800, scale=0.1, fps=60):
         # Start pygame
         pygame.init()
-        self.done = False
+        self.running = True
         self.scale = scale
         self.screen = self.create_screen(width, height, background)
         # Screen Update Speed (FPS)
@@ -35,14 +35,15 @@ class GraphicsManager:
         pygame.quit()
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight], cars: List[ICar]) -> bool:
-        drawable_roads, drawable_lights, drawable_cars = self.create_drawables(roads, lights, cars)
         # Check if window has been closed
-        if self.check_stop():
+        self.handle_events()
+        if not self.running:
             return False
+        # Convert the data to drawables
+        drawable_roads, drawable_lights, drawable_cars = self.create_drawables(roads, lights, cars)
         # Draw all data
         self.draw_roads(drawable_roads)
         self.draw_cars(drawable_cars, self.x)
-        self.x += 1
         self.draw_lights(drawable_lights)
         # Display
         pygame.display.flip()
@@ -58,11 +59,19 @@ class GraphicsManager:
         cars = [DrawableCar.from_server_obj(car) for car in cars]
         return roads, lights, cars
 
-    def check_stop(self):
+    def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return True
-        return False
+                self.running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4:
+                    # scroll up
+                    print("up")
+                    self.x -= 10
+                elif event.button == 5:
+                    # scroll down
+                    print("down")
+                    self.x += 10
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
