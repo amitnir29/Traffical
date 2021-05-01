@@ -21,6 +21,7 @@ class GraphicsManager:
         pygame.init()
         self.running = True
         self.scale = scale
+        self.background = background
         self.screen = self.create_screen(width, height, background)
         self.camera = Camera(0, 0, width, height, width, height)
         self.clock = pygame.time.Clock()
@@ -37,6 +38,7 @@ class GraphicsManager:
         pygame.quit()
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight], cars: List[ICar]) -> bool:
+        self.screen.fill(self.background)
         # Check if window has been closed
         self.handle_events()
         if not self.running:
@@ -109,12 +111,10 @@ class GraphicsManager:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:
                     # scroll up
-                    print("up")
-                    self.x -= 10
+                    self.camera.zoom_in(*pygame.mouse.get_pos())
                 elif event.button == 5:
                     # scroll down
-                    print("down")
-                    self.x += 10
+                    self.camera.zoom_out(*pygame.mouse.get_pos())
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
