@@ -39,7 +39,7 @@ class GraphicsManager:
         self.draw_roads(drawable_roads)
         self.draw_cars(cars, self.x)
         self.x += 1
-        self.draw_lights(lights)
+        self.draw_lights(drawable_lights)
         # Display
         pygame.display.flip()
         pygame.display.update()
@@ -68,8 +68,8 @@ class GraphicsManager:
     def draw_cars(self, cars, x):
         self.window.draw_car(150, 150 + x, 180)
 
-    def draw_lights(self, traffic_lights: List[ITrafficLight]):
+    def draw_lights(self, traffic_lights: List[DrawableLight]):
         # self.window.draw_light(400, 400, True)
         for light in traffic_lights:
-            # light.draw(self.window)
-            self.window.draw_light(light)
+            light.draw(self.window)
+            # self.window.draw_light(light)
