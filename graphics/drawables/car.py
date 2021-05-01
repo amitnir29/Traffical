@@ -13,9 +13,9 @@ class DrawableCar(Drawable):
     angle: float
     path: str = "graphics/images/car.png"
 
-    def draw(self, window):
+    def draw(self, screen, scale):
         car_img = pygame.image.load(self.path)
-        img = pygame.transform.rotozoom(car_img, self.angle, window.scale)
+        img = pygame.transform.rotozoom(car_img, self.angle, scale)
         rect = img.get_rect()
         rect.center = self.center.to_tuple()
-        window.screen.blit(img, rect)
+        screen.blit(img, rect)

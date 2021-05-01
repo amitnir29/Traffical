@@ -6,7 +6,6 @@ from graphics.colors import GREEN
 from graphics.drawables.car import DrawableCar
 from graphics.drawables.road import DrawableRoad
 from graphics.drawables.traffic_light import DrawableLight
-from graphics.window import Window
 from simulation_objects.cars.i_car import ICar
 from simulation_objects.geometry.point import Point
 from simulation_objects.roadsections.i_road_section import IRoadSection
@@ -21,7 +20,9 @@ class GraphicsManager:
         self.done = False
         screen = pygame.display.set_mode((width, height))
         screen.fill(background)
-        self.window = Window(screen, scale)
+        self.scale = scale
+        self.screen = screen
+        # self.window = Window(screen, scale)
         # Screen Update Speed (FPS)
         self.clock = pygame.time.Clock()
         self.fps = fps
@@ -63,12 +64,12 @@ class GraphicsManager:
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
-            road.draw(self.window)
+            road.draw(self.screen, self.scale)
 
     def draw_cars(self, cars, x):
         c = DrawableCar(Point(150, 150 + x), 180)
-        c.draw(self.window)
+        c.draw(self.screen, self.scale)
 
     def draw_lights(self, traffic_lights: List[DrawableLight]):
         for light in traffic_lights:
-            light.draw(self.window)
+            light.draw(self.screen, self.scale)
