@@ -41,7 +41,7 @@ class GraphicsManager:
             return False
         # Draw all data
         self.draw_roads(drawable_roads)
-        self.draw_cars(cars, self.x)
+        self.draw_cars(drawable_cars, self.x)
         self.x += 1
         self.draw_lights(drawable_lights)
         # Display
@@ -55,7 +55,7 @@ class GraphicsManager:
             -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar]]:
         roads = [DrawableRoad.from_server_obj(road) for road in roads]
         lights = [DrawableLight.from_server_obj(tl) for tl in lights]
-        cars = [DrawableCar.from_server_obj(car) for car in cars]  # TODO
+        cars = [DrawableCar.from_server_obj(car) for car in cars]
         return roads, lights, cars
 
     def check_stop(self):
@@ -68,7 +68,7 @@ class GraphicsManager:
         for road in roads:
             road.draw(self.screen, self.scale)
 
-    def draw_cars(self, cars, x):
+    def draw_cars(self, cars: List[DrawableCar], x):
         c = DrawableCar(Point(150, 150 + x), 180)
         c.draw(self.screen, self.scale)
 
