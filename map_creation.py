@@ -46,7 +46,7 @@ def create_map():
     __set_lane_movements(roads, from_roads)
     # part 5
     all_junctions = __get_all_junctions(junctions_data, roads)
-    return roads, traffic_lights, all_junctions
+    return list(roads.values()), traffic_lights, all_junctions
 
 
 def normalize_data(roads, traffic_lights, all_junctions, x_border, y_border):
@@ -57,7 +57,7 @@ def normalize_data(roads, traffic_lights, all_junctions, x_border, y_border):
     """
     all_points: List[Point] = list()
     # get all points of the simulation
-    for road in roads.values():
+    for road in roads:
         all_points += [point for pair in road.coordinates for point in pair]
         all_points += [point for line in road.get_lines_between_lanes() for point in line]
     for light in traffic_lights:
