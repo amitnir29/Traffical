@@ -18,15 +18,17 @@ class GraphicsManager:
         # Start pygame
         pygame.init()
         self.done = False
-        screen = pygame.display.set_mode((width, height))
-        screen.fill(background)
         self.scale = scale
-        self.screen = screen
-        # self.window = Window(screen, scale)
+        self.screen = self.create_screen(width, height, background)
         # Screen Update Speed (FPS)
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.x = 0
+
+    def create_screen(self, width, height, background):
+        screen = pygame.display.set_mode((width, height))
+        screen.fill(background)
+        return screen
 
     def __del__(self):
         # Shutdown
