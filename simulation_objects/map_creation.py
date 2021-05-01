@@ -1,12 +1,11 @@
 from collections import defaultdict
 from typing import Dict, List, Tuple, Set
 
-from db.db import get_db_junctions, get_db_road_sections
 from db.dataclasses.junction_data import JunctionData
 from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
 from db.dataclasses.traffic_light_data import TrafficLightData
-from simulation_objects.geometry.point import Point
+from db.db import get_db_junctions, get_db_road_sections
 from simulation_objects.junctions.i_junction import IJunction
 from simulation_objects.junctions.junction import Junction
 from simulation_objects.roadsections.i_road_section import IRoadSection

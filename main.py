@@ -6,9 +6,7 @@ def main():
     # get the simulation map
     roads, traffic_lights, all_junctions = create_map()
     # create the graphics object
-    WIDTH = 800
-    HEIGHT = 800
-    gm = GraphicsManager(width=WIDTH, height=HEIGHT)
+    gm = GraphicsManager()
     # get cars TODO create function that generates cars every once in a while
     cars = list()
     # while the screen is not closed, draw the current state and calculate the next state
