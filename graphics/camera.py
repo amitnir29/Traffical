@@ -13,7 +13,7 @@ class Camera:
     width: int
     height: int
     ratio_to_change_size = 1.2
-    ratio_towards_new_center = 0.1
+    ratio_towards_new_center = 0.25
 
     @property
     def delta_x(self):

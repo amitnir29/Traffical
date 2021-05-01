@@ -150,8 +150,8 @@ class Line:
         :param r: the ratio
         :return: the point
         """
-        new_x = r * self.p1.x + (1 - r) * self.p2.x
-        new_y = r * self.p1.y + (1 - r) * self.p2.y
+        new_x = r * self.p2.x + (1 - r) * self.p1.x
+        new_y = r * self.p2.y + (1 - r) * self.p1.y
         return Point(new_x, new_y)
 
     def middle(self) -> Point:
