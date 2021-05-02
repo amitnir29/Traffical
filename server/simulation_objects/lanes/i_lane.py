@@ -99,3 +99,10 @@ class ILane(ABC):
         :param to_lane: the new lane to add
         """
         pass
+
+    @abstractmethod
+    def lane_length(self):
+        """
+        :return: length of the lane
+        """
+        pass

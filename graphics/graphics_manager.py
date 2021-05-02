@@ -120,8 +120,10 @@ class GraphicsManager:
 
     def draw_cars(self, cars: List[DrawableCar]):
         scale = 0.1  # TODO
-        c = DrawableCar(Point(150, 150), 180)
-        c.draw(self.screen, scale)
+        # c = DrawableCar(Point(150, 150), 180)
+        # c.draw(self.screen, scale)
+        for car in cars:
+            car.draw(self.screen, scale)
 
     def draw_lights(self, traffic_lights: List[DrawableLight]):
         for light in traffic_lights:

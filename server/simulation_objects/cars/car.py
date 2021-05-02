@@ -15,23 +15,39 @@ class Car(ICar):
     MIN_DISTANCE_TO_KEEP = ...  # TODO
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
-    def __init__(self, length: float, width: float, max_speed: float, max_speed_change: float,
-                 initial_position: Position, path: List[IRoadSection],
-                 destination: Position):
-        self.__state = CarState()
+    def __init__(self, path: List[IRoadSection], initial_distance: float,
+                 destination: float, length: float = 5, width: float = 5, max_speed: float = 100,
+                 max_speed_change: float = 100):
+        # basic car attributes
         self.__length = length
         self.__width = width
-        self.__path = path
-        self.__position = initial_position
-        self.__destination = destination
         self.__max_speed = max_speed
-        self.__speed = 0
         self.__max_speed_change = max_speed_change  # acceleration/decceleration
+        # initial car start state
+        self.__speed = 0
         self.__acceleration = 0
+        self.__state = CarState()
+        # initial_distance and destination are distances from start of the source/target roads
+        self.__path = path
+        self.__dist_in_target = destination
 
         assert len(path) > 0
         initial_road_section = path[0]
-        self._enter_road_section(initial_road_section, initial_road_section.get_most_right_lane_index())
+
+        self.__current_lane = None
+        self._enter_road_section(initial_road_section, initial_distance)
+
+    def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
+        if self.__current_lane is not None:
+            self.__current_lane.remove_car(self)
+        self.__current_road = road
+        self.__current_lane = road.get_lane(road.get_most_right_lane_index())
+        self.__current_lane.add_car(self)
+        self.__current_lane_part = 0
+        # put on the initial_distance from start of the road
+        assert initial_distance <= self.__current_lane.lane_length()
+        # TODO change, it is currently on initial_distance=0:
+        self.__position = Line(*self.__current_lane.coordinates[0]).middle()
 
     def activate(self):
         """
@@ -107,11 +123,6 @@ class Car(ICar):
     @property
     def position(self):
         return self.__position
-
-    def _enter_road_section(self, road: IRoadSection, lanes_from_left: int):
-        self.__current_road = road
-        self.__current_lane = road.get_lane(lanes_from_left)
-        self.__current_lane_part = 0
 
     def _stop(self, location: float):
         self.__state.stopping = True

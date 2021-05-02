@@ -25,8 +25,7 @@ class DrawableCar(Drawable):
 
     @staticmethod
     def from_server_obj(obj: ICar) -> DrawableCar:
-        # TODO
-        pass
+        return DrawableCar(obj.position, 0)
 
     def get_all_points(self) -> List[Point]:
         return [self.center]

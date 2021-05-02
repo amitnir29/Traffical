@@ -14,7 +14,6 @@ class Lane(il.ILane):
     def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
         self.__cars = deque()
         self.__coordinates = coordinates
-        self.__length = self._calculate_lane_length(coordinates)
         self.__goes_to: List[il.ILane] = list()
         self.__road: irs.IRoadSection = road
 
@@ -45,12 +44,8 @@ class Lane(il.ILane):
         main_line = Line(start_middle, end_middle)
         return main_line.length()
 
-    def _calculate_lane_length(self, coordinates: List[Tuple[Point, Point]]) -> float:
-        """
-        :param coordinates: a list of pairs of points that represent the lane.
-        :return: total length of the lane
-        """
-        return sum([self._calculate_part_length(c1, c2) for c1, c2 in zip(coordinates, coordinates[1:])])
+    def lane_length(self) -> float:
+        return sum([self._calculate_part_length(c1, c2) for c1, c2 in zip(self.coordinates, self.coordinates[1:])])
 
     def is_going_to_road(self, road: irs.IRoadSection):
         return road in [lane.road for lane in self.__goes_to]
@@ -73,7 +68,7 @@ class Lane(il.ILane):
         self.__cars.remove(car)
 
     def cars_from_end(self, distance: float) -> List[ic.ICar]:
-        return self.get_cars_between(self.__length - distance, self.__length)
+        return self.get_cars_between(self.lane_length() - distance, self.lane_length())
 
     def get_cars_between(self, start: float, end: float) -> List[ic.ICar]:
         res = list()
