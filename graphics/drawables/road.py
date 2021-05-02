@@ -15,14 +15,11 @@ class DrawableRoad(Drawable):
     border_coordinates: List[Tuple[Point, Point]]
     inner_lines: List[List[Point]]
 
-    def draw(self, screen, scale):
+    def draw(self, screen, scale=None):
         # DRAWS THE ROAD SECTION:
         coors = self.border_coordinates
-        for i in range(len(coors) - 1):
-            # yes, the order of [i+1] points is reversed on purpose
-            current_points = (coors[i][0].to_tuple(), coors[i][1].to_tuple(),
-                              coors[i + 1][1].to_tuple(), coors[i + 1][0].to_tuple())
-            pygame.draw.polygon(screen, BLACK, current_points)
+        polygon_points = [pair[0].to_tuple() for pair in coors] + [pair[1].to_tuple() for pair in reversed(coors)]
+        pygame.draw.polygon(screen, BLACK, polygon_points)
 
         # DRAWS THE LANES:
         for line in self.inner_lines:

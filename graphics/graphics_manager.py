@@ -16,11 +16,10 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 class GraphicsManager:
 
-    def __init__(self, background=GREEN, width=800, height=800, scale=0.1, fps=60):
+    def __init__(self, background=GREEN, width=800, height=800, fps=60):
         # Start pygame
         pygame.init()
         self.running = True
-        self.scale = scale
         self.background = background
         self.screen = self.create_screen(width, height, background)
         self.camera = Camera(0, 0, width, height, width, height)
@@ -117,12 +116,15 @@ class GraphicsManager:
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
-            road.draw(self.screen, self.scale)
+            road.draw(self.screen)
 
     def draw_cars(self, cars: List[DrawableCar]):
+        scale = 0.1  # TODO
         c = DrawableCar(Point(150, 150), 180)
-        c.draw(self.screen, self.scale)
+        c.draw(self.screen, scale)
 
     def draw_lights(self, traffic_lights: List[DrawableLight]):
         for light in traffic_lights:
-            light.draw(self.screen, self.scale)
+            # scale formula that looks nice:
+            scale = 0.1 * pow((self.camera.width / self.camera.delta_x), 1 / 3)
+            light.draw(self.screen, scale)
