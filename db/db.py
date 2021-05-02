@@ -5,7 +5,7 @@ import ast
 from db.dataclasses.junction_data import JunctionData
 from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
-from simulation_objects.geometry.point import Point
+from server.geometry.point import Point
 
 
 def get_db_road_sections(path: str = "db/data/RoadSections.csv") -> List[RoadData]:

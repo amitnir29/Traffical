@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from simulation_objects.geometry.line import Line
-from simulation_objects.geometry.point import Point
+from server.geometry.line import Line
+from server.geometry.point import Point
 
 
 @dataclass(init=True, repr=True)

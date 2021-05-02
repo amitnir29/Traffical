@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
-import simulation_objects.lanes.i_lane as il
-import simulation_objects.trafficlights.i_traffic_light as itl
+import server.simulation_objects.lanes.i_lane as il
+import server.simulation_objects.trafficlights.i_traffic_light as itl
 
 
 class INotifiedLane(il.ILane):

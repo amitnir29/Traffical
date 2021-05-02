@@ -1,10 +1,10 @@
 from typing import List, Tuple
 
-from simulation_objects.geometry.point import Point
-import simulation_objects.lanes.i_notified_lane as inlane
-import simulation_objects.lanes.lane as lane
-import simulation_objects.roadsections.i_road_section as irs
-import simulation_objects.trafficlights.i_traffic_light as itl
+from server.geometry.point import Point
+import server.simulation_objects.lanes.i_notified_lane as inlane
+import server.simulation_objects.lanes.lane as lane
+import server.simulation_objects.roadsections.i_road_section as irs
+import server.simulation_objects.trafficlights.i_traffic_light as itl
 
 
 class NotifiedLane(inlane.INotifiedLane, lane.Lane):

@@ -6,12 +6,12 @@ from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
 from db.dataclasses.traffic_light_data import TrafficLightData
 from db.db import get_db_junctions, get_db_road_sections
-from simulation_objects.junctions.i_junction import IJunction
-from simulation_objects.junctions.junction import Junction
-from simulation_objects.roadsections.i_road_section import IRoadSection
-from simulation_objects.roadsections.road_section import RoadSection
-from simulation_objects.trafficlights.i_traffic_light import ITrafficLight
-from simulation_objects.trafficlights.traffic_light import TrafficLight
+from server.simulation_objects.junctions.i_junction import IJunction
+from server.simulation_objects.junctions.junction import Junction
+from server.simulation_objects.roadsections.i_road_section import IRoadSection
+from server.simulation_objects.roadsections.road_section import RoadSection
+from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
+from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 def create_map():

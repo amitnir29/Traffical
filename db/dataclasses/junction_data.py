@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Tuple, List
 
 from db.dataclasses.road_lane import RoadLane
-from simulation_objects.geometry.point import Point
+from server.geometry.point import Point
 
 
 @dataclass(init=True, repr=True)

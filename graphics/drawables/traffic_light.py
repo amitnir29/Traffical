@@ -8,8 +8,8 @@ from pygame import Rect
 
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
-from simulation_objects.geometry.point import Point
-from simulation_objects.trafficlights.i_traffic_light import ITrafficLight
+from server.geometry.point import Point
+from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
 
 @dataclass(init=True, repr=True)

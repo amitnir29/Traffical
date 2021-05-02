@@ -6,8 +6,8 @@ import pygame
 
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
-from simulation_objects.geometry.point import Point
-from simulation_objects.roadsections.i_road_section import IRoadSection
+from server.geometry.point import Point
+from server.simulation_objects.roadsections.i_road_section import IRoadSection
 
 
 @dataclass(init=True, repr=True)

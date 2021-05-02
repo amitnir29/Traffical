@@ -6,8 +6,8 @@ from typing import List
 import pygame
 
 from graphics.drawables.drawable import Drawable
-from simulation_objects.cars.i_car import ICar
-from simulation_objects.geometry.point import Point
+from server.simulation_objects.cars.i_car import ICar
+from server.geometry.point import Point
 
 
 @dataclass(init=True, repr=True)

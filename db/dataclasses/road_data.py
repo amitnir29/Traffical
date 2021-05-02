@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple, List
 
-from simulation_objects.geometry.point import Point
+from server.geometry.point import Point
 
 
 @dataclass(init=True, repr=True)

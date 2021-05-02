@@ -7,11 +7,11 @@ from graphics.colors import GREEN
 from graphics.drawables.car import DrawableCar
 from graphics.drawables.road import DrawableRoad
 from graphics.drawables.traffic_light import DrawableLight
-from simulation_objects.cars.i_car import ICar
-from simulation_objects.geometry.line import Line
-from simulation_objects.geometry.point import Point
-from simulation_objects.roadsections.i_road_section import IRoadSection
-from simulation_objects.trafficlights.i_traffic_light import ITrafficLight
+from server.simulation_objects.cars.i_car import ICar
+from server.geometry.line import Line
+from server.geometry.point import Point
+from server.simulation_objects.roadsections.i_road_section import IRoadSection
+from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
 
 class GraphicsManager:
@@ -26,7 +26,6 @@ class GraphicsManager:
         self.camera = Camera(0, 0, width, height, width, height)
         self.clock = pygame.time.Clock()
         self.fps = fps
-        self.x = 0
 
     def create_screen(self, width, height, background):
         screen = pygame.display.set_mode((width, height))
@@ -47,7 +46,7 @@ class GraphicsManager:
         drawable_roads, drawable_lights, drawable_cars = self.create_drawables(roads, lights, cars)
         # Draw all data
         self.draw_roads(drawable_roads)
-        self.draw_cars(drawable_cars, self.x)
+        self.draw_cars(drawable_cars)
         self.draw_lights(drawable_lights)
         # Display
         pygame.display.flip()
@@ -120,8 +119,8 @@ class GraphicsManager:
         for road in roads:
             road.draw(self.screen, self.scale)
 
-    def draw_cars(self, cars: List[DrawableCar], x):
-        c = DrawableCar(Point(150, 150 + x), 180)
+    def draw_cars(self, cars: List[DrawableCar]):
+        c = DrawableCar(Point(150, 150), 180)
         c.draw(self.screen, self.scale)
 
     def draw_lights(self, traffic_lights: List[DrawableLight]):

@@ -1,8 +1,8 @@
 from typing import List
 
-import simulation_objects.lanes.i_notified_lane as nlane
-import simulation_objects.trafficlights.i_traffic_light as itl
-from simulation_objects.geometry.point import Point
+import server.simulation_objects.lanes.i_notified_lane as nlane
+import server.simulation_objects.trafficlights.i_traffic_light as itl
+from server.geometry.point import Point
 
 
 class TrafficLight(itl.ITrafficLight):

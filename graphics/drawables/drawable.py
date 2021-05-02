@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from simulation_objects.geometry.point import Point
+from server.geometry.point import Point
 
 
 class Drawable(ABC):

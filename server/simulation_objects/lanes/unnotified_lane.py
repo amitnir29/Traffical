@@ -1,8 +1,8 @@
 from typing import List, Tuple
 
-from simulation_objects.geometry.point import Point
-import simulation_objects.lanes.lane as lane
-import simulation_objects.roadsections.i_road_section as irs
+from server.geometry.point import Point
+import server.simulation_objects.lanes.lane as lane
+import server.simulation_objects.roadsections.i_road_section as irs
 
 
 class UnnotifiedLane(lane.Lane):

@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-import simulation_objects.trafficlights.traffic_light as tl
-from simulation_objects.geometry.point import Point
+import server.simulation_objects.trafficlights.traffic_light as tl
+from server.geometry.point import Point
 
 
 class IJunction(ABC):

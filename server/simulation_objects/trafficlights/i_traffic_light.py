@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from simulation_objects.geometry.point import Point
+from server.geometry.point import Point
 
 
 class ITrafficLight(ABC):

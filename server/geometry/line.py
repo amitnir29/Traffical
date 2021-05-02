@@ -3,7 +3,7 @@ from __future__ import annotations
 from math import inf
 from typing import Optional
 
-from simulation_objects.geometry.point import Point
+from server.geometry.point import Point
 
 EPSILON = 1e-6
 

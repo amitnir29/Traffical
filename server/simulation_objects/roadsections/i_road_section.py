@@ -3,8 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-import simulation_objects.lanes.i_lane as il
-from simulation_objects.geometry.point import Point
+import server.simulation_objects.lanes.i_lane as il
+from server.geometry.point import Point
 
 
 class IRoadSection(ABC):

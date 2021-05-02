@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import List, Optional, Tuple
 
-from simulation_objects.cars.car_state import CarState
-from simulation_objects.cars.i_car import ICar
-from simulation_objects.cars.position import Position
-from simulation_objects.geometry.line import Line
-from simulation_objects.geometry.point import Point
-from simulation_objects.roadsections.i_road_section import IRoadSection
-from simulation_objects.trafficlights.i_traffic_light import ITrafficLight
+from server.simulation_objects.cars.car_state import CarState
+from server.simulation_objects.cars.i_car import ICar
+from server.simulation_objects.cars.position import Position
+from server.geometry.line import Line
+from server.geometry.point import Point
+from server.simulation_objects.roadsections.i_road_section import IRoadSection
+from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
 
 class Car(ICar):

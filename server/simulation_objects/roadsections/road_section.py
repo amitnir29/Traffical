@@ -1,13 +1,13 @@
 from typing import List, Tuple, Set
 
 from db.dataclasses.road_data import RoadData
-from simulation_objects.geometry.line import Line
-from simulation_objects.geometry.point import Point
+from server.geometry.line import Line
+from server.geometry.point import Point
 
-import simulation_objects.lanes.i_lane as il
-import simulation_objects.lanes.notified_lane as nlane
-import simulation_objects.lanes.unnotified_lane as unlane
-import simulation_objects.roadsections.i_road_section as irs
+import server.simulation_objects.lanes.i_lane as il
+import server.simulation_objects.lanes.notified_lane as nlane
+import server.simulation_objects.lanes.unnotified_lane as unlane
+import server.simulation_objects.roadsections.i_road_section as irs
 
 
 class RoadSection(irs.IRoadSection):
