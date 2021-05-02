@@ -14,7 +14,7 @@ class Lane(il.ILane):
     def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
         self.__cars = deque()
         self.__coordinates = coordinates
-        self.__goes_to: List[il.ILane] = list()
+        self._goes_to: List[il.ILane] = list()
         self.__road: irs.IRoadSection = road
 
     @property
@@ -26,7 +26,7 @@ class Lane(il.ILane):
         return self.__road
 
     def add_movement(self, to_lane: il.ILane):
-        self.__goes_to.append(to_lane)
+        self._goes_to.append(to_lane)
 
     @staticmethod
     def _calculate_part_length(start: Tuple[Point, Point], end: Tuple[Point, Point]):
@@ -48,7 +48,7 @@ class Lane(il.ILane):
         return sum([self._calculate_part_length(c1, c2) for c1, c2 in zip(self.coordinates, self.coordinates[1:])])
 
     def is_going_to_road(self, road: irs.IRoadSection):
-        return road in [lane.road for lane in self.__goes_to]
+        return road in [lane.road for lane in self._goes_to]
 
     def get_car_ahead(self, car: ic.ICar) -> Optional[ic.ICar]:
         car_index = self.__cars.index(car)

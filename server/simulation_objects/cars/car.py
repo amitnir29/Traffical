@@ -7,6 +7,7 @@ from server.simulation_objects.cars.i_car import ICar
 from server.simulation_objects.cars.position import Position
 from server.geometry.line import Line
 from server.geometry.point import Point
+from server.simulation_objects.lanes.i_lane import ILane
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
@@ -16,8 +17,8 @@ class Car(ICar):
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
     def __init__(self, path: List[IRoadSection], initial_distance: float,
-                 destination: float, length: float = 5, width: float = 5, max_speed: float = 100,
-                 max_speed_change: float = 100):
+                 destination: float, length: float = 5, width: float = 5, max_speed: float = 1,
+                 max_speed_change: float = 1):
         # basic car attributes
         self.__length = length
         self.__width = width
@@ -34,7 +35,7 @@ class Car(ICar):
         assert len(path) > 0
         initial_road_section = path[0]
 
-        self.__current_lane = None
+        self.__current_lane: ILane = None
         self._enter_road_section(initial_road_section, initial_distance)
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
@@ -63,9 +64,9 @@ class Car(ICar):
         dist_left = distance_to_move
         self._move_in_lane(dist_left)
 
-        while dist_left > 0:
-            self.move_lane()
-            self._move_in_lane(dist_left)
+        # while dist_left > 0:
+        # self.move_lane()
+        # self._move_in_lane(dist_left)
 
     def _update_speed(self):
         self.__speed += self.__acceleration

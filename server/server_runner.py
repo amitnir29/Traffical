@@ -8,6 +8,6 @@ def next_iter(roads, traffic_lights, all_junctions, cars):
     :return: new traffic lights and cars lists
     """
     # TODO
-    # for car in cars:
-    #     car.activate()
+    for car in cars:
+        car.activate()
     return traffic_lights, cars
