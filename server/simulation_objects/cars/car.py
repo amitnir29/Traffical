@@ -31,6 +31,7 @@ class Car(ICar):
         # initial_distance and destination are distances from start of the source/target roads
         self.__path = path
         self.__dist_in_target = destination
+        self.__next_road_idx = 0
 
         assert len(path) > 0
         initial_road_section = path[0]
@@ -42,6 +43,7 @@ class Car(ICar):
         if self.__current_lane is not None:
             self.__current_lane.remove_car(self)
         self.__current_road = road
+        self.__next_road_idx += 1
         self.__current_lane = road.get_lane(road.get_most_right_lane_index())
         self.__current_lane.add_car(self)
         self.__current_lane_part = 0
@@ -61,12 +63,15 @@ class Car(ICar):
         self._advance(self.__speed)
 
     def _advance(self, distance_to_move):
-        dist_left = distance_to_move
-        self._move_in_lane(dist_left)
+        dist_left = self._move_in_lane(distance_to_move)
 
-        # while dist_left > 0:
-        # self.move_lane()
-        # self._move_in_lane(dist_left)
+        while dist_left > 0:
+            self.move_road_section()
+            dist_left = self._move_in_lane(dist_left)
+
+    def move_road_section(self):
+        if self.__next_road_idx < len(self.__path):
+            self._enter_road_section(self.__path[self.__next_road_idx])
 
     def _update_speed(self):
         self.__speed += self.__acceleration
