@@ -18,13 +18,13 @@ class RoadSection(irs.IRoadSection):
         self.__coordinates: List[Tuple[Point, Point]] = road_data.coordinates
         self.__number_of_lanes: int = road_data.num_lanes
         self.__max_speed: float = road_data.max_speed
-        self.__lanes: List[il.ILane] = self.__create_lanes(road_data.num_lanes, notified_lanes_nums)
+        self.__lanes: List[il.ILane] = self._create_lanes(road_data.num_lanes, notified_lanes_nums)
 
     @property
     def coordinates(self) -> List[Tuple[Point, Point]]:
         return self.__coordinates
 
-    def __create_lanes(self, number_of_lanes: int, notified_lanes_nums: Set[int]) -> List[il.ILane]:
+    def _create_lanes(self, number_of_lanes: int, notified_lanes_nums: Set[int]) -> List[il.ILane]:
         # split the coordinates based on the number of lanes. also works for single laned road
         # first, one-time calculate the line of each points pair
         coordinates_lines = [Line(pair[0], pair[1]) for pair in self.__coordinates]
