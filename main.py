@@ -10,7 +10,7 @@ def main():
     # get the simulation map
     roads, traffic_lights, all_junctions = create_map()
     # create the graphics object
-    gm = GraphicsManager()
+    gm = GraphicsManager(fps=10)
     # get cars TODO create function that generates cars every once in a while
     cars = list()
     cars.append(Car([roads[3], roads[1]], 0, 0))

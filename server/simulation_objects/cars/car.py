@@ -16,9 +16,10 @@ class Car(ICar):
     MIN_DISTANCE_TO_KEEP = ...  # TODO
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
+    # TODO temp values
     def __init__(self, path: List[IRoadSection], initial_distance: float,
-                 destination: float, length: float = 5, width: float = 5, max_speed: float = 1,
-                 max_speed_change: float = 1):
+                 destination: float, length: float = 5, width: float = 5, max_speed: float = 0.0001,
+                 max_speed_change: float = 0.000001):
         # basic car attributes
         self.__length = length
         self.__width = width
@@ -40,6 +41,8 @@ class Car(ICar):
         self._enter_road_section(initial_road_section, initial_distance)
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
+        if hasattr(self, "position"):
+            print(self.position.x, self.position.y)
         if self.__current_lane is not None:
             self.__current_lane.remove_car(self)
         self.__current_road = road
@@ -51,6 +54,7 @@ class Car(ICar):
         assert initial_distance <= self.__current_lane.lane_length()
         # TODO change, it is currently on initial_distance=0:
         self.__position = Line(*self.__current_lane.coordinates[0]).middle()
+        print(self.position.x, self.position.y)
 
     def activate(self):
         """

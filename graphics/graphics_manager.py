@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import List, Tuple
 
 import pygame.font
@@ -56,9 +57,9 @@ class GraphicsManager:
 
     def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight], cars: List[ICar]) \
             -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar]]:
-        roads = [DrawableRoad.from_server_obj(road) for road in roads]
-        lights = [DrawableLight.from_server_obj(tl) for tl in lights]
-        cars = [DrawableCar.from_server_obj(car) for car in cars]
+        roads = [DrawableRoad.from_server_obj(deepcopy(road)) for road in roads]
+        lights = [DrawableLight.from_server_obj(deepcopy(tl)) for tl in lights]
+        cars = [DrawableCar.from_server_obj(deepcopy(car)) for car in cars]
         self.normalize_data(roads, lights, cars)
         return roads, lights, cars
 
