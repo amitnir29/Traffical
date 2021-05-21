@@ -18,11 +18,8 @@ class Car(ICar):
 
     # TODO temp values
     def __init__(self, path: List[IRoadSection], initial_distance: float,
-                 destination: float, length: float = 5, width: float = 5, max_speed: float = 0.0001,
+                 destination: float, max_speed: float = 0.0001,
                  max_speed_change: float = 0.000001):
-        # basic car attributes
-        self.__length = length
-        self.__width = width
         self.__max_speed = max_speed
         self.__max_speed_change = max_speed_change  # acceleration/decceleration
         # initial car start state
