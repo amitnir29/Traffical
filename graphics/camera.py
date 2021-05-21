@@ -36,15 +36,12 @@ class Camera:
         zoom the camera in, centered at closer to x,y (relative to current camera position,
         and dependent on ratio_towards_new_center) and range smaller by ratio
         """
-        # get delta_x,y
-        delta_x = self.delta_x
-        delta_y = self.delta_y
         # set x,y to be relative to current camera position
-        relative_x = self.min_x + (x * delta_x) // self.width
-        relative_y = self.min_y + (y * delta_y) // self.height
+        relative_x = self.min_x + (x * self.delta_x) // self.width
+        relative_y = self.min_y + (y * self.delta_y) // self.height
         # shrink the delta
-        delta_x /= self.ratio_to_change_size
-        delta_y /= self.ratio_to_change_size
+        delta_x = self.delta_x / self.ratio_to_change_size
+        delta_y = self.delta_y / self.ratio_to_change_size
         # calculate new centers
         center_x, center_y = Line(Point(self.center_x, self.center_y), Point(relative_x, relative_y)) \
             .split_by_ratio(self.ratio_towards_new_center).to_tuple()
@@ -59,15 +56,12 @@ class Camera:
         zoom the camera out, centered at closer to x,y (relative to current camera position,
         and dependent on ratio_towards_new_center, and total width,height) and range higher by ratio
         """
-        # get delta_x,y
-        delta_x = self.delta_x
-        delta_y = self.delta_y
         # set x,y to be relative to current camera position
-        relative_x = self.min_x + (x * delta_x) // self.width
-        relative_y = self.min_y + (y * delta_y) // self.height
+        relative_x = self.min_x + (x * self.delta_x) // self.width
+        relative_y = self.min_y + (y * self.delta_y) // self.height
         # increase the delta
-        delta_x = min(self.ratio_to_change_size * delta_x, self.width)
-        delta_y = min(self.ratio_to_change_size * delta_y, self.height)
+        delta_x = min(self.ratio_to_change_size * self.delta_x, self.width)
+        delta_y = min(self.ratio_to_change_size * self.delta_y, self.height)
         # calculate new centers
         center_x, center_y = Line(Point(self.center_x, self.center_y), Point(relative_x, relative_y)) \
             .split_by_ratio(self.ratio_towards_new_center).to_tuple()
