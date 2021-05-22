@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from server.simulation_objects.iteration_trackable import iteration_trackable
+from server.simulation_objects.iteration_trackable import IterationTrackable
 
 
-@iteration_trackable
-class ICar(ABC):
+class ICar(ABC, metaclass=IterationTrackable):
     @property
     @abstractmethod
     def position(self):

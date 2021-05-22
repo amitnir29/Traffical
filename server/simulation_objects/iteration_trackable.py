@@ -1,3 +1,4 @@
+from abc import ABCMeta
 from functools import partialmethod
 
 
@@ -13,7 +14,6 @@ def iteration(self):
 
 def iteration_trackable(cls):
     assert hasattr(cls, "activate")
-    assert not hasattr(cls, "iteration") and not hasattr(cls, "_iteration")
 
     cls._iteration = 0
     cls.iteration = iteration
@@ -21,3 +21,9 @@ def iteration_trackable(cls):
     cls.activate = partialmethod(activate, activation_method=cls.activate)
 
     return cls
+
+
+class IterationTrackable(ABCMeta):
+    def __new__(*args, **kwargs):
+        cls = type.__new__(*args, **kwargs)
+        return iteration_trackable(cls)
