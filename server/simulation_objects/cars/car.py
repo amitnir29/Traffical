@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import List, Optional, Tuple
 
 from server.simulation_objects.cars.car_state import CarState
@@ -18,8 +19,8 @@ class Car(ICar):
 
     # TODO temp values
     def __init__(self, path: List[IRoadSection], initial_distance: float,
-                 destination: float, max_speed: float = 0.0001,
-                 max_speed_change: float = 0.000001):
+                 max_speed: float = 0.001,
+                 max_speed_change: float = 0.00001):
         self.__max_speed = max_speed
         self.__max_speed_change = max_speed_change  # acceleration/decceleration
         # initial car start state
@@ -28,7 +29,6 @@ class Car(ICar):
         self.__state = CarState()
         # initial_distance and destination are distances from start of the source/target roads
         self.__path = path
-        self.__dist_in_target = destination
         self.__next_road_idx = 0
 
         assert len(path) > 0
@@ -38,8 +38,6 @@ class Car(ICar):
         self._enter_road_section(initial_road_section, initial_distance)
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
-        if hasattr(self, "position"):
-            print(self.position.x, self.position.y)
         if self.__current_lane is not None:
             self.__current_lane.remove_car(self)
         self.__current_road = road
@@ -51,7 +49,7 @@ class Car(ICar):
         assert initial_distance <= self.__current_lane.lane_length()
         # TODO change, it is currently on initial_distance=0:
         self.__position = Line(*self.__current_lane.coordinates[0]).middle()
-        print(self.position.x, self.position.y)
+        self._advance(initial_distance)
 
     def activate(self):
         """
@@ -76,6 +74,7 @@ class Car(ICar):
 
     def _update_speed(self):
         self.__speed += self.__acceleration
+        self.__speed = min(self.__speed, self.__max_speed)
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
 
     def _full_gass(self):
@@ -109,23 +108,26 @@ class Car(ICar):
                     self._stop(distance_to_stop)
             else:
                 if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
-                    distance_to_keep = self.MIN_DISTANCE_TO_KEEP
+                    # distance_to_keep = self.MIN_DISTANCE_TO_KEEP
+                    distance_to_keep = self.__speed
                     distance_to_move = Line(self.position, front_car.position).length() - distance_to_keep
 
                 else:
                     # TODO MIN DISTANCE depends on velocity
-                    distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
+                    # distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
+                    distance_to_keep = self.__speed * 1.1
                     # TODO not completely correct. should be relative to the lane, and not the whole road's width
-                    part_end = Line(*self.__current_road.coordinates[self.__current_lane_part]).middle()
+                    # part_end = Line(*self.__current_road.coordinates[self.__current_lane_part]).middle()
 
-                    estimated_front_car_speed = front_car.estimated_speed()
-                    front_car_path = Line(front_car.position, part_end)
-                    estimated_front_car_pos = front_car_path.split_by_ratio(
-                        estimated_front_car_speed / front_car_path.length())
+                    simulation_car = deepcopy(front_car)
+                    simulation_car._advance(simulation_car.estimated_speed())
+                    estimated_front_car_pos = simulation_car.position
+
                     distance_to_move = Line(self.position, estimated_front_car_pos).length() - distance_to_keep
 
                 required_speed = min(distance_to_move, self.__max_speed)
                 self.__acceleration = min(required_speed - self.__speed, self.__max_speed_change)
+        self.__acceleration = min(self.__acceleration, self.__max_speed_change)
 
     @property
     def position(self):
