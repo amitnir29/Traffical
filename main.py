@@ -13,7 +13,8 @@ def main():
     gm = GraphicsManager(fps=10)
     # get cars TODO create function that generates cars every once in a while
     cars = list()
-    cars.append(Car([roads[3], roads[1]], 0, 0))
+    cars.append(Car([roads[4], roads[3], roads[2], roads[6]], 0.0001, max_speed=0.0001))
+    cars.append(Car([roads[4], roads[3], roads[2], roads[6]], 0))
     # while the screen is not closed, draw the current state and calculate the next state
     while gm.draw(roads, traffic_lights, cars):
         traffic_lights, cars = next_iter(roads, traffic_lights, all_junctions, cars)
