@@ -120,9 +120,7 @@ class GraphicsManager:
             road.draw(self.screen)
 
     def draw_cars(self, cars: List[DrawableCar]):
-        scale = 0.05  # TODO
-        # c = DrawableCar(Point(150, 150), 180)
-        # c.draw(self.screen, scale)
+        scale = 0.05
         for car in cars:
             car.draw(self.screen, scale)
 

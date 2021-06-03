@@ -12,9 +12,9 @@ class ICar(ABC, metaclass=IterationTrackable):
         pass
 
     @abstractmethod
-    def activate(self) -> None:
+    def activate(self):
         """
-        commit one "step" of the car's action
+        commit one "step" of the car's action.
         """
         pass
 
@@ -37,4 +37,8 @@ class ICar(ABC, metaclass=IterationTrackable):
     @property
     @abstractmethod
     def current_part_in_lane(self):
+        pass
+
+    @abstractmethod
+    def has_arrived_destination(self):
         pass

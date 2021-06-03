@@ -10,15 +10,6 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 
 class Junction(ij.IJunction):
-
-    def update_traffic_lights(self, change: List[tl.TrafficLight]) -> None:
-        # TODO
-        pass
-
-    def naive_algorithm(self) -> None:
-        # TODO
-        pass
-
     def __init__(self, junction_data: JunctionData, in_roads, out_roads, traffic_lights):
         self.__idnum: int = junction_data.idnum
         self.__in_roads: List[irs.IRoadSection] = in_roads

@@ -7,20 +7,6 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 
 class IJunction(ABC):
-    @abstractmethod
-    def update_traffic_lights(self, change: List[tl.TrafficLight]) -> None:
-        """
-        :param change: the traffic lights of the junctions
-        """
-        pass
-
-    @abstractmethod
-    def naive_algorithm(self) -> None:
-        """
-        algorithm1 - naive
-        """
-        pass
-
     @property
     @abstractmethod
     def coordinates(self) -> List[Point]:

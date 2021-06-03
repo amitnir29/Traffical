@@ -234,3 +234,12 @@ class Car(ICar):
 
     def wants_to_enter_lane(self, car: ICar) -> None:
         pass
+
+    def has_arrived_destination(self):
+        # return True if passed the middle of the last road
+        last_road = self.__path[-1]
+        if self.__current_road != last_road:
+            return False
+        begin_middle = Line(*last_road.coordinates[0]).middle()
+        end_middle = Line(*last_road.coordinates[-1]).middle()
+        return self.__position.distance(end_middle) < self.__position.distance(begin_middle)
