@@ -27,6 +27,7 @@ class ICar(ABC, metaclass=IterationTrackable):
         """
         pass
 
+    @abstractmethod
     def estimated_speed(self) -> float:
         """
         :return: estimated speed that the car will have in this iteration

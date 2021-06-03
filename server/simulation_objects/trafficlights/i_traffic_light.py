@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 
 from server.geometry.point import Point
+from server.simulation_objects.iteration_trackable import IterationTrackable
 
 
 class ITrafficLight(ABC):
 
     @abstractmethod
-    def changeLight(self) -> None:
+    def change_light(self) -> None:
         """
         changes the light and notifies the cars that see the light
         """
@@ -24,3 +25,7 @@ class ITrafficLight(ABC):
     @abstractmethod
     def coordinate(self) -> Point:
         pass
+
+    @abstractmethod
+    def activate(self):
+        return

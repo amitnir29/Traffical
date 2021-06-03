@@ -7,12 +7,14 @@ from server.geometry.point import Point
 
 class TrafficLight(itl.ITrafficLight):
 
-    def changeLight(self) -> None:
+    def change_light(self) -> None:
         self.__can_pass = not self.__can_pass
+        self.__light_time = 0
 
     def __init__(self, lanes: List[nlane.INotifiedLane], coordinate: Point):
         self.__can_pass = False
         self.__coming_from_lanes = lanes
+        self.__light_time = 0
         # set the lanes to have this traffic light
         for lane in lanes:
             lane.traffic_light = self
@@ -25,3 +27,6 @@ class TrafficLight(itl.ITrafficLight):
     @property
     def coordinate(self) -> Point:
         return self.__coordinate
+
+    def activate(self):
+        self.__light_time += 1

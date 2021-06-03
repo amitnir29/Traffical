@@ -9,6 +9,7 @@ from server.simulation_objects.cars.position import Position
 from server.geometry.line import Line
 from server.geometry.point import Point
 from server.simulation_objects.lanes.i_lane import ILane
+from server.simulation_objects.lanes.notified_lane import NotifiedLane
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
@@ -36,6 +37,8 @@ class Car(ICar):
 
         self.__current_lane: ILane = None
         self._enter_road_section(initial_road_section, initial_distance)
+
+        self.__speed = max_speed  # TODO remove
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
         if self.__current_lane is not None:
@@ -74,7 +77,7 @@ class Car(ICar):
 
     def _update_speed(self):
         self.__speed += self.__acceleration
-        self.__speed = min(self.__speed, self.__max_speed)
+        self.__speed = max(0, min(self.__speed, self.__max_speed))
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
 
     def _full_gass(self):
@@ -103,7 +106,7 @@ class Car(ICar):
                 else:
                     # there is a red light.
                     # update speed s.t. we do not pass the max speed, max deceleration, and light distance
-                    lane_end_coordinates = self.__current_road.coordinates[-1]
+                    lane_end_coordinates = self.__current_lane.coordinates[-1]
                     distance_to_stop = self._distance_to_part_end(self.position, lane_end_coordinates)
                     self._stop(distance_to_stop)
             else:
@@ -133,7 +136,7 @@ class Car(ICar):
     def position(self):
         return self.__position
 
-    def _stop(self, location: float):
+    def _stop(self, distance: float):
         self.__state.stopping = True
         position_in_lane = self.__current_lane.car_position_in_lane(self)
 
@@ -145,7 +148,9 @@ class Car(ICar):
         # Results in:
         # a = -speed ^ 2 / (2 * (location - currentPosition))
 
-        self.__acceleration = -pow(self.__speed, 2) / (2 * (location - position_in_lane))
+        # print(self.__speed, distance, -pow(self.__speed, 2) / (2 * distance), self.__acceleration, sep="\t")
+        self.__acceleration = -pow(self.__speed, 2) / (2 * distance)
+        # print(-self.__speed / self.__acceleration)
 
     def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
@@ -165,11 +170,13 @@ class Car(ICar):
         should also depend on lane switching.
         :return: closest red light that affects the car.
         """
-        pass
+        # TODO improve
+        if isinstance(self.__current_lane, NotifiedLane):
+            return self.__current_lane.traffic_light
+        return None
 
     @staticmethod
     def _distance_to_part_end(current_position: Point, coordinates: Tuple[Point, Point]) -> float:
-        # TODO not completely correct. should be relative to the lane, and not the whole road's width
         next_middle = Line(*coordinates).middle()
         path = Line(current_position, next_middle)
 

@@ -1,13 +1,17 @@
-def next_iter(roads, traffic_lights, all_junctions, cars):
+from algorithms.tl_manager import TLManager
+
+
+def next_iter(lights_algorithm: TLManager, traffic_lights, cars):
     """
     calculate the next iteration of the simulation
-    :param roads: the roads of the map
+    :param lights_algorithm: traffic lights manager
     :param traffic_lights: the traffic lights objects, including their state (red/green)
-    :param all_junctions: the junctions objects of the map
     :param cars: the current cars on the map, should calculate their next position
     :return: new traffic lights and cars lists
     """
-    # TODO
     for car in cars:
         car.activate()
+    for tl in traffic_lights:
+        tl.activate()
+    lights_algorithm.manage_lights(cars)
     return traffic_lights, cars
