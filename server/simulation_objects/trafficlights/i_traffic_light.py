@@ -7,9 +7,10 @@ from server.simulation_objects.iteration_trackable import IterationTrackable
 class ITrafficLight(ABC):
 
     @abstractmethod
-    def change_light(self) -> None:
+    def change_light(self, turn_to_green=None) -> None:
         """
         changes the light and notifies the cars that see the light
+        :param turn_to_green: optional arg to constraint the value of the light
         """
         pass
 
