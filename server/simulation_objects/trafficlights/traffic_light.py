@@ -30,3 +30,11 @@ class TrafficLight(itl.ITrafficLight):
 
     def activate(self):
         self.__light_time += 1
+
+    @property
+    def light_time(self):
+        return self.__light_time
+
+    @property
+    def lanes(self):
+        return self.__coming_from_lanes

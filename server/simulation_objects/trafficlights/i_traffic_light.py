@@ -29,3 +29,13 @@ class ITrafficLight(ABC):
     @abstractmethod
     def activate(self):
         return
+
+    @property
+    @abstractmethod
+    def light_time(self):
+        pass
+
+    @property
+    @abstractmethod
+    def lanes(self):
+        pass
