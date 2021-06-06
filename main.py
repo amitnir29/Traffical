@@ -16,7 +16,6 @@ def main():
     gm = GraphicsManager(fps=10)
 
     # get cars TODO create function that generates cars every once in a while
-    cars = list()
     # cars.append(Car([roads[4], roads[3], roads[2], roads[6]], 0.0001, max_speed=0.0001))
     # cars.append(Car([roads[4], roads[3], roads[2], roads[6]], 0))
     # cars.append(Car([roads[26], roads[28], roads[16], roads[5], roads[6], roads[15], roads[24], roads[25]], 0))
