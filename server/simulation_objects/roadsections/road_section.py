@@ -20,6 +20,15 @@ class RoadSection(irs.IRoadSection):
         self.__max_speed: float = road_data.max_speed
         self.__lanes: List[il.ILane] = self._create_lanes(road_data.num_lanes, notified_lanes_nums)
 
+    def goes_to_roads(self):
+        roads = list()
+        for ll in self.lanes:
+            roads += [goes_to_lane.road for goes_to_lane in ll.goes_to_lanes]
+        roads_dict = dict()
+        for road in roads:
+            roads_dict[road.__id] = road
+        return list(roads_dict.values())
+
     @property
     def coordinates(self) -> List[Tuple[Point, Point]]:
         return self.__coordinates
@@ -83,3 +92,6 @@ class RoadSection(irs.IRoadSection):
             # add the right side points of the lanes, except from the most right lane
             lines.append([pair[1] for pair in self.__lanes[line_num].coordinates])
         return lines
+
+    def __repr__(self):
+        return str(self.__id)

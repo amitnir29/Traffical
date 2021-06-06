@@ -25,6 +25,10 @@ class Lane(il.ILane):
     def road(self) -> irs.IRoadSection:
         return self.__road
 
+    @property
+    def goes_to_lanes(self):
+        return self._goes_to
+
     def add_movement(self, to_lane: il.ILane):
         self._goes_to.append(to_lane)
 

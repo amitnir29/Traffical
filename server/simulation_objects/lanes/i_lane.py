@@ -106,3 +106,8 @@ class ILane(ABC):
         :return: length of the lane
         """
         pass
+
+    @property
+    @abstractmethod
+    def goes_to_lanes(self):
+        pass

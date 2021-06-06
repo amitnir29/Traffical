@@ -64,3 +64,7 @@ class IRoadSection(ABC):
                 a list of points that represent the seperating line coordinates
         """
         pass
+
+    @abstractmethod
+    def goes_to_roads(self):
+        pass
