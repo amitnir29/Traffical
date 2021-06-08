@@ -30,3 +30,6 @@ class Point:
     def normalize(self, x_norm, y_norm):
         self.__x = x_norm(self.__x)
         self.__y = y_norm(self.__y)
+
+    def __repr__(self):
+        return f"({self.x},{self.y})"

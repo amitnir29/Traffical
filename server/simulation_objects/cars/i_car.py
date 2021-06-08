@@ -42,3 +42,10 @@ class ICar(ABC, metaclass=IterationTrackable):
     @abstractmethod
     def has_arrived_destination(self):
         pass
+
+    @abstractmethod
+    def get_angle(self):
+        """
+        calculate the angle at which the cars should appear, counter clock wise.
+        """
+        pass

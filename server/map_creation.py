@@ -6,6 +6,7 @@ from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
 from db.dataclasses.traffic_light_data import TrafficLightData
 from db.db import get_db_junctions, get_db_road_sections
+from server.geometry.point import Point
 from server.simulation_objects.junctions.i_junction import IJunction
 from server.simulation_objects.junctions.junction import Junction
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
@@ -14,7 +15,13 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
-def create_map():
+def create_map(x_border, y_border):
+    roads, traffic_lights, junctions = __create_objects_from_data()
+    __normalize_map(roads, traffic_lights, junctions, x_border, y_border)
+    return roads, traffic_lights, junctions
+
+
+def __create_objects_from_data():
     """
     order of operations:
     1. get and store all data about junction:
@@ -45,7 +52,39 @@ def create_map():
     __set_lane_movements(roads, from_roads)
     # part 5
     all_junctions = __get_all_junctions(junctions_data, roads)
-    return list(roads.values()), traffic_lights, all_junctions
+    roads_list = list(roads.values())
+    return roads_list, traffic_lights, all_junctions
+
+
+def __normalize_map(roads: List[IRoadSection], traffic_lights: List[ITrafficLight], junctions: List[IJunction],
+                    x_border, y_border):
+    """
+    get min and max x,y values of the whole map and normalize all points accordingly
+    :param x_border: max x value to convert to
+    :param y_border: max y value to convert to
+    """
+    all_points: List[Point] = list()
+    # get all points of the simulation
+    for road in roads:
+        all_points += [point for pair in road.coordinates for point in pair]
+        for lane in road.lanes:
+            all_points += [point for line in lane.coordinates for point in line]
+    for light in traffic_lights:
+        all_points.append(light.coordinate)
+    for junc in junctions:
+        all_points += junc.coordinates
+    # get min and max x,y values of the whole map
+    x_values = [p.x for p in all_points]
+    y_values = [p.y for p in all_points]
+    min_x = min(x_values)
+    min_y = min(y_values)
+    max_x = max(x_values)
+    max_y = max(y_values)
+    # create the normalization function:
+    norm_x = lambda x: (x - min_x) * (x_border / (max_x - min_x))
+    norm_y = lambda y: (y - min_y) * (y_border / (max_y - min_y))
+    for point in all_points:
+        point.normalize(norm_x, norm_y)
 
 
 def __get_junctions_data():

@@ -8,14 +8,16 @@ from server.simulation_objects.cars.car import Car
 from server.simulation_objects.cars.position import Position
 from algorithms.algos_list import *
 from server.cars_generator import generate_cars, generate_car
+from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 def main():
-    # get the simulation map
-    roads, traffic_lights, all_junctions = create_map()
-
     # create the graphics object
-    gm = GraphicsManager(fps=10)
+    win_width, win_height = (800, 800)
+    gm = GraphicsManager(fps=10, width=win_width, height=win_height)
+
+    # get the simulation map
+    roads, traffic_lights, all_junctions = create_map(win_width, win_height)
 
     cars: List = generate_cars(roads, 4, p=1, min_len=6, with_prints=True)
 

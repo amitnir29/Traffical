@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from typing import List, Optional, Tuple
+from math import atan, pi, degrees
 
 from server.simulation_objects.cars.car_state import CarState
 from server.simulation_objects.cars.i_car import ICar
@@ -20,8 +21,8 @@ class Car(ICar):
 
     # TODO temp values
     def __init__(self, path: List[IRoadSection], initial_distance: float = 0,
-                 max_speed: float = 0.001,
-                 max_speed_change: float = 0.00001):
+                 max_speed: float = 50,
+                 max_speed_change: float = 10):
         self.__max_speed = max_speed
         self.__max_speed_change = max_speed_change  # acceleration/decceleration
         # initial car start state
@@ -246,3 +247,22 @@ class Car(ICar):
 
     def __repr__(self):
         return str([road for road in self.__path])
+
+    def get_angle(self):
+        # the line from the middle of the start of the current part, to the middle of the end of the current part
+        curr_line = Line(
+            Line(*self.__current_lane.coordinates[self.__current_lane_part]).middle(),
+            Line(*self.__current_lane.coordinates[self.__current_lane_part + 1]).middle())
+        x_diff = curr_line.p2.x - curr_line.p1.x
+        y_diff = curr_line.p1.y - curr_line.p2.y  # y axis is upside down
+        if x_diff == 0:
+            if y_diff > 0:
+                return 0
+            else:
+                return 180
+        res = (90 - degrees(atan(y_diff / x_diff))) % 360
+        if x_diff < 0:
+            res = 180 - res
+        if x_diff > 0:
+            res = 360 - res
+        return res
