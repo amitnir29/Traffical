@@ -11,10 +11,10 @@ MIN_LEN = 1
 
 
 def generate_cars(roads, amount: int, p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> List[ICar]:
-    return [__generate_car(roads, p, min_len, with_prints) for _ in range(amount)]
+    return [generate_car(roads, p, min_len, with_prints) for _ in range(amount)]
 
 
-def __generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> ICar:
+def generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> ICar:
     start = choice(roads)
     path = [start]
     while random() < p:
@@ -26,7 +26,7 @@ def __generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_pri
         path.append(chosen_next_road)
 
     if len(path) < min_len:
-        return __generate_car(roads, p, min_len, with_prints)
+        return generate_car(roads, p, min_len, with_prints)
     if with_prints:
         print(path)
     return Car(path)
