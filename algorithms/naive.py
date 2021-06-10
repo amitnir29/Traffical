@@ -7,16 +7,22 @@ class NaiveAlgo(TLManager):
         self.__time_count = 0
         self.__light_interval = light_interval
         self.init_lights()
+        self._curr_light = 0
 
     def init_lights(self):
-        self._lights[0].change_light()
-        for tl in self._lights[1:]:
-            tl.change_light()
+        if len(self._lights) > 0:
+            self._lights[0].change_light(True)
+            # for tl in self._lights[1:]:
+            #     tl.change_light(False)
 
     def manage_lights(self, cars):
-        curr_group = self.__time_count % len(self._lights)
-        self.__time_count += 1
+        if len(self._lights) > 1:
 
-        if self.__time_count % self.__light_interval == 0:
-            self._lights[curr_group].change_light(False)
-            self._lights[curr_group].change_light(True)
+            if self.__time_count % self.__light_interval == 0:
+                self._lights[self._curr_light].change_light(False)
+                self._lights[(self._curr_light + 1) % len(self._lights)].change_light(True)
+
+                self._curr_light += 1
+                self._curr_light %= len(self._lights)
+
+        self.__time_count += 1
