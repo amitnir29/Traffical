@@ -1,7 +1,7 @@
 from algorithms.tl_manager import TLManager
 
 
-def next_iter(lights_algorithm: TLManager, traffic_lights, cars):
+def next_iter(light_algos, traffic_lights, cars):
     """
     calculate the next iteration of the simulation
     :param lights_algorithm: traffic lights manager
@@ -10,7 +10,7 @@ def next_iter(lights_algorithm: TLManager, traffic_lights, cars):
     :return: new traffic lights and cars lists
     """
     __handle_cars(cars)
-    __handle_lights(lights_algorithm, traffic_lights, cars)
+    __handle_lights(light_algos, traffic_lights, cars)
     return traffic_lights, cars
 
 
@@ -25,7 +25,7 @@ def __handle_cars(cars):
         cars.remove(car)
 
 
-def __handle_lights(lights_algorithm, traffic_lights, cars):
-    for tl in traffic_lights:
+def __handle_lights(light_algos, traffic_lights, cars):
+    for tl, light_algo in zip(traffic_lights, light_algos):
         tl.activate()
-    lights_algorithm.manage_lights(cars)
+        light_algo.manage_lights(cars)
