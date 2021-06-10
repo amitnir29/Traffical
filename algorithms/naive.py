@@ -2,7 +2,6 @@ from algorithms.tl_manager import TLManager
 
 
 class NaiveAlgo(TLManager):
-
     def __init__(self, traffic_lights, all_junctions, light_interval=10):
         super().__init__(traffic_lights, all_junctions)
         self.__light_groups = self.get_lights_groups()
@@ -13,7 +12,7 @@ class NaiveAlgo(TLManager):
 
     def init_lights(self):
         for tl in self.__light_groups[0]:
-            tl.change_light()
+            tl.change_light(False)
 
     def get_lights_groups(self):
         max_lights = max(len(junc.lights) for junc in self._tl_junctions)

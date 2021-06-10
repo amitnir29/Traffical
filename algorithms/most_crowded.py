@@ -13,7 +13,7 @@ class MCAlgo(TLManager):
 
     def init_lights(self):
         for junc in self.get_tl_junctions():
-            junc.lights[0].change_light()
+            junc.lights[0].change_light(False)
 
     def _get_green_tl(self, junc):
         for tl in junc.lights:

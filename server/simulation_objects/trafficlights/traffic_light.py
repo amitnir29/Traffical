@@ -7,12 +7,11 @@ from server.geometry.point import Point
 
 class TrafficLight(itl.ITrafficLight):
 
-    def change_light(self, turn_to_green=None) -> None:
-        if turn_to_green is not None:
-            if turn_to_green and self.__can_pass:
-                raise Exception("light is already green")
-            if not turn_to_green and not self.__can_pass:
-                raise Exception("light is already red")
+    def change_light(self, turn_to_green) -> None:
+        if turn_to_green and self.__can_pass:
+            raise Exception("light is already green")
+        if not turn_to_green and not self.__can_pass:
+            raise Exception("light is already red")
         self.__can_pass = not self.__can_pass
         self.__light_time = 0
 
