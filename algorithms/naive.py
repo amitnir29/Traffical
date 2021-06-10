@@ -9,12 +9,6 @@ class NaiveAlgo(TLManager):
         self.init_lights()
         self._curr_light = 0
 
-    def init_lights(self):
-        if len(self._lights) > 0:
-            self._lights[0].change_light(True)
-            # for tl in self._lights[1:]:
-            #     tl.change_light(False)
-
     def manage_lights(self, cars):
         if len(self._lights) > 1:
 
