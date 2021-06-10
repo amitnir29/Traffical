@@ -7,7 +7,7 @@ class TLManager(ABC):
         self._lights = self._junction.lights
 
     @abstractmethod
-    def manage_lights(self, cars):
+    def manage_lights(self):
         """
         update the traffic lights
         :param cars: all cars in the simulation

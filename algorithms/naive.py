@@ -9,7 +9,7 @@ class NaiveAlgo(TLManager):
         self.init_lights()
         self._curr_light = 0
 
-    def manage_lights(self, cars):
+    def manage_lights(self):
         if len(self._lights) > 1:
 
             if self.__time_count % self.__light_interval == 0:
