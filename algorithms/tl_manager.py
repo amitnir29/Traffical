@@ -14,6 +14,6 @@ class TLManager(ABC):
         """
         pass
 
-    @abstractmethod
     def init_lights(self):
-        pass
+        if len(self._lights) > 0:
+            self._lights[0].change_light(True)
