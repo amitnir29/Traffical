@@ -10,7 +10,7 @@ def next_iter(light_algos, traffic_lights, cars):
     :return: new traffic lights and cars lists
     """
     __handle_cars(cars)
-    __handle_lights(light_algos, traffic_lights, cars)
+    __handle_lights(light_algos, traffic_lights)
     return traffic_lights, cars
 
 
@@ -25,7 +25,7 @@ def __handle_cars(cars):
         cars.remove(car)
 
 
-def __handle_lights(light_algos, traffic_lights, cars):
+def __handle_lights(light_algos, traffic_lights):
     for tl, light_algo in zip(traffic_lights, light_algos):
         tl.activate()
-        light_algo.manage_lights(cars)
+        light_algo.manage_lights()

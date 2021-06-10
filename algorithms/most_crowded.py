@@ -10,7 +10,8 @@ class MCAlgo(TLManager):
         super().__init__(junction)
         self._min_green_time = min_green_time
         self.init_lights()
-        self._current_light = self._lights[0]
+
+        self._current_light = self._lights[0] if len(self._lights) > 0 else None
 
     def _map_cars_amount(self):
         # for each light, get number of cars in its lanes
@@ -22,11 +23,18 @@ class MCAlgo(TLManager):
         return cars_count
 
     def manage_lights(self):
-        if self._current_light .light_time < self._min_green_time:
+        if len(self._lights) == 0:
             return
 
+        green = self._current_light
+        # if green.light_time < self._min_green_time:
+        #     return
+
         cars_count = self._map_cars_amount()
-        mc_lane = junc.lights[max(cars_count, key=lambda k: cars_count[k])]
-        if mc_lane != green:
+        mc_lane = self._junction.lights[max(cars_count, key=lambda k: cars_count[k])]
+        # if mc_lane != green:
+        if not mc_lane.can_pass:
             green.change_light(False)  # to red
             mc_lane.change_light(True)  # to green
+
+        self._current_light = mc_lane
