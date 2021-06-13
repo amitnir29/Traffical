@@ -80,15 +80,23 @@ class Car(ICar):
         self.__speed += self.__acceleration
         self.__speed = max(0, min(self.__speed, self.__max_speed))
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
+        if self.__speed < 1:
+            print("speed is " + str(self.__speed))
+            print("acc is " + str(self.__acceleration))
+
 
     def _full_gass(self):
+        print("full_gass")
+        print(self.__speed + self.__max_speed_change <= self.__current_road.max_speed)
         if self.__speed + self.__max_speed_change <= self.__current_road.max_speed:
             self.__acceleration = self.__max_speed_change
         else:
             self.__acceleration = self.__current_road.max_speed - self.__speed
 
     def _set_acceleration(self):
+        print("in acc, " + str(self.__state))
         front_car = self.__current_lane.get_car_ahead(self)
+        print(front_car)
         red_light = self._get_closest_traffic_light()
 
         if self.__state.moving_lane == self.__current_lane:
@@ -138,6 +146,7 @@ class Car(ICar):
         return self.__position
 
     def _stop(self, distance: float):
+        print("I'm stopping!")
         self.__state.stopping = True
         position_in_lane = self.__current_lane.car_position_in_lane(self)
 
