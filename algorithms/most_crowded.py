@@ -27,10 +27,11 @@ class MCAlgo(TLManager):
             return
 
         green = self._current_light
-        # if green.light_time < self._min_green_time:
-        #     return
+        if green.light_time < self._min_green_time:
+            return
 
         cars_count = self._map_cars_amount()
+        # print(cars_count.values())
         mc_lane = self._junction.lights[max(cars_count, key=lambda k: cars_count[k])]
         # if mc_lane != green:
         if not mc_lane.can_pass:
