@@ -4,11 +4,6 @@ from algorithms.tl_manager import TLManager
 
 
 class RLQ(TLManager, ABC):
-    def __init__(self, junction):
-        super().__init__(junction)
-
-        self._current_light = self._lights[0] if len(self._lights) > 0 else None
-
     @staticmethod
     @abstractmethod
     def _cars_load_in_tl(tl):
