@@ -7,6 +7,8 @@ class TLManager(ABC):
         self._lights = self._junction.lights
         self.init_lights()
 
+        self._current_light = self._lights[0] if len(self._lights) > 0 else None
+
     @abstractmethod
     def manage_lights(self):
         """
