@@ -39,8 +39,8 @@ class MCTL(TLManager):
             cars_count = self._map_cars_amount()
             # print(cars_count.values())
             mc_lane = self._junction.lights[max(cars_count, key=lambda k: cars_count[k])]
-            # if mc_lane != green:
-            if not mc_lane.can_pass:
+            if mc_lane != green:
+            # if not mc_lane.can_pass:
                 green.change_light(False)  # to red
                 mc_lane.change_light(True)  # to green
 
