@@ -22,8 +22,9 @@ def main():
     cars: List = generate_cars(roads, 4, p=1, min_len=6, with_prints=True)
 
     # while the screen is not closed, draw the current state and calculate the next state
-    light_algos = [NaiveAlgo(junction) for junction in all_junctions]
+    # light_algos = [NaiveAlgo(junction) for junction in all_junctions]
     # light_algos = [MCAlgo(junction) for junction in all_junctions]
+    light_algos = [MCTL(junction) for junction in all_junctions]
     # lights_algorithm = NaiveAlgo(traffic_lights, all_junctions)
     # lights_algorithm = MCAlgo(traffic_lights, all_junctions)
     # lights_algorithm = MCTL(traffic_lights, all_junctions)
