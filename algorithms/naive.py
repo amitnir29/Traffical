@@ -6,7 +6,6 @@ class NaiveAlgo(TLManager):
         super().__init__(junction)
         self.__time_count = 0
         self.__light_interval = light_interval
-        self.init_lights()
         self._curr_light = 0
 
     def manage_lights(self):

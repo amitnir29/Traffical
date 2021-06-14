@@ -5,6 +5,7 @@ class TLManager(ABC):
     def __init__(self, junction):
         self._junction = junction
         self._lights = self._junction.lights
+        self.init_lights()
 
     @abstractmethod
     def manage_lights(self):
