@@ -1,13 +1,14 @@
 from collections import defaultdict
 from typing import Dict
+import numpy as np
 
 from algorithms.tl_manager import TLManager
 
 
 class MCAlgo(TLManager):
 
-    def __init__(self, junction, min_green_time=5):
-        super().__init__(junction)
+    def __init__(self, junction, min_green_time=5, time_limit=np.inf):
+        super().__init__(junction, time_limit)
         self._min_green_time = min_green_time
 
     def _map_cars_amount(self):
