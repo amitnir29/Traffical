@@ -26,6 +26,8 @@ def __handle_cars(cars):
 
 
 def __handle_lights(light_algos, traffic_lights):
-    for tl, light_algo in zip(traffic_lights, light_algos):
+    for tl in traffic_lights:
         tl.activate()
+
+    for light_algo in light_algos:
         light_algo.manage_lights()
