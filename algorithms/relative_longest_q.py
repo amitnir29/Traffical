@@ -9,17 +9,8 @@ class RLQ(TLManager, ABC):
     def _cars_load_in_tl(tl):
         raise NotImplemented
 
-    def manage_lights(self):
-        if len(self._lights) == 0:
-            return 0
-
-        most_loaded_tl = max(self._lights, key=lambda tl: self._cars_load_in_tl(tl))
-
-        if most_loaded_tl != self._current_light:
-            self._current_light.change_light(False)
-            most_loaded_tl.change_light(True)
-
-            self._current_light = most_loaded_tl
+    def _manage_lights(self):
+        return max(self._lights, key=lambda tl: self._cars_load_in_tl(tl))
 
 
 class RLQTL(RLQ):
