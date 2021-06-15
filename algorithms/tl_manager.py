@@ -10,12 +10,20 @@ class TLManager(ABC):
         self._current_light = self._lights[0] if len(self._lights) > 0 else None
 
     @abstractmethod
+    def _manage_lights(self):
+        raise NotImplemented
+
     def manage_lights(self):
         """
         update the traffic lights
-        :param cars: all cars in the simulation
         """
-        pass
+        if len(self._lights) > 0:
+            new_green = self._manage_lights()
+            if new_green != self._current_light:
+                self._current_light.change_light(False)  # to red
+                new_green.change_light(True)  # to green
+
+                self._current_light = new_green
 
     def init_lights(self):
         if len(self._lights) > 0:
