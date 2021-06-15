@@ -24,9 +24,9 @@ def main():
     # while the screen is not closed, draw the current state and calculate the next state
     # light_algos = [NaiveAlgo(junction) for junction in all_junctions]
     # light_algos = [MCAlgo(junction) for junction in all_junctions]
-    # light_algos = [MCTL(junction) for junction in all_junctions]
+    light_algos = [MCTL(junction) for junction in all_junctions]
     # light_algos = [RLQTL(junction) for junction in all_junctions]
-    light_algos = [RLQRS(junction) for junction in all_junctions]
+    # light_algos = [RLQRS(junction) for junction in all_junctions]
     # lights_algorithm = NaiveAlgo(traffic_lights, all_junctions)
     # lights_algorithm = MCAlgo(traffic_lights, all_junctions)
     # lights_algorithm = MCTL(traffic_lights, all_junctions)
