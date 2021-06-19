@@ -9,6 +9,7 @@ from server.simulation_objects.cars.position import Position
 from algorithms.algos_list import *
 from server.cars_generator import generate_cars, generate_car
 from server.simulation_objects.trafficlights.traffic_light import TrafficLight
+from server.statistics.stats_reporter import StatsReporter
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
     # get the simulation map
     roads, traffic_lights, all_junctions = create_map(win_width, win_height)
 
-    cars: List = generate_cars(roads, 4, p=1, min_len=6, with_prints=True)
+    cars: List = generate_cars(roads, 14, p=1, min_len=6, with_prints=True)
 
     # while the screen is not closed, draw the current state and calculate the next state
     # light_algos = [NaiveAlgo(junction) for junction in all_junctions]
@@ -42,13 +43,18 @@ def main():
     # run the simulation
     frames_count = 0
     # cars = list()
-    cars.append(Car([roads[26], roads[28], roads[16], roads[5], roads[6], roads[15], roads[24], roads[25]] * 5, 0))
+    # cars.append(Car([roads[26], roads[28], roads[16], roads[5], roads[6], roads[15], roads[24], roads[25]] * 5, 0))
+    # cars.append(Car([roads[54], roads[55]]))
     i = 0
+
+    reporter = StatsReporter(cars)
+
     while gm.draw(roads, traffic_lights, cars):
         i = i + 1
         print(i)
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
 
+    print(reporter.report())
 
 if __name__ == '__main__':
     main()
