@@ -8,8 +8,8 @@ from db.dataclasses.road_lane import RoadLane
 from server.geometry.point import Point
 
 
-def get_db_road_sections(path: str = "db/data/RoadSections.csv") -> List[RoadData]:
-    df = pd.read_csv(path)
+def get_db_road_sections(path) -> List[RoadData]:
+    df = pd.read_csv(path+"/RoadSections.csv")
     roads_data = []
     for index, row in df.iterrows():
         idnum: int = row["Id"]
@@ -32,8 +32,8 @@ def get_db_road_sections(path: str = "db/data/RoadSections.csv") -> List[RoadDat
     return roads_data
 
 
-def get_db_junctions(path: str = "db/data/Junctions.csv"):
-    df = pd.read_csv(path)
+def get_db_junctions(path):
+    df = pd.read_csv(path+"/Junctions.csv")
     junctions_data: List[JunctionData] = []
     for index, row in df.iterrows():
         idnum: int = row['Id']

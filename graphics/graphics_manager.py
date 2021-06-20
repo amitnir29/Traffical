@@ -6,11 +6,13 @@ import pygame.font
 from graphics.camera import Camera
 from graphics.colors import GREEN
 from graphics.drawables.car import DrawableCar
+from graphics.drawables.junction import DrawableJunction
 from graphics.drawables.road import DrawableRoad
 from graphics.drawables.traffic_light import DrawableLight
 from server.simulation_objects.cars.i_car import ICar
 from server.geometry.line import Line
 from server.geometry.point import Point
+from server.simulation_objects.junctions.i_junction import IJunction
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
@@ -36,18 +38,22 @@ class GraphicsManager:
         # Shutdown
         pygame.quit()
 
-    def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight], cars: List[ICar]) -> bool:
+    def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],
+             cars: List[ICar], junctions: List[IJunction]) -> bool:
         self.screen.fill(self.background)
         # Check if window has been closed
         self.handle_events()
         if not self.running:
             return False
         # Convert the data to drawables
-        drawable_roads, drawable_lights, drawable_cars = self.create_drawables(roads, lights, cars)
+        drawable_roads, drawable_lights, drawable_cars, drawable_junctions \
+            = self.create_drawables(roads, lights, cars, junctions)
         # Draw all data
         self.draw_roads(drawable_roads)
+        self.draw_junctions(drawable_junctions)
         self.draw_cars(drawable_cars)
         self.draw_lights(drawable_lights)
+
         # Display
         pygame.display.flip()
         pygame.display.update()
@@ -55,15 +61,18 @@ class GraphicsManager:
         self.clock.tick(self.fps)
         return len(cars) > 0
 
-    def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight], cars: List[ICar]) \
-            -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar]]:
+    def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
+                         cars: List[ICar], junctions: List[IJunction]) \
+            -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar], List[DrawableJunction]]:
         roads = [DrawableRoad.from_server_obj(deepcopy(road)) for road in roads]
         lights = [DrawableLight.from_server_obj(deepcopy(tl)) for tl in lights]
         cars = [DrawableCar.from_server_obj(deepcopy(car)) for car in cars]
-        self.normalize_data(roads, lights, cars)
-        return roads, lights, cars
+        junctions = [DrawableJunction.from_server_obj(deepcopy(junc)) for junc in junctions]
+        self.normalize_data(roads, lights, cars, junctions)
+        return roads, lights, cars, junctions
 
-    def normalize_data(self, roads: List[DrawableRoad], lights: List[DrawableLight], cars: List[DrawableCar]):
+    def normalize_data(self, roads: List[DrawableRoad], lights: List[DrawableLight],
+                       cars: List[DrawableCar], junctions: List[DrawableJunction]):
         all_points: List[Point] = list()
         # get all points of the simulation
         for road in roads:
@@ -72,6 +81,8 @@ class GraphicsManager:
             all_points += light.get_all_points()
         for car in cars:
             all_points += car.get_all_points()
+        for junc in junctions:
+            all_points += junc.get_all_points()
         # get min and max x,y values of the whole map
         x_values = [p.x for p in all_points]
         y_values = [p.y for p in all_points]
@@ -129,3 +140,7 @@ class GraphicsManager:
             # scale formula that looks nice:
             scale = 0.1 * pow((self.camera.width / self.camera.delta_x), 1 / 3)
             light.draw(self.screen, scale)
+
+    def draw_junctions(self, junctions: List[DrawableJunction]):
+        for junc in junctions:
+            junc.draw(self.screen)

@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 from typing import Dict, List, Tuple, Set
 
@@ -5,7 +6,7 @@ from db.dataclasses.junction_data import JunctionData
 from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
 from db.dataclasses.traffic_light_data import TrafficLightData
-from db.db import get_db_junctions, get_db_road_sections
+from db.load_data import get_db_junctions, get_db_road_sections
 from server.geometry.point import Point
 from server.simulation_objects.junctions.i_junction import IJunction
 from server.simulation_objects.junctions.junction import Junction
@@ -15,13 +16,13 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
-def create_map(x_border, y_border):
-    roads, traffic_lights, junctions = __create_objects_from_data()
+def create_map(x_border, y_border, path: str):
+    roads, traffic_lights, junctions = __create_objects_from_data(path)
     __normalize_map(roads, traffic_lights, junctions, x_border, y_border)
     return roads, traffic_lights, junctions
 
 
-def __create_objects_from_data():
+def __create_objects_from_data(path: str):
     """
     order of operations:
     1. get and store all data about junction:
@@ -42,10 +43,10 @@ def __create_objects_from_data():
     5. create all junctions, they need the traffic lights and road section in their constructor.
     """
     # part 1
-    from_roads, all_traffic_lights, junctions_data = __get_junctions_data()
+    from_roads, all_traffic_lights, junctions_data = __get_junctions_data(path)
     # part 2
     notified_lanes_dict: Dict[int, Set[int]] = __get_notified_lanes_dict(set(from_roads), all_traffic_lights)
-    roads: Dict[int, IRoadSection] = __get_roads(notified_lanes_dict)
+    roads: Dict[int, IRoadSection] = __get_roads(notified_lanes_dict, path)
     # part 3
     traffic_lights = __get_traffic_lights(all_traffic_lights, roads)
     # part 4
@@ -87,7 +88,7 @@ def __normalize_map(roads: List[IRoadSection], traffic_lights: List[ITrafficLigh
         point.normalize(norm_x, norm_y)
 
 
-def __get_junctions_data():
+def __get_junctions_data(path: str):
     # from_roads: a dictionary from road id to a list of all road movements that are from the road.
     #   they are of form: (from: (road_id,lane_num), to: (road_id,lane_num)). all ints
     from_roads: Dict[int, List[Tuple[RoadLane, RoadLane]]] = defaultdict(list)
@@ -99,7 +100,7 @@ def __get_junctions_data():
     #   each sub list is a traffic light, and its list contains lanes listening to it.
     #   if the junction has no traffic lights, traffic_lights is an empty list.
     junctions_data: List[JunctionData] = list()
-    for junction_data in get_db_junctions():
+    for junction_data in get_db_junctions(path):
         junction_data: JunctionData
         # add to list of total data
         junctions_data.append(junction_data)
@@ -134,10 +135,10 @@ def __get_notified_lanes_dict(all_road_ids: Set[int], all_traffic_lights: List[T
     return notified_lanes_dict
 
 
-def __get_roads(notified_lanes_dict: Dict[int, Set[int]]) -> Dict[int, IRoadSection]:
+def __get_roads(notified_lanes_dict: Dict[int, Set[int]], path: str) -> Dict[int, IRoadSection]:
     roads: Dict[int, IRoadSection] = dict()
     # create all roads
-    for road_data in get_db_road_sections():
+    for road_data in get_db_road_sections(path):
         road_data: RoadData
         # create the road section
         roads[road_data.idnum] = RoadSection(road_data, notified_lanes_dict[road_data.idnum])
