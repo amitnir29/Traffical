@@ -18,7 +18,7 @@ def main():
     gm = GraphicsManager(fps=10, width=win_width, height=win_height)
 
     # get the simulation map
-    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases")
+    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/tel_aviv")
 
     cars: List = generate_cars(roads, 14, p=1, min_len=6, with_prints=True)
 

@@ -6,7 +6,7 @@ from db.dataclasses.junction_data import JunctionData
 from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
 from db.dataclasses.traffic_light_data import TrafficLightData
-from db.load_data import get_db_junctions, get_db_road_sections
+from db.load_map_data import get_db_junctions, get_db_road_sections
 from server.geometry.point import Point
 from server.simulation_objects.junctions.i_junction import IJunction
 from server.simulation_objects.junctions.junction import Junction
