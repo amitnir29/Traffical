@@ -53,7 +53,7 @@ class GraphicsManager:
         pygame.display.update()
         # Setting FPS
         self.clock.tick(self.fps)
-        return True
+        return len(cars) > 0
 
     def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight], cars: List[ICar]) \
             -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar]]:

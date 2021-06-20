@@ -23,6 +23,7 @@ def __handle_cars(cars):
             to_remove.append(car)
     for car in to_remove:
         cars.remove(car)
+        del car
 
 
 def __handle_lights(light_algos, traffic_lights):
