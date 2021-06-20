@@ -3,11 +3,7 @@ import os
 DIRS_PATH = "db/databases/generated"
 
 
-def generate_map():
-    path = __create_new_dir()
-
-
-def __create_new_dir() -> str:
+def create_new_dir() -> str:
     """
     create the dir of the new db
     :return: the full path of the new dir
