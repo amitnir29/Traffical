@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-import server.simulation_objects.trafficlights.traffic_light as tl
 from server.geometry.point import Point
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 

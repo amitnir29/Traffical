@@ -1,4 +1,5 @@
-import pickle, jsonpickle
+import jsonpickle
+import pickle
 
 
 def pickle_to_file(obj, filename):

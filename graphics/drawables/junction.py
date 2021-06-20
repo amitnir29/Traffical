@@ -1,6 +1,7 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List
 
 import pygame
 
@@ -8,7 +9,6 @@ from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from server.geometry.point import Point
 from server.simulation_objects.junctions.i_junction import IJunction
-from server.simulation_objects.roadsections.i_road_section import IRoadSection
 
 
 @dataclass(init=True, repr=True)

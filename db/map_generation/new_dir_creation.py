@@ -20,7 +20,7 @@ def __get_new_dir_name() -> str:
     """
     try:
         dirs = os.listdir(DIRS_PATH)
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         # no "generated" dir. create it
         os.mkdir(DIRS_PATH)
         return "0"

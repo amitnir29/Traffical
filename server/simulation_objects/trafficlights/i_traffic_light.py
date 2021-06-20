@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 from server.geometry.point import Point
-from server.simulation_objects.iteration_trackable import IterationTrackable
 
 
 class ITrafficLight(ABC):

@@ -1,14 +1,10 @@
 from typing import List
 
+from algorithms.algos_list import *
 from graphics.graphics_manager import GraphicsManager
-from server.geometry.point import Point
+from server.cars_generator import generate_cars
 from server.map_creation import create_map
 from server.server_runner import next_iter
-from server.simulation_objects.cars.car import Car
-from server.simulation_objects.cars.position import Position
-from algorithms.algos_list import *
-from server.cars_generator import generate_cars, generate_car
-from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 from server.statistics.stats_reporter import StatsReporter
 
 
@@ -56,6 +52,7 @@ def main():
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
 
     print(reporter.report())
+
 
 if __name__ == '__main__':
     main()

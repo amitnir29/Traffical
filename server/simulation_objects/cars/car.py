@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from math import atan, degrees
 from typing import List, Optional, Tuple
-from math import atan, pi, degrees
 
+from server.geometry.line import Line
+from server.geometry.point import Point
 from server.simulation_objects.cars.car_state import CarState
 from server.simulation_objects.cars.i_car import ICar
 from server.simulation_objects.cars.position import Position
-from server.geometry.line import Line
-from server.geometry.point import Point
 from server.simulation_objects.lanes.i_lane import ILane
 from server.simulation_objects.lanes.notified_lane import NotifiedLane
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
@@ -83,7 +83,6 @@ class Car(ICar):
         if self.__speed < 1:
             print("speed is " + str(self.__speed))
             print("acc is " + str(self.__acceleration))
-
 
     def _full_gass(self):
         print("full_gass")

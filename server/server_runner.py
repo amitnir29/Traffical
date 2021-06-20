@@ -1,10 +1,7 @@
-from algorithms.tl_manager import TLManager
-
-
 def next_iter(light_algos, traffic_lights, cars):
     """
     calculate the next iteration of the simulation
-    :param lights_algorithm: traffic lights manager
+    :param light_algos: traffic lights manager
     :param traffic_lights: the traffic lights objects, including their state (red/green)
     :param cars: the current cars on the map, should calculate their next position
     :return: new traffic lights and cars lists

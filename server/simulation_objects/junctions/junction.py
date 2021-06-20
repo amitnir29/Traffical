@@ -1,11 +1,10 @@
 from typing import List
 
-from db.dataclasses.junction_data import JunctionData
-from server.geometry.point import Point
 import server.simulation_objects.junctions.i_junction as ij
 import server.simulation_objects.roadsections.i_road_section as irs
 import server.simulation_objects.trafficlights.i_traffic_light as itl
-from server.simulation_objects.trafficlights import traffic_light as tl
+from db.dataclasses.junction_data import JunctionData
+from server.geometry.point import Point
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
 
