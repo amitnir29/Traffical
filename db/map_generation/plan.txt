@@ -1,0 +1,45 @@
+We want to generate a map.
+
+First, a certain lane's data is represented using:
+RoadLane:
+    road_id: int
+    lane_num: int
+
+A map is represented using two lists:
+1. RoadData:
+    idnum: int
+    coordinates: List[Tuple[Point, Point]]
+    num_lanes: int
+    max_speed: float
+2. JunctionData:
+    idnum: int
+    coordinates: List[Point]
+    goes_to: List[Tuple[RoadLane, RoadLane]]
+    traffic_lights: List[List[RoadLane]]
+    traffic_lights_coords: List[Point]
+    num_traffic_lights: int
+    * if the junction contains no traffic lights, then the last 3 fields are empty lists or zero
+
+Our goal is to generate a map such that:
+1. No roads cross each other
+2. A junction is a connection between roads
+3. For each road, the width matches number of lanes
+4. No two roads or two junctions have the same idnum
+5. In the goes_to of a junction, no road is both "From road" and "To road"
+6. The length of the traffic_lights and traffic_lights_coords lists match the num_traffic_lights field of the junction
+7. Road parts have a minimum length
+8. Roads have a maximum total length
+9. Roads have a minimum distance from each other, side-wise
+10. Roads connect only through a junction
+11. All RoadData have a valid road_id and a matching valid lane_num based on number of lanes in the road
+12. Each junction connects at least 3 roads
+
+The algortihm is separated to 2 parts:
+1. Create all junctions in the map.
+    They are all parallel to the map's edges.
+    They should have a minimum distance between each other.
+    The number of lanes of each side should be set.
+    The choice whether a road will be placed in each of the sides,
+        the goes_to field, and the traffic lights are not in this part.
+    For each junction, keep track of its closest junctions
+2. Create roads that connect the junctions:

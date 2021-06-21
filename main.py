@@ -1,6 +1,6 @@
 from typing import List
 
-from algorithms.algos_list import *
+from algorithms.naive import NaiveAlgo
 from graphics.graphics_manager import GraphicsManager
 from server.cars_generator import generate_cars
 from server.map_creation import create_map
@@ -19,9 +19,9 @@ def main():
     cars: List = generate_cars(roads, 14, p=1, min_len=6, with_prints=True)
 
     # while the screen is not closed, draw the current state and calculate the next state
-    # light_algos = [NaiveAlgo(junction) for junction in all_junctions]
+    light_algos = [NaiveAlgo(junction) for junction in all_junctions]
     # light_algos = [MCAlgo(junction) for junction in all_junctions]
-    light_algos = [MCTL(junction) for junction in all_junctions]
+    # light_algos = [MCTL(junction) for junction in all_junctions]
     # light_algos = [RLQTL(junction) for junction in all_junctions]
     # light_algos = [RLQRS(junction) for junction in all_junctions]
 
