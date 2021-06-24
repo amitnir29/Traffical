@@ -26,6 +26,9 @@ class Node:
     def get_connections_ids(self) -> Set[int]:
         return {c.other.node_id for c in self.__connections}
 
+    def connections_count(self) -> int:
+        return len(self.__connections)
+
     def remove_connection(self, conn: Connection):
         """
         remove a connection from the node

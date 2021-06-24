@@ -20,9 +20,19 @@ class Graph:
         self.__remove_connections()
         if with_prints:
             print(self)
-        removed = self.__remove_unconencted_juncs()
-        # if with_prints:
-        print("removed", removed)
+        removed = self.__remove_01_connected_juncs()
+        if with_prints:
+            print("removed:", removed)
+            print(self)
+        self.test()
+
+    def test(self):
+        for row in self.__juncs:
+            for junc in row:
+                if junc is not None:
+                    if junc.connections_count() <= 1:
+                        print(junc.indices)
+                        raise Exception("bad")
 
     def __create_graph(self, width, height):
         """
@@ -35,7 +45,7 @@ class Graph:
             row: List[JuncNode] = list()
             for w in range(width):
                 jnodes: List[Node] = [self.add_node() for _ in range(4)]
-                jn = JuncNode(Point(100 * w, 100 * h), jnodes)
+                jn = JuncNode(Point(100 * w, 100 * h), jnodes, (h, w))
                 row.append(jn)
             self.__juncs.append(row)
         # create all connections
@@ -119,7 +129,7 @@ class Graph:
             curr_node_id = sample(nodes_left, 1)[0]
             nodes_left.remove(curr_node_id)
             curr_node = self.get_node(curr_node_id)
-            if len(curr_node.get_connections()) <= 1:
+            if curr_node.connections_count() <= 1:
                 # 0 with no connection to begin with,
                 # 1 if already been taken care of through another node
                 continue
@@ -127,25 +137,25 @@ class Graph:
             # now we should set this to be the only connection of this node
             curr_node.keep_only_connection(chosen_connection, apply_for_other=True)
 
-    def __remove_unconencted_juncs(self) -> int:
+    def __remove_01_connected_juncs(self) -> int:
         """
-        remove all junctions that have 0 connections to all other junctions
+        remove all junctions that have 0/1 connections to all other junctions.
+        notice that in case that removing a junction results in another junction with 0/1 connections,
+        we should remove it too
         :return: number of junctions removed
         """
-        removed_count = 0
-        ws, hs = self.sizes["w"], self.sizes["h"]
-        for hi in range(hs):
-            for wi in range(ws):
-                junc = self.__juncs[hi][wi]
-                # should remove the junc
-                if junc.connections_count() == 0:
-                    removed_count += 1
-                    # remove inner nodes from graph
-                    for node in junc.all_nodes:
-                        self.remove_node(node)
-                    # remove junc from graph
-                    self.__juncs[hi][wi] = None
-        return removed_count
+        total_removed = 0
+        while True:
+            removed = 0
+            for row in self.__juncs:
+                for junc in row:
+                    if junc is not None and junc.connections_count() <= 1:
+                        self.remove_junction(junc)
+                        removed += 1
+            if removed == 0:
+                break
+            total_removed += removed
+        return total_removed
 
     def add_node(self) -> Node:
         """
@@ -157,16 +167,24 @@ class Graph:
         self.__next_id += 1
         return new_node
 
-    def remove_node(self, node: Node):
-        node.clear_connections()
-        self.__nodes.pop(node.node_id, None)
-
     def get_node(self, node_id: int) -> Node:
         """
         :param node_id: id of a wanted node
         :return: the node with the input id
         """
         return self.__nodes[node_id]
+
+    def remove_node(self, node: Node):
+        node.clear_connections()
+        self.__nodes.pop(node.node_id, None)
+
+    def remove_junction(self, junc: JuncNode):
+        # remove inner nodes from graph
+        for node in junc.all_nodes:
+            self.remove_node(node)
+        # remove junc from graph
+        hi, wi = junc.indices
+        self.__juncs[hi][wi] = None
 
     def add_connection(self, n1: Node, n2: Node):
         """
@@ -192,5 +210,5 @@ class Graph:
         s = "Graph:\n"
         for ri, jnr in enumerate(self.__juncs):
             for i, jn in enumerate(jnr):
-                s += f"({ri},{i}): {jn}"
+                s += f"({ri},{i}): {jn}\n"
         return s
