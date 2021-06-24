@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Dict, List, Tuple
-from random import randint
+from random import randint, sample, choice
 
 from db.map_generation.graphs.junction_node import JuncNode
 from db.map_generation.graphs.node import Node
@@ -15,6 +15,9 @@ class Graph:
         self.__next_id: int = 0  # the next id to add
         self.sizes = {"w": width, "h": height}
         self.__create_graph(width, height)
+        print(self)
+        self.__remove_connections()
+        print(self)
 
     def __create_graph(self, width, height):
         """
@@ -41,34 +44,14 @@ class Graph:
         # top left corner:
         self.add_connection(self.__juncs[0][0].right, self.__juncs[0][1].left)
         self.add_connection(self.__juncs[0][0].down, self.__juncs[1][0].up)
-        # diagonal:
-        if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[0][0].right, self.__juncs[1][1].up)
-        else:
-            self.add_connection(self.__juncs[0][0].down, self.__juncs[1][1].left)
         # top row:
         for wi in range(1, ws - 1):
             self.add_connection(self.__juncs[0][wi].right, self.__juncs[0][wi + 1].left)
             self.add_connection(self.__juncs[0][wi].left, self.__juncs[0][wi - 1].right)
             self.add_connection(self.__juncs[0][wi].down, self.__juncs[1][wi].up)
-            # diagonal to left
-            if randint(0, 1) == 0:
-                self.add_connection(self.__juncs[0][wi].left, self.__juncs[1][wi - 1].up)
-            else:
-                self.add_connection(self.__juncs[0][wi].down, self.__juncs[1][wi - 1].right)
-            # diagonal to right
-            if randint(0, 1) == 0:
-                self.add_connection(self.__juncs[0][wi].right, self.__juncs[1][wi + 1].up)
-            else:
-                self.add_connection(self.__juncs[0][wi].down, self.__juncs[1][wi + 1].left)
         # top right corner:
         self.add_connection(self.__juncs[0][-1].left, self.__juncs[0][-2].right)
         self.add_connection(self.__juncs[0][-1].down, self.__juncs[1][-1].up)
-        # diagonal:
-        if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[0][-1].left, self.__juncs[1][-2].up)
-        else:
-            self.add_connection(self.__juncs[0][-1].down, self.__juncs[1][-2].right)
         # middle rows:
         for hi in range(1, hs - 1):
             for wi in range(1, ws - 1):
@@ -96,38 +79,48 @@ class Graph:
                     self.add_connection(self.__juncs[hi][wi].right, self.__juncs[hi + 1][wi + 1].up)
                 else:
                     self.add_connection(self.__juncs[hi][wi].down, self.__juncs[hi + 1][wi + 1].left)
-
         # bottom left corner:
         self.add_connection(self.__juncs[-1][0].right, self.__juncs[-1][1].left)
         self.add_connection(self.__juncs[-1][0].up, self.__juncs[-2][0].down)
-        # diagonal:
-        if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[-1][0].right, self.__juncs[-2][1].down)
-        else:
-            self.add_connection(self.__juncs[-1][0].up, self.__juncs[-2][1].left)
         # bottom row
         for wi in range(1, ws - 1):
             self.add_connection(self.__juncs[-1][wi].right, self.__juncs[-1][wi + 1].left)
             self.add_connection(self.__juncs[-1][wi].left, self.__juncs[-1][wi - 1].right)
             self.add_connection(self.__juncs[-1][wi].up, self.__juncs[-2][wi].down)
-            # diagonal to left
-            if randint(0, 1) == 0:
-                self.add_connection(self.__juncs[-1][wi].up, self.__juncs[-2][wi - 1].right)
-            else:
-                self.add_connection(self.__juncs[-1][wi].left, self.__juncs[-2][wi - 1].down)
-            # diagonal to right
-            if randint(0, 1) == 0:
-                self.add_connection(self.__juncs[-1][wi].up, self.__juncs[-2][wi + 1].left)
-            else:
-                self.add_connection(self.__juncs[-1][wi].right, self.__juncs[-2][wi + 1].down)
         # bottom right corner:
         self.add_connection(self.__juncs[-1][-1].left, self.__juncs[-1][-2].right)
         self.add_connection(self.__juncs[-1][-1].up, self.__juncs[-2][-1].down)
-        # diagonal:
+        # diagonals remaining:
         if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[-1][-1].left, self.__juncs[-2][-2].down)
+            self.add_connection(self.__juncs[0][1].left, self.__juncs[1][0].up)
         else:
-            self.add_connection(self.__juncs[-1][-1].up, self.__juncs[-2][-2].right)
+            self.add_connection(self.__juncs[0][1].down, self.__juncs[1][0].right)
+        if randint(0, 1) == 0:
+            self.add_connection(self.__juncs[0][-2].right, self.__juncs[1][-1].up)
+        else:
+            self.add_connection(self.__juncs[0][-2].down, self.__juncs[1][-1].left)
+        if randint(0, 1) == 0:
+            self.add_connection(self.__juncs[-1][1].left, self.__juncs[-2][0].down)
+        else:
+            self.add_connection(self.__juncs[-1][1].up, self.__juncs[-2][0].right)
+        if randint(0, 1) == 0:
+            self.add_connection(self.__juncs[-1][-2].right, self.__juncs[-2][-1].down)
+        else:
+            self.add_connection(self.__juncs[-1][-2].up, self.__juncs[-2][-1].left)
+
+    def __remove_connections(self):
+        nodes_left = {i for i in range(len(self.get_all_nodes()))}
+        while len(nodes_left) != 0:
+            curr_node_id = sample(nodes_left, 1)[0]
+            nodes_left.remove(curr_node_id)
+            curr_node = self.get_node(curr_node_id)
+            if len(curr_node.get_connections()) <= 1:
+                # 0 with no connection to begin with,
+                # 1 if already been taken care of through another node
+                continue
+            chosen_connection = choice(curr_node.get_connections())
+            # now we should set this to be the only connection of this node
+            curr_node.keep_only_connection(chosen_connection, apply_for_other=True)
 
     def add_node(self) -> Node:
         """
@@ -172,7 +165,3 @@ class Graph:
             for i, jn in enumerate(jnr):
                 s += f"({ri},{i}): {jn}"
         return s
-
-    def test(self):
-        return self.__juncs[0][0].down.node_id in self.__juncs[1][1].left.get_connections_ids() \
-               and self.__juncs[0][0].right.node_id in self.__juncs[1][1].up.get_connections_ids()
