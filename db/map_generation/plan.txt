@@ -34,12 +34,15 @@ Our goal is to generate a map such that:
 11. All RoadData have a valid road_id and a matching valid lane_num based on number of lanes in the road
 12. Each junction connects at least 3 roads
 
-The algortihm is separated to 2 parts:
-1. Create all junctions in the map.
-    They are all parallel to the map's edges.
-    They should have a minimum distance between each other.
-    The number of lanes of each side should be set.
-    The choice whether a road will be placed in each of the sides,
-        the goes_to field, and the traffic lights are not in this part.
-    For each junction, keep track of its closest junctions
-2. Create roads that connect the junctions:
+The algortihm:
+1. We start with a rectangle grid, each point represents a junction (which consists of 4 points - for each side).
+2. Now, we will add all possible edges between the inside 4 points to their neighbors (represents road sections,
+    we are not deciding on number of lanes, just creating the general shape of the map for now).
+3. Now, we will remove edges until each of the inside points has at most one edge connectes.
+    That means that the junction will have more than one connection but each side of it won't.
+4. Each Junction that has 0/1 connections to it will be removed.
+5. Each junction that has only 2 connections wiil be removed as well but the to road sections will be combined
+    into one that goes through the part of the map where the junction used to be to avoid collisions in road sections.
+6. Roads that are diagonal will be split into 2 parts in order to be ok, and we will need to make sure that
+    they don't collide with other road sections.
+7. todo Decide traffic direction in each road sections and put traffic lights.
