@@ -58,7 +58,8 @@ class Node:
         """
         empty connections list
         """
-        self.__connections = list()
+        for conn in self.get_connections().copy():
+            self.remove_connection(conn)
 
     def __eq__(self, other: Node):
         return self.node_id == other.node_id

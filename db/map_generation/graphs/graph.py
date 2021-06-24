@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from random import randint, sample, choice
 
 from db.map_generation.graphs.junction_node import JuncNode
@@ -9,15 +9,20 @@ from server.geometry.point import Point
 
 
 class Graph:
-    def __init__(self, width, height):
+    def __init__(self, width, height, with_prints=False):
         self.__nodes: Dict[int, Node] = dict()  # the graph
-        self.__juncs: List[List[JuncNode]] = list()
+        self.__juncs: List[List[Optional[JuncNode]]] = list()
         self.__next_id: int = 0  # the next id to add
         self.sizes = {"w": width, "h": height}
         self.__create_graph(width, height)
-        print(self)
+        if with_prints:
+            print(self)
         self.__remove_connections()
-        print(self)
+        if with_prints:
+            print(self)
+        removed = self.__remove_unconencted_juncs()
+        # if with_prints:
+        print("removed", removed)
 
     def __create_graph(self, width, height):
         """
@@ -122,6 +127,26 @@ class Graph:
             # now we should set this to be the only connection of this node
             curr_node.keep_only_connection(chosen_connection, apply_for_other=True)
 
+    def __remove_unconencted_juncs(self) -> int:
+        """
+        remove all junctions that have 0 connections to all other junctions
+        :return: number of junctions removed
+        """
+        removed_count = 0
+        ws, hs = self.sizes["w"], self.sizes["h"]
+        for hi in range(hs):
+            for wi in range(ws):
+                junc = self.__juncs[hi][wi]
+                # should remove the junc
+                if junc.connections_count() == 0:
+                    removed_count += 1
+                    # remove inner nodes from graph
+                    for node in junc.all_nodes:
+                        self.remove_node(node)
+                    # remove junc from graph
+                    self.__juncs[hi][wi] = None
+        return removed_count
+
     def add_node(self) -> Node:
         """
         create a new node, add it to the dict with the current id, increment the id, and return the new nod
@@ -131,6 +156,10 @@ class Graph:
         self.__nodes[self.__next_id] = new_node
         self.__next_id += 1
         return new_node
+
+    def remove_node(self, node: Node):
+        node.clear_connections()
+        self.__nodes.pop(node.node_id, None)
 
     def get_node(self, node_id: int) -> Node:
         """
