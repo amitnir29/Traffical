@@ -39,5 +39,8 @@ class JuncNode:
     def __repr__(self):
         return f"JuncNode: [up:{self.up}, down:{self.down}, right:{self.right}, left:{self.left}]"
 
+    def __eq__(self, other):
+        return self.indices == other.indices
+
     def connections_count(self):
         return sum(n.connections_count() for n in self.all_nodes)

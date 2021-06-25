@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple, Optional, Set, Union
 from random import randint, sample, choice
 
 from db.map_generation.graphs.junction_node import JuncNode, JuncIndices, JuncRoadConnection
-from db.map_generation.graphs.node import Node
+from db.map_generation.graphs.node import Node, Connection
 from server.geometry.point import Point
 
 
@@ -29,13 +29,12 @@ class Graph:
             print(self)
         roads = self.__dfs_roads_directions()
         if with_prints:
-            print("roads:",*roads,sep="\n")
-
+            print("roads:", *roads, sep="\n")
 
         # connected2 = self.__get_2_connected_juncs()
         # if with_prints:
         #     print("number of 2 connected:", len(connected2))
-        # self.__test()
+        self.__test()
 
     def add_node(self) -> Node:
         """
@@ -67,6 +66,48 @@ class Graph:
         node.clear_connections()
         self.__nodes.pop(node.node_id, None)
 
+    def add_connection(self, n1: Node, n2: Node):
+        """
+        add a connection between n1 and n2
+        :param n1: source id
+        :param n2: target id
+        """
+        if n2.node_id in n1.get_connections_ids() or n1.node_id in n2.get_connections_ids():
+            return
+        n1.add_child(n2)
+        n2.add_child(n1)
+
+    def is_connection_diagonal(self, conn: Connection):
+        j1 = self.get_junc_from_node(conn.me)
+        j2 = self.get_junc_from_node(conn.other)
+        # now check if they are diagonal: if they do not match both coordinates
+        return j1.indices.row != j2.indices.row and j1.indices.col != j2.indices.col
+
+    def is_conncetion_diagonals_crossing(self, conn: Connection):
+        """
+        return True if the connceetion is diagonal,
+        and there is also a diagonal conncetion between the other 2 junctions in the 2x2 junctions square
+        :param conn: the connection to check
+        """
+        if not self.is_connection_diagonal(conn):
+            return False
+        j1 = self.get_junc_from_node(conn.me)
+        j2 = self.get_junc_from_node(conn.other)
+        # check if top-left to bottom-right diagonal of top-right to bottom-left diagonal
+        indices_diff = (j1.indices.row - j2.indices.row, j1.indices.col - j2.indices.col)
+        if indices_diff[0] == indices_diff[1]:
+            # top-left to bottom-right
+            top_left = j1 if indices_diff[0] == -1 else j2  # else diff is 1
+            top_right = self.get_junc((top_left.indices.row, top_left.indices.col + 1))
+            bottom_left = self.get_junc((top_left.indices.row + 1, top_left.indices.col))
+            return self.are_juncs_connected(top_right, bottom_left)
+        else:
+            # top-right to bottom-left
+            top_right = j1 if indices_diff[0] == -1 else j2  # else diff is 1
+            top_left = self.get_junc((top_right.indices.row, top_right.indices.col - 1))
+            bottom_right = self.get_junc((top_right.indices.row + 1, top_right.indices.col))
+            return self.are_juncs_connected(top_left, bottom_right)
+
     def remove_junction(self, junc: JuncNode):
         # remove inner nodes from graph
         for node in junc.all_nodes:
@@ -90,16 +131,11 @@ class Graph:
                 indices_set.add(self.get_junc_from_node(other).indices)
         return [self.get_junc(indices) for indices in indices_set]
 
-    def add_connection(self, n1: Node, n2: Node):
+    def are_juncs_connected(self, j1: JuncNode, j2: JuncNode) -> bool:
         """
-        add a connection between n1 and n2
-        :param n1: source id
-        :param n2: target id
+        :return: True if there is a connection between any node of each of them
         """
-        if n2.node_id in n1.get_connections_ids() or n1.node_id in n2.get_connections_ids():
-            return
-        n1.add_child(n2)
-        n2.add_child(n1)
+        return j2 in self.get_connected_juncs(j1)
 
     def get_all_nodes(self) -> List[Node]:
         """
@@ -120,6 +156,7 @@ class Graph:
     # map building
     def __test(self):
         connections_counts = set()
+        # test juncs removal
         for row in self.__juncs:
             for junc in row:
                 if junc is not None:
@@ -127,9 +164,22 @@ class Graph:
                     if junc.connections_count() <= 1:
                         print(junc.indices)
                         raise Exception("bad juncs removal")
+        # test number of connections for each junc
         if len(connections_counts.difference({2, 3, 4})) != 0:
             print(connections_counts)
             raise Exception("bad connections counts")
+        # test no diagonals crossing
+        for hi in range(self.height - 1):
+            for wi in range(self.width - 1):
+                top_left = self.get_junc((hi, wi))
+                top_right = self.get_junc((hi, wi + 1))
+                bottom_left = self.get_junc((hi + 1, wi))
+                bottom_right = self.get_junc((hi + 1, wi + 1))
+                if top_left is None or top_right is None or bottom_left is None or bottom_right is None:
+                    continue
+                if self.are_juncs_connected(top_left, bottom_right) \
+                        and self.are_juncs_connected(top_right, bottom_left):
+                    raise Exception("diagonals crossing")
 
     def __create_graph(self):
         """
@@ -227,7 +277,21 @@ class Graph:
                 # 0 with no connection to begin with,
                 # 1 if already been taken care of through another node
                 continue
-            chosen_connection = choice(curr_node.get_connections())
+            conncetions = curr_node.get_connections().copy()
+            chosen_connection = choice(conncetions)
+            # make sure that it is not a diagonal that crosses an established diagonal connection
+            # between the other 2 nodes in the 2x2 juncs square
+            no_choice = False
+            while self.is_conncetion_diagonals_crossing(chosen_connection):
+                conncetions.remove(chosen_connection)
+                if len(conncetions) == 0:
+                    # we have no connections left to choose from
+                    no_choice = True
+                    break
+                chosen_connection = choice(conncetions)
+            if no_choice:
+                # if after cancelling the diagonals crossing conncetions we have no possible conncetions left
+                continue
             # now we should set this to be the only connection of this node
             curr_node.keep_only_connection(chosen_connection, apply_for_other=True)
 
