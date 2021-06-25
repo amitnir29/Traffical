@@ -27,10 +27,15 @@ class Graph:
         if with_prints:
             print("removed:", removed)
             print(self)
-        connected2 = self.__get_2_connected_juncs()
+        roads = self.__dfs_roads_directions()
         if with_prints:
-            print("number of 2 connected:", len(connected2))
-        self.__test()
+            print("roads:",*roads,sep="\n")
+
+
+        # connected2 = self.__get_2_connected_juncs()
+        # if with_prints:
+        #     print("number of 2 connected:", len(connected2))
+        # self.__test()
 
     def add_node(self) -> Node:
         """
@@ -264,16 +269,42 @@ class Graph:
         """
 
         roads: Set[JuncRoadConnection] = set()
-        visited: Set[JuncIndices] = set()
+        visited_indices: Set[JuncIndices] = set()
 
-        def rec(junc: JuncNode):
+        def dfs_rec(junc: JuncNode):
             """
             recursively run from the input junction
             :param junc: the junction to run from
             """
-            visited.add(junc.indices)
-            # TODO
+            # add to visited
+            visited_indices.add(junc.indices)
+            # run on neighbors
+            for neighbor in self.get_connected_juncs(junc):
+                if neighbor.indices not in visited_indices:
+                    roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
+                    dfs_rec(neighbor)
 
-        # TODO
+        def first_node(junc: JuncNode):
+            """
+            run specifically for a group-start junction
+            :param junc: a junction that is the first in a connected group
+            """
+            # add to visited
+            visited_indices.add(junc.indices)
+            # choose a random road to be in-road
+            neighbors = self.get_connected_juncs(junc)
+            in_road_junc = choice(neighbors)
+            roads.add(JuncRoadConnection(in_road_junc.indices, junc.indices))
+            # run for the rest of the neighbors
+            neighbors.remove(in_road_junc)
+            for neighbor in neighbors:
+                roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
+                dfs_rec(neighbor)
 
+        all_juncs_indices: Set[JuncIndices] = {junc.indices for row in self.__juncs for junc in row if junc is not None}
+        # the graph may not be connected, should run until all connected parts are visited
+        while len(all_juncs_indices) != len(visited_indices):
+            # now choose a junc and run on it.
+            start_junc = self.get_junc(sample(all_juncs_indices.difference(visited_indices), 1)[0])
+            first_node(start_junc)
         return roads

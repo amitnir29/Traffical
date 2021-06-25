@@ -5,13 +5,13 @@ from db.map_generation.graphs.node import Node
 from server.geometry.point import Point
 
 
-@dataclass(init=True, eq=True, frozen=True, unsafe_hash=True)
+@dataclass(init=True, eq=True, frozen=True, unsafe_hash=True, repr=True)
 class JuncIndices:
     row: int
     col: int
 
 
-@dataclass(init=True, eq=True, frozen=True, unsafe_hash=True)
+@dataclass(init=True, eq=True, frozen=True, unsafe_hash=True, repr=True)
 class JuncRoadConnection:
     source: JuncIndices
     target: JuncIndices
