@@ -6,3 +6,4 @@ from db.map_generation.save_to_files import save_junctions
 def generate_map(width, height):
     path = create_new_dir()
     g = Graph(width, height)
+    g.build_map(with_prints=True)

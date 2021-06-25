@@ -1,20 +1,23 @@
 from __future__ import annotations
 
-from typing import Dict, List, Tuple, Optional, Set
+from typing import Dict, List, Tuple, Optional, Set, Union
 from random import randint, sample, choice
 
-from db.map_generation.graphs.junction_node import JuncNode
+from db.map_generation.graphs.junction_node import JuncNode, JuncIndices, JuncRoadConnection
 from db.map_generation.graphs.node import Node
 from server.geometry.point import Point
 
 
 class Graph:
-    def __init__(self, width, height, with_prints=False):
+    def __init__(self, width, height):
         self.__nodes: Dict[int, Node] = dict()  # the graph
         self.__juncs: List[List[Optional[JuncNode]]] = list()
         self.__next_id: int = 0  # the next id to add
-        self.sizes = {"w": width, "h": height}
-        self.__create_graph(width, height)
+        self.width = width
+        self.height = height
+
+    def build_map(self, with_prints=False):
+        self.__create_graph()
         if with_prints:
             print(self)
         self.__remove_connections()
@@ -27,9 +30,89 @@ class Graph:
         connected2 = self.__get_2_connected_juncs()
         if with_prints:
             print("number of 2 connected:", len(connected2))
-        self.test()
+        self.__test()
 
-    def test(self):
+    def add_node(self) -> Node:
+        """
+        create a new node, add it to the dict with the current id, increment the id, and return the new nod
+        :return: the new node
+        """
+        new_node = Node(self.__next_id)
+        self.__nodes[self.__next_id] = new_node
+        self.__next_id += 1
+        return new_node
+
+    def get_node(self, node_id: int) -> Node:
+        """
+        :param node_id: id of a wanted node
+        :return: the node with the input id
+        """
+        return self.__nodes[node_id]
+
+    def get_junc(self, indices: Union[JuncIndices, Tuple[int, int]]) -> JuncNode:
+        """
+        :param indices: indices in the 2d junc array
+        :return: the JuncNode in those indices
+        """
+        if isinstance(indices, JuncIndices):
+            return self.__juncs[indices.row][indices.col]
+        return self.__juncs[indices[0]][indices[1]]
+
+    def remove_node(self, node: Node):
+        node.clear_connections()
+        self.__nodes.pop(node.node_id, None)
+
+    def remove_junction(self, junc: JuncNode):
+        # remove inner nodes from graph
+        for node in junc.all_nodes:
+            self.remove_node(node)
+        # remove junc from graph
+        self.__juncs[junc.indices.row][junc.indices.col] = None
+
+    def get_junc_from_node(self, node: Node) -> JuncNode:
+        """
+        :param node: input node of the graph
+        :return: the junction that contains the node
+        """
+        junc_num = node.node_id // 4
+        return self.get_junc((junc_num // self.width, junc_num % self.width))
+
+    def get_connected_juncs(self, junc: JuncNode) -> List[JuncNode]:
+        indices: Set[JuncIndices] = set()
+        for node in junc.all_nodes:
+            for connection in node.get_connections():
+                other = connection.other
+                indices.add(self.get_junc_from_node(other).indices)
+
+    def add_connection(self, n1: Node, n2: Node):
+        """
+        add a connection between n1 and n2
+        :param n1: source id
+        :param n2: target id
+        """
+        if n2.node_id in n1.get_connections_ids() or n1.node_id in n2.get_connections_ids():
+            return
+        n1.add_child(n2)
+        n2.add_child(n1)
+
+    def get_all_nodes(self) -> List[Node]:
+        """
+        :return: a list of all nodes in graph
+        """
+        return list(self.__nodes.values())
+
+    def __len__(self):
+        return len(self.__nodes)
+
+    def __repr__(self):
+        s = "Graph:\n"
+        for ri, jnr in enumerate(self.__juncs):
+            for i, jn in enumerate(jnr):
+                s += f"({ri},{i}): {jn}\n"
+        return s
+
+    # map building
+    def __test(self):
         connections_counts = set()
         for row in self.__juncs:
             for junc in row:
@@ -42,16 +125,14 @@ class Graph:
             print(connections_counts)
             raise Exception("bad connections counts")
 
-    def __create_graph(self, width, height):
+    def __create_graph(self):
         """
         create all nodes and connections
-        :param width: number of nodes in each row
-        :param height: number of nodes in each column
         """
         # create the nodes
-        for h in range(height):
+        for h in range(self.height):
             row: List[JuncNode] = list()
-            for w in range(width):
+            for w in range(self.width):
                 jnodes: List[Node] = [self.add_node() for _ in range(4)]
                 jn = JuncNode(Point(100 * w, 100 * h), jnodes, (h, w))
                 row.append(jn)
@@ -63,73 +144,72 @@ class Graph:
         """
         create all connections between nodes
         """
-        ws, hs = self.sizes["w"], self.sizes["h"]
         # top left corner:
-        self.add_connection(self.__juncs[0][0].right, self.__juncs[0][1].left)
-        self.add_connection(self.__juncs[0][0].down, self.__juncs[1][0].up)
+        self.add_connection(self.get_junc((0, 0)).right, self.get_junc((0, 1)).left)
+        self.add_connection(self.get_junc((0, 0)).down, self.get_junc((1, 0)).up)
         # top row:
-        for wi in range(1, ws - 1):
-            self.add_connection(self.__juncs[0][wi].right, self.__juncs[0][wi + 1].left)
-            self.add_connection(self.__juncs[0][wi].left, self.__juncs[0][wi - 1].right)
-            self.add_connection(self.__juncs[0][wi].down, self.__juncs[1][wi].up)
+        for wi in range(1, self.width - 1):
+            self.add_connection(self.get_junc((0, wi)).right, self.get_junc((0, wi + 1)).left)
+            self.add_connection(self.get_junc((0, wi)).left, self.get_junc((0, wi - 1)).right)
+            self.add_connection(self.get_junc((0, wi)).down, self.get_junc((1, wi)).up)
         # top right corner:
-        self.add_connection(self.__juncs[0][-1].left, self.__juncs[0][-2].right)
-        self.add_connection(self.__juncs[0][-1].down, self.__juncs[1][-1].up)
+        self.add_connection(self.get_junc((0, -1)).left, self.get_junc((0, -2)).right)
+        self.add_connection(self.get_junc((0, -1)).down, self.get_junc((1, -1)).up)
         # middle rows:
-        for hi in range(1, hs - 1):
-            for wi in range(1, ws - 1):
-                self.add_connection(self.__juncs[hi][wi].right, self.__juncs[hi][wi + 1].left)
-                self.add_connection(self.__juncs[hi][wi].left, self.__juncs[hi][wi - 1].right)
-                self.add_connection(self.__juncs[hi][wi].down, self.__juncs[hi + 1][wi].up)
-                self.add_connection(self.__juncs[hi][wi].up, self.__juncs[hi - 1][wi].down)
+        for hi in range(1, self.height - 1):
+            for wi in range(1, self.width - 1):
+                self.add_connection(self.get_junc((hi, wi)).right, self.get_junc((hi, wi + 1)).left)
+                self.add_connection(self.get_junc((hi, wi)).left, self.get_junc((hi, wi - 1)).right)
+                self.add_connection(self.get_junc((hi, wi)).down, self.get_junc((hi + 1, wi)).up)
+                self.add_connection(self.get_junc((hi, wi)).up, self.get_junc((hi - 1, wi)).down)
                 # diagonal to up left
                 if randint(0, 1) == 0:
-                    self.add_connection(self.__juncs[hi][wi].up, self.__juncs[hi - 1][wi - 1].right)
+                    self.add_connection(self.get_junc((hi, wi)).up, self.get_junc((hi - 1, wi - 1)).right)
                 else:
-                    self.add_connection(self.__juncs[hi][wi].left, self.__juncs[hi - 1][wi - 1].down)
+                    self.add_connection(self.get_junc((hi, wi)).left, self.get_junc((hi - 1, wi - 1)).down)
                 # diagonal to up right
                 if randint(0, 1) == 0:
-                    self.add_connection(self.__juncs[hi][wi].up, self.__juncs[hi - 1][wi + 1].left)
+                    self.add_connection(self.get_junc((hi, wi)).up, self.get_junc((hi - 1, wi + 1)).left)
                 else:
-                    self.add_connection(self.__juncs[hi][wi].right, self.__juncs[hi - 1][wi + 1].down)
+                    self.add_connection(self.get_junc((hi, wi)).right, self.get_junc((hi - 1, wi + 1)).down)
                 # diagonal to down left
                 if randint(0, 1) == 0:
-                    self.add_connection(self.__juncs[hi][wi].left, self.__juncs[hi + 1][wi - 1].up)
+                    self.add_connection(self.get_junc((hi, wi)).left, self.get_junc((hi + 1, wi - 1)).up)
                 else:
-                    self.add_connection(self.__juncs[hi][wi].down, self.__juncs[hi + 1][wi - 1].right)
+                    self.add_connection(self.get_junc((hi, wi)).down, self.get_junc((hi + 1, wi - 1)).right)
                 # diagonal to down right
                 if randint(0, 1) == 0:
-                    self.add_connection(self.__juncs[hi][wi].right, self.__juncs[hi + 1][wi + 1].up)
+                    self.add_connection(self.get_junc((hi, wi)).right, self.get_junc((hi + 1, wi + 1)).up)
                 else:
-                    self.add_connection(self.__juncs[hi][wi].down, self.__juncs[hi + 1][wi + 1].left)
+                    self.add_connection(self.get_junc((hi, wi)).down, self.get_junc((hi + 1, wi + 1)).left)
         # bottom left corner:
-        self.add_connection(self.__juncs[-1][0].right, self.__juncs[-1][1].left)
-        self.add_connection(self.__juncs[-1][0].up, self.__juncs[-2][0].down)
+        self.add_connection(self.get_junc((-1, 0)).right, self.get_junc((-1, 1)).left)
+        self.add_connection(self.get_junc((-1, 0)).up, self.get_junc((-2, 0)).down)
         # bottom row
-        for wi in range(1, ws - 1):
-            self.add_connection(self.__juncs[-1][wi].right, self.__juncs[-1][wi + 1].left)
-            self.add_connection(self.__juncs[-1][wi].left, self.__juncs[-1][wi - 1].right)
-            self.add_connection(self.__juncs[-1][wi].up, self.__juncs[-2][wi].down)
+        for wi in range(1, self.width - 1):
+            self.add_connection(self.get_junc((-1, wi)).right, self.get_junc((-1, wi + 1)).left)
+            self.add_connection(self.get_junc((-1, wi)).left, self.get_junc((-1, wi - 1)).right)
+            self.add_connection(self.get_junc((-1, wi)).up, self.get_junc((-2, wi)).down)
         # bottom right corner:
-        self.add_connection(self.__juncs[-1][-1].left, self.__juncs[-1][-2].right)
-        self.add_connection(self.__juncs[-1][-1].up, self.__juncs[-2][-1].down)
+        self.add_connection(self.get_junc((-1, -1)).left, self.get_junc((-1, -2)).right)
+        self.add_connection(self.get_junc((-1, -1)).up, self.get_junc((-2, -1)).down)
         # diagonals remaining:
         if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[0][1].left, self.__juncs[1][0].up)
+            self.add_connection(self.get_junc((0, 1)).left, self.get_junc((1, 0)).up)
         else:
-            self.add_connection(self.__juncs[0][1].down, self.__juncs[1][0].right)
+            self.add_connection(self.get_junc((0, 1)).down, self.get_junc((1, 0)).right)
         if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[0][-2].right, self.__juncs[1][-1].up)
+            self.add_connection(self.get_junc((0, -2)).right, self.get_junc((1, -1)).up)
         else:
-            self.add_connection(self.__juncs[0][-2].down, self.__juncs[1][-1].left)
+            self.add_connection(self.get_junc((0, -2)).down, self.get_junc((1, -1)).left)
         if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[-1][1].left, self.__juncs[-2][0].down)
+            self.add_connection(self.get_junc((-1, 1)).left, self.get_junc((-2, 0)).down)
         else:
-            self.add_connection(self.__juncs[-1][1].up, self.__juncs[-2][0].right)
+            self.add_connection(self.get_junc((-1, 1)).up, self.get_junc((-2, 0)).right)
         if randint(0, 1) == 0:
-            self.add_connection(self.__juncs[-1][-2].right, self.__juncs[-2][-1].down)
+            self.add_connection(self.get_junc((-1, -2)).right, self.get_junc((-2, -1)).down)
         else:
-            self.add_connection(self.__juncs[-1][-2].up, self.__juncs[-2][-1].left)
+            self.add_connection(self.get_junc((-1, -2)).up, self.get_junc((-2, -1)).left)
 
     def __remove_connections(self):
         nodes_left = {i for i in range(len(self.get_all_nodes()))}
@@ -165,7 +245,7 @@ class Graph:
             total_removed += removed
         return total_removed
 
-    def __get_2_connected_juncs(self) -> Set[Tuple[int, int]]:
+    def __get_2_connected_juncs(self) -> Set[JuncIndices]:
         """
         :return: a set of all (i,j) in the 2d juncs array where the junc has exactly 2 connections
         """
@@ -173,61 +253,26 @@ class Graph:
         for ri, row in enumerate(self.__juncs):
             for i, junc in enumerate(row):
                 if junc is not None and junc.connections_count() == 2:
-                    result.add((ri, i))
+                    result.add(JuncIndices(ri, i))
         return result
 
-    def add_node(self) -> Node:
+    def __dfs_roads_directions(self) -> Set[JuncRoadConnection]:
         """
-        create a new node, add it to the dict with the current id, increment the id, and return the new nod
-        :return: the new node
+        perform DFS of the graph to set road direction for each junctions connection.
+        :return: the road directions
         """
-        new_node = Node(self.__next_id)
-        self.__nodes[self.__next_id] = new_node
-        self.__next_id += 1
-        return new_node
 
-    def get_node(self, node_id: int) -> Node:
-        """
-        :param node_id: id of a wanted node
-        :return: the node with the input id
-        """
-        return self.__nodes[node_id]
+        roads: Set[JuncRoadConnection] = set()
+        visited: Set[JuncIndices] = set()
 
-    def remove_node(self, node: Node):
-        node.clear_connections()
-        self.__nodes.pop(node.node_id, None)
+        def rec(junc: JuncNode):
+            """
+            recursively run from the input junction
+            :param junc: the junction to run from
+            """
+            visited.add(junc.indices)
+            # TODO
 
-    def remove_junction(self, junc: JuncNode):
-        # remove inner nodes from graph
-        for node in junc.all_nodes:
-            self.remove_node(node)
-        # remove junc from graph
-        hi, wi = junc.indices
-        self.__juncs[hi][wi] = None
+        # TODO
 
-    def add_connection(self, n1: Node, n2: Node):
-        """
-        add a connection between n1 and n2
-        :param n1: source id
-        :param n2: target id
-        """
-        if n2.node_id in n1.get_connections_ids() or n1.node_id in n2.get_connections_ids():
-            return
-        n1.add_child(n2)
-        n2.add_child(n1)
-
-    def get_all_nodes(self) -> List[Node]:
-        """
-        :return: a list of all nodes in graph
-        """
-        return list(self.__nodes.values())
-
-    def __len__(self):
-        return len(self.__nodes)
-
-    def __repr__(self):
-        s = "Graph:\n"
-        for ri, jnr in enumerate(self.__juncs):
-            for i, jn in enumerate(jnr):
-                s += f"({ri},{i}): {jn}\n"
-        return s
+        return roads
