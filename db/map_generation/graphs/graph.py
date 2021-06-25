@@ -78,11 +78,12 @@ class Graph:
         return self.get_junc((junc_num // self.width, junc_num % self.width))
 
     def get_connected_juncs(self, junc: JuncNode) -> List[JuncNode]:
-        indices: Set[JuncIndices] = set()
+        indices_set: Set[JuncIndices] = set()
         for node in junc.all_nodes:
             for connection in node.get_connections():
                 other = connection.other
-                indices.add(self.get_junc_from_node(other).indices)
+                indices_set.add(self.get_junc_from_node(other).indices)
+        return [self.get_junc(indices) for indices in indices_set]
 
     def add_connection(self, n1: Node, n2: Node):
         """
