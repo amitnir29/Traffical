@@ -35,14 +35,17 @@ Our goal is to generate a map such that:
 12. Each junction connects at least 3 roads
 
 The algortihm:
-1. We start with a rectangle grid, each point represents a junction (which consists of 4 points - for each side).
-2. Now, we will add all possible edges between the inside 4 points to their neighbors (represents road sections,
-    we are not deciding on number of lanes, just creating the general shape of the map for now).
-3. Now, we will remove edges until each of the inside points has at most one edge connectes.
-    That means that the junction will have more than one connection but each side of it won't.
+1. Start with a rectangle grid, each point represents a junction (which consists of 4 points - for each side).
+2. Add all possible edges between the inside 4 points of each junction, to their neighbors in other junctions.
+    This represents road sections, we are not deciding on number of lanes,
+    just creating the general shape of the map for now.
+3. For each inside point choose exactly one connection,
+    so now all sides have either 1 connection, or 0 connections of diagonals cut their possible connections.
+    That means that junctions may have more than one connection, but each side of a junction won't.
 4. Each Junction that has 0/1 connections to it will be removed.
-5. Each junction that has only 2 connections wiil be removed as well but the to road sections will be combined
-    into one that goes through the part of the map where the junction used to be to avoid collisions in road sections.
-6. Roads that are diagonal will be split into 2 parts in order to be ok, and we will need to make sure that
-    they don't collide with other road sections.
-7. todo Decide traffic direction in each road sections and put traffic lights.
+5. Save a list of all the junctions that have exactly 2 connections.
+    These will be removed later, and a long multi-part road will be created through them from their connections.
+6. Create a list of all roads connections, including parts counts of them.
+    Roads that where created through a 2-connected junction with have more than one part,
+    Roads that are diagonal will be split to 2 parts.
+7. TODO Decide traffic direction in each road sections and put traffic lights.

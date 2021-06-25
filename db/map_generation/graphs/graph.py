@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Set
 from random import randint, sample, choice
 
 from db.map_generation.graphs.junction_node import JuncNode
@@ -24,15 +24,23 @@ class Graph:
         if with_prints:
             print("removed:", removed)
             print(self)
+        connected2 = self.__get_2_connected_juncs()
+        if with_prints:
+            print("number of 2 connected:", len(connected2))
         self.test()
 
     def test(self):
+        connections_counts = set()
         for row in self.__juncs:
             for junc in row:
                 if junc is not None:
+                    connections_counts.add(junc.connections_count())
                     if junc.connections_count() <= 1:
                         print(junc.indices)
-                        raise Exception("bad")
+                        raise Exception("bad juncs removal")
+        if len(connections_counts.difference({2, 3, 4})) != 0:
+            print(connections_counts)
+            raise Exception("bad connections counts")
 
     def __create_graph(self, width, height):
         """
@@ -156,6 +164,17 @@ class Graph:
                 break
             total_removed += removed
         return total_removed
+
+    def __get_2_connected_juncs(self) -> Set[Tuple[int, int]]:
+        """
+        :return: a set of all (i,j) in the 2d juncs array where the junc has exactly 2 connections
+        """
+        result = set()
+        for ri, row in enumerate(self.__juncs):
+            for i, junc in enumerate(row):
+                if junc is not None and junc.connections_count() == 2:
+                    result.add((ri, i))
+        return result
 
     def add_node(self) -> Node:
         """
