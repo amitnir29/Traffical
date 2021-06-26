@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import Dict, List, Tuple, Optional, Set, Union
 from random import randint, sample, choice
 
-from db.map_generation.graphs.junction_node import JuncNode, JuncIndices, JuncRoadConnection
+from db.map_generation.graphs.junction_node import JuncNode, JuncIndices, JuncRoadSingleConnection, \
+    JuncRoadChainConnection
 from db.map_generation.graphs.node import Node, Connection
 from server.geometry.point import Point
 
@@ -80,7 +82,7 @@ class Graph:
         j1 = self.get_junc_from_node(conn.me)
         j2 = self.get_junc_from_node(conn.other)
         # now check if they are diagonal: if they do not match both coordinates
-        return j1.indices.row != j2.indices.row and j1.indices.col != j2.indices.col
+        return JuncRoadSingleConnection(j1.indices, j2.indices).is_diagonal
 
     def is_conncetion_diagonals_crossing(self, conn: Connection):
         """
@@ -142,6 +144,12 @@ class Graph:
         """
         return list(self.__nodes.values())
 
+    def get_all_juncs(self) -> List[JuncNode]:
+        """
+        :return: a list of all not-None juncs
+        """
+        return [junc for row in self.__juncs for junc in row if junc is not None]
+
     def __len__(self):
         return len(self.__nodes)
 
@@ -153,16 +161,14 @@ class Graph:
         return s
 
     # map building
-    def __test(self, roads: Set[JuncRoadConnection]):
+    def __test(self, roads: Set[JuncRoadSingleConnection]):
         connections_counts = set()
         # test juncs removal
-        for row in self.__juncs:
-            for junc in row:
-                if junc is not None:
-                    connections_counts.add(junc.connections_count())
-                    if junc.connections_count() <= 1:
-                        print(junc.indices)
-                        raise Exception(f"bad juncs removal: {junc.indices}")
+        for junc in self.get_all_juncs():
+            connections_counts.add(junc.connections_count())
+            if junc.connections_count() <= 1:
+                print(junc.indices)
+                raise Exception(f"bad juncs removal: {junc.indices}")
         # test number of connections for each junc
         if len(connections_counts.difference({2, 3, 4})) != 0:
             print(connections_counts)
@@ -184,8 +190,8 @@ class Graph:
             for conn in node.get_connections():
                 source_junc = self.get_junc_from_node(conn.me)
                 target_junc = self.get_junc_from_node(conn.other)
-                if JuncRoadConnection(source_junc.indices, target_junc.indices) not in roads \
-                        and JuncRoadConnection(target_junc.indices, source_junc.indices) not in roads:
+                if JuncRoadSingleConnection(source_junc.indices, target_junc.indices) not in roads \
+                        and JuncRoadSingleConnection(target_junc.indices, source_junc.indices) not in roads:
                     raise Exception(f"connection has no road direction: {conn},"
                                     f" for juncs: {source_junc.indices}, {target_junc.indices}")
         for junc_road_conn in roads:
@@ -316,34 +322,22 @@ class Graph:
         total_removed = 0
         while True:
             removed = 0
-            for row in self.__juncs:
-                for junc in row:
-                    if junc is not None and junc.connections_count() <= 1:
-                        self.remove_junction(junc)
-                        removed += 1
+            for junc in self.get_all_juncs():
+                if junc.connections_count() <= 1:
+                    self.remove_junction(junc)
+                    removed += 1
             if removed == 0:
                 break
             total_removed += removed
         return total_removed
 
-    def __get_2_connected_juncs(self) -> Set[JuncIndices]:
-        """
-        :return: a set of all (i,j) in the 2d juncs array where the junc has exactly 2 connections
-        """
-        result = set()
-        for ri, row in enumerate(self.__juncs):
-            for i, junc in enumerate(row):
-                if junc is not None and junc.connections_count() == 2:
-                    result.add(JuncIndices(ri, i))
-        return result
-
-    def __dfs_roads_directions(self, with_prints=False) -> Set[JuncRoadConnection]:
+    def __dfs_roads_directions(self, with_prints=False) -> Set[JuncRoadSingleConnection]:
         """
         perform DFS of the graph to set road direction for each junctions connection.
         :return: the road directions
         """
 
-        roads: Set[JuncRoadConnection] = set()
+        roads: Set[JuncRoadSingleConnection] = set()
         visited_indices: Set[JuncIndices] = set()
 
         def dfs_rec(junc: JuncNode):
@@ -359,7 +353,7 @@ class Graph:
                 if neighbor.indices not in visited_indices:
                     if with_prints:
                         print(junc.indices, neighbor.indices)
-                    roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
+                    roads.add(JuncRoadSingleConnection(junc.indices, neighbor.indices))
                     dfs_rec(neighbor)
                 """
                 there is a case where we are currently at junc 1, which has neighbors 2,3.
@@ -369,8 +363,8 @@ class Graph:
                 so we result in a conncetion with no road, fix it:
                 """
                 if neighbor.indices in visited_indices \
-                        and JuncRoadConnection(junc.indices, neighbor.indices) not in roads:
-                    roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
+                        and JuncRoadSingleConnection(junc.indices, neighbor.indices) not in roads:
+                    roads.add(JuncRoadSingleConnection(junc.indices, neighbor.indices))
                     # do not call dfs recursivly
 
         def first_node(junc: JuncNode):
@@ -385,19 +379,64 @@ class Graph:
             in_road_junc = choice(neighbors)
             if with_prints:
                 print("first in-road", in_road_junc.indices, junc.indices)
-            roads.add(JuncRoadConnection(in_road_junc.indices, junc.indices))
+            roads.add(JuncRoadSingleConnection(in_road_junc.indices, junc.indices))
             # run for the rest of the neighbors
             neighbors.remove(in_road_junc)
             for neighbor in neighbors:
                 if with_prints:
                     print("first", junc.indices, neighbor.indices)
-                roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
+                roads.add(JuncRoadSingleConnection(junc.indices, neighbor.indices))
                 dfs_rec(neighbor)
 
-        all_juncs_indices: Set[JuncIndices] = {junc.indices for row in self.__juncs for junc in row if junc is not None}
+        all_juncs_indices: Set[JuncIndices] = {junc.indices for junc in self.get_all_juncs()}
         # the graph may not be connected, should run until all connected parts are visited
         while len(all_juncs_indices) != len(visited_indices):
             # now choose a junc and run on it.
             start_junc = self.get_junc(sample(all_juncs_indices.difference(visited_indices), 1)[0])
             first_node(start_junc)
         return roads
+
+    def __get_2_connected_juncs(self, roads: Set[JuncRoadSingleConnection]) -> Set[JuncIndices]:
+        """
+        :return: a set of all (i,j) in the 2d juncs array where the junc has exactly
+        one in-road connection and exactly one out-road connection.
+        """
+        # get number of in-roads and out-roads for each junction
+        in_roads: Dict[JuncIndices, Set[JuncRoadSingleConnection]] = defaultdict(set)
+        out_roads: Dict[JuncIndices, Set[JuncRoadSingleConnection]] = defaultdict(set)
+        for road in roads:
+            in_roads[road.source].add(road)
+            out_roads[road.target].add(road)
+        return {junc.indices for junc in self.get_all_juncs()
+                if len(in_roads[junc.indices]) == len(out_roads[junc.indices]) == 1}
+
+    def __create_chain_roads(self, roads: Set[JuncRoadSingleConnection]) -> List[JuncRoadChainConnection]:
+        """
+        create chain connection in a way that handles 2-connected roads.
+        a single conncetion that does not belong to a chain, is a chain of length 1.
+        :param roads: all single connections between junctions
+        :param connected2: all juncs that have exactly 2 connections
+        :return: a list of the all chain conncetions
+        """
+        chain_connections: List[JuncRoadChainConnection] = list()
+        handled: Set[JuncRoadSingleConnection] = set()
+        # create a dict to get all roads *from* a junc
+        roads_from: Dict[JuncIndices, Set[JuncRoadSingleConnection]] = defaultdict(set)
+        for conn in roads:
+            roads_from[conn.source].add(conn)
+        # now run over all roads
+        connected2 = self.__get_2_connected_juncs(roads)
+        while len(handled) != len(roads):
+            # init a chain road connection
+            chain: List[JuncRoadSingleConnection] = list()
+            # get a random road
+            curr_road: JuncRoadSingleConnection = sample(roads.difference(handled), 1)[0]
+            handled.add(curr_road)
+            chain.append(curr_road)
+            """
+            now we have to be careful. there are 4 case:
+            1. both sides of the road are not on a 2-connected junc, just add the chain
+            """
+            # TODO
+
+        return chain_connections

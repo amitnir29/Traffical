@@ -12,9 +12,18 @@ class JuncIndices:
 
 
 @dataclass(init=True, eq=True, frozen=True, unsafe_hash=True, repr=True)
-class JuncRoadConnection:
+class JuncRoadSingleConnection:
     source: JuncIndices
     target: JuncIndices
+
+    @property
+    def is_diagonal(self):
+        return self.source.row != self.target.row and self.source.col != self.target.col
+
+
+@dataclass(init=True, repr=True)
+class JuncRoadChainConnection:
+    parts: List[JuncRoadSingleConnection]
 
 
 @dataclass
