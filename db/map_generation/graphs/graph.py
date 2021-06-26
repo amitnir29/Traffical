@@ -29,10 +29,12 @@ class Graph:
         if with_prints:
             print("removed:", removed)
             print(self)
-        roads = self.__dfs_roads_directions(with_prints)
+        single_roads = self.__dfs_roads_directions(with_prints)
         if with_prints:
-            print("roads:", *roads, sep="\n")
-        self.__test(roads)
+            print("roads:", *single_roads, sep="\n")
+        roads_chains = self.__create_chain_roads(single_roads)
+
+        self.__test(single_roads)
 
     def add_node(self) -> Node:
         """
@@ -486,24 +488,40 @@ class Graph:
                 we dont save just the current road becuase this creates troubles in the while condition.
                 """
                 loop_start_road = list(in_roads[curr_road.source])[0]
+                original_road = curr_road
                 while curr_road.target in connected2 and curr_road != loop_start_road:
                     curr_road = list(out_roads[curr_road.target])[0]  # the length of the set is 1. get its element.
                     handled.add(curr_road)
                     chain.append(curr_road)
                 # we finished going forwards, for 1 of 2 reasons:
-                if loop_start_road == curr_road:
-                    # we have a loop in the roads. delete all junctions.
-                    # TODO
-                    pass
-                else:
+                if loop_start_road != curr_road:
                     # regular operations. now go backwards:
-                    curr_road = list(out_roads[loop_start_road.target])[0]  # this is the original current road
+                    curr_road = original_road
                     while curr_road.source in connected2:
                         curr_road = list(in_roads[curr_road.source])[0]  # the length of the set is 1. get its element.
                         handled.add(curr_road)
                         chain.insert(0, curr_road)
                     # in the end, add the chain
                     chain_connections.append(JuncRoadChainConnection(chain))
+                else:
+                    """
+                    we have a loop. handle the removing of all these junctions.
+                    do the following:
+                    1. find all junctions and roads that take part in the loop.
+                    2. remove all of the roads from the roads set,
+                        and also from the handled set to keep the while loop stop condition.
+                    *. no need to remove them from them from in_roads/out_roads/connceted2 since they are
+                        irrelevent to the other roads and junctions.
+                    3. then, just apply the junc removing function on all junctions.
+                    """
+                    # step 1: we already have exactly them in the chain list!
+                    # step 2:
+                    roads = roads.difference(chain)
+                    handled = handled.difference(chain)
+                    # step 3:
+                    juncs_indices: List[JuncIndices] = [road.source for road in chain]
+                    for junc_indices in juncs_indices:
+                        self.remove_junction(self.get_junc(junc_indices))
             # just error checking
             else:
                 raise Exception("error in if chain, in graph.__create_chain_roads")
