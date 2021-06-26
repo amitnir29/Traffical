@@ -29,12 +29,17 @@ class Graph:
         if with_prints:
             print("removed:", removed)
             print(self)
+        self.__test([1, 2])
         single_roads = self.__dfs_roads_directions(with_prints)
         if with_prints:
-            print("roads:", *single_roads, sep="\n")
-        roads_chains = self.__create_chain_roads(single_roads)
-
-        self.__test(single_roads)
+            print("single roads:", *single_roads, sep="\n")
+        self.__test([3], others={"single_roads": single_roads})
+        connected2_count = len(self.__get_2_connected_juncs(single_roads))
+        roads_chains, loop_removed = self.__create_chain_roads(single_roads, with_removed=True)
+        if with_prints:
+            print("roads chains:", *roads_chains, sep="\n")
+            print(self)
+        self.__test([4], others={"roads_chains": roads_chains, "prev_2_counts": connected2_count - loop_removed})
 
     def add_node(self) -> Node:
         """
@@ -167,42 +172,84 @@ class Graph:
         return s
 
     # map building
-    def __test(self, roads: Set[JuncRoadSingleConnection]):
-        connections_counts = set()
-        # test juncs removal
-        for junc in self.get_all_juncs():
-            connections_counts.add(junc.connections_count())
-            if junc.connections_count() <= 1:
-                print(junc.indices)
-                raise Exception(f"bad juncs removal: {junc.indices}")
-        # test number of connections for each junc
-        if len(connections_counts.difference({2, 3, 4})) != 0:
-            print(connections_counts)
-            raise Exception(f"bad connections counts: {connections_counts}")
-        # test no diagonals crossing
-        for hi in range(self.height - 1):
-            for wi in range(self.width - 1):
-                top_left = self.get_junc((hi, wi))
-                top_right = self.get_junc((hi, wi + 1))
-                bottom_left = self.get_junc((hi + 1, wi))
-                bottom_right = self.get_junc((hi + 1, wi + 1))
-                if top_left is None or top_right is None or bottom_left is None or bottom_right is None:
-                    continue
-                if self.are_juncs_connected(top_left, bottom_right) \
-                        and self.are_juncs_connected(top_right, bottom_left):
-                    raise Exception(f"diagonals crossing: {top_left.indices},{bottom_right.indices}")
-        # test all connections have a road
-        for node in self.get_all_nodes():
-            for conn in node.get_connections():
-                source_junc = self.get_junc_from_node(conn.me)
-                target_junc = self.get_junc_from_node(conn.other)
-                if JuncRoadSingleConnection(source_junc.indices, target_junc.indices) not in roads \
-                        and JuncRoadSingleConnection(target_junc.indices, source_junc.indices) not in roads:
-                    raise Exception(f"connection has no road direction: {conn},"
-                                    f" for juncs: {source_junc.indices}, {target_junc.indices}")
-        for junc_road_conn in roads:
-            if not self.are_juncs_connected(self.get_junc(junc_road_conn.source), self.get_junc(junc_road_conn.target)):
-                raise Exception(f"road exists but no connection: {junc_road_conn}")
+    def __test(self, test_levels: List[int], others: Dict = None):
+        def test1():
+            connections_counts = set()
+            # test juncs removal
+            for junc in self.get_all_juncs():
+                connections_counts.add(junc.connections_count())
+                if junc.connections_count() <= 1:
+                    print(junc.indices)
+                    raise Exception(f"bad juncs removal: {junc.indices}")
+            # test number of connections for each junc
+            if len(connections_counts.difference({2, 3, 4})) != 0:
+                print(connections_counts)
+                raise Exception(f"bad connections counts: {connections_counts}")
+
+        def test2():
+            # test no diagonals crossing
+            for hi in range(self.height - 1):
+                for wi in range(self.width - 1):
+                    top_left = self.get_junc((hi, wi))
+                    top_right = self.get_junc((hi, wi + 1))
+                    bottom_left = self.get_junc((hi + 1, wi))
+                    bottom_right = self.get_junc((hi + 1, wi + 1))
+                    if top_left is None or top_right is None or bottom_left is None or bottom_right is None:
+                        continue
+                    if self.are_juncs_connected(top_left, bottom_right) \
+                            and self.are_juncs_connected(top_right, bottom_left):
+                        raise Exception(f"diagonals crossing: {top_left.indices},{bottom_right.indices}")
+
+        def test3():
+            if others is None or "single_roads" not in others:
+                raise Exception("test3 must have single_roads in others dict")
+            single_roads: Set[JuncRoadSingleConnection] = others["single_roads"]
+            # test all connections have a road
+            for node in self.get_all_nodes():
+                for conn in node.get_connections():
+                    source_junc = self.get_junc_from_node(conn.me)
+                    target_junc = self.get_junc_from_node(conn.other)
+                    if JuncRoadSingleConnection(source_junc.indices, target_junc.indices) not in single_roads \
+                            and JuncRoadSingleConnection(target_junc.indices, source_junc.indices) not in single_roads:
+                        raise Exception(f"connection has no road direction: {conn},"
+                                        f" for juncs: {source_junc.indices}, {target_junc.indices}")
+            for junc_road_conn in single_roads:
+                if not self.are_juncs_connected(self.get_junc(junc_road_conn.source),
+                                                self.get_junc(junc_road_conn.target)):
+                    raise Exception(f"road exists but no connection: {junc_road_conn}")
+
+        def test4():
+            if others is None or "roads_chains" not in others:
+                raise Exception("test4 must have roads_chains in others dict")
+            roads_chains: List[JuncRoadChainConnection] = others["roads_chains"]
+            if "prev_2_counts" not in others:
+                raise Exception("test4 must have prev_2_counts in others dict")
+            prev_2_counts: int = others["prev_2_counts"]
+            all_left_singles: Set[JuncRoadSingleConnection] = {single for chain in roads_chains for single in
+                                                               chain.parts}
+            # test there are no more 2-connections juncs
+            connected2 = self.__get_2_connected_juncs(all_left_singles)
+            if len(connected2) != 0:
+                raise Exception(f"juncs have 2 connections: {connected2}")
+            # test all connections have a road
+            for node in self.get_all_nodes():
+                for conn in node.get_connections():
+                    source_junc = self.get_junc_from_node(conn.me)
+                    target_junc = self.get_junc_from_node(conn.other)
+                    if JuncRoadSingleConnection(source_junc.indices, target_junc.indices) not in all_left_singles \
+                            and JuncRoadSingleConnection(target_junc.indices,
+                                                         source_junc.indices) not in all_left_singles:
+                        raise Exception(f"connection has no road direction: {conn},"
+                                        f" for juncs: {source_junc.indices}, {target_junc.indices}")
+            # test all 2-connected are gone
+            if prev_2_counts != sum([len(chain.parts) - 1 for chain in roads_chains if len(chain.parts) > 1]):
+                raise Exception("no match between 2-connected juncs and juncs removed")
+
+        tests = {
+            1: test1, 2: test2, 3: test3, 4: test4
+        }
+        for test_level in test_levels:
+            tests[test_level]()
 
     def __create_graph(self):
         """
@@ -369,7 +416,8 @@ class Graph:
                 so we result in a conncetion with no road, fix it:
                 """
                 if neighbor.indices in visited_indices \
-                        and JuncRoadSingleConnection(junc.indices, neighbor.indices) not in roads:
+                        and JuncRoadSingleConnection(junc.indices, neighbor.indices) not in roads \
+                        and JuncRoadSingleConnection(neighbor.indices, junc.indices) not in roads:
                     roads.add(JuncRoadSingleConnection(junc.indices, neighbor.indices))
                     # do not call dfs recursivly
 
@@ -433,17 +481,19 @@ class Graph:
         return {junc.indices for junc in self.get_all_juncs()
                 if len(in_roads[junc.indices]) == len(out_roads[junc.indices]) == 1}
 
-    def __create_chain_roads(self, roads: Set[JuncRoadSingleConnection]) -> List[JuncRoadChainConnection]:
+    def __create_chain_roads(self, roads: Set[JuncRoadSingleConnection], with_removed=False) \
+            -> Union[List[JuncRoadChainConnection], Tuple[List[JuncRoadChainConnection], int]]:
         """
         create chain connection in a way that handles 2-connected roads.
         a single conncetion that does not belong to a chain, is a chain of length 1.
         :param roads: all single connections between junctions
-        :param connected2: all juncs that have exactly 2 connections
-        :return: a list of the all chain conncetions
+        :return: a list of the all chain conncetions if with_removed is False.
+            else, a pair of the chain connections, and number of removed loop junctions
         """
         chain_connections: List[JuncRoadChainConnection] = list()
         handled: Set[JuncRoadSingleConnection] = set()
         in_roads, out_roads = self.__get_in_out_roads_dicts(roads)
+        loop_removed = 0
         # now run over all roads
         connected2: Set[JuncIndices] = self.__get_2_connected_juncs(roads, (in_roads, out_roads))
         while len(handled) != len(roads):
@@ -473,6 +523,9 @@ class Graph:
                     chain.append(curr_road)
                 # reached False, so we should not skip over the next target, we are done.
                 chain_connections.append(JuncRoadChainConnection(chain))
+                # remove the 2-connected junctions
+                for road in chain[:-1]:
+                    self.remove_junction(self.get_junc(road.target))
             # case 3
             elif curr_road.source in connected2 and curr_road.target not in connected2:
                 while curr_road.source in connected2:
@@ -481,6 +534,9 @@ class Graph:
                     chain.insert(0, curr_road)
                 # reached False, so we should not skip over the next target, we are done.
                 chain_connections.append(JuncRoadChainConnection(chain))
+                # remove the 2-connected junctions
+                for road in chain[:-1]:
+                    self.remove_junction(self.get_junc(road.target))
             # case 4
             elif curr_road.source in connected2 and curr_road.target in connected2:
                 """
@@ -503,6 +559,9 @@ class Graph:
                         chain.insert(0, curr_road)
                     # in the end, add the chain
                     chain_connections.append(JuncRoadChainConnection(chain))
+                    # remove the 2-connected junctions
+                    for road in chain[:-1]:
+                        self.remove_junction(self.get_junc(road.target))
                 else:
                     """
                     we have a loop. handle the removing of all these junctions.
@@ -516,14 +575,17 @@ class Graph:
                     """
                     # step 1: we already have exactly them in the chain list!
                     # step 2:
-                    roads = roads.difference(chain)
-                    handled = handled.difference(chain)
+                    for road in chain:
+                        roads.remove(road)
+                        handled.remove(road)
                     # step 3:
                     juncs_indices: List[JuncIndices] = [road.source for road in chain]
+                    loop_removed += len(juncs_indices)
                     for junc_indices in juncs_indices:
                         self.remove_junction(self.get_junc(junc_indices))
             # just error checking
             else:
                 raise Exception("error in if chain, in graph.__create_chain_roads")
-
+        if with_removed:
+            return chain_connections, loop_removed
         return chain_connections
