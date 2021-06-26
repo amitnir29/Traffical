@@ -26,18 +26,8 @@ class JuncRoadChainConnection:
     parts: List[JuncRoadSingleConnection]
 
 
-@dataclass
 class JuncNode:
-    location: Point
-    up: Node
-    down: Node
-    right: Node
-    left: Node
-    all_nodes: Tuple[Node, Node, Node, Node]
-    indices: JuncIndices
-
-    def __init__(self, loc: Point, nodes: List[Node], indices: Tuple[int, int]):
-        self.location = loc
+    def __init__(self, nodes: List[Node], indices: Tuple[int, int]):
         self.up = nodes[0]
         self.down = nodes[1]
         self.right = nodes[2]
