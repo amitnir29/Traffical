@@ -27,14 +27,13 @@ class Graph:
         if with_prints:
             print("removed:", removed)
             print(self)
-        roads = self.__dfs_roads_directions()
+        roads = self.__dfs_roads_directions(with_prints)
         if with_prints:
             print("roads:", *roads, sep="\n")
-
         # connected2 = self.__get_2_connected_juncs()
         # if with_prints:
         #     print("number of 2 connected:", len(connected2))
-        self.__test()
+        self.__test(roads)
 
     def add_node(self) -> Node:
         """
@@ -154,7 +153,7 @@ class Graph:
         return s
 
     # map building
-    def __test(self):
+    def __test(self, roads: Set[JuncRoadConnection]):
         connections_counts = set()
         # test juncs removal
         for row in self.__juncs:
@@ -163,11 +162,11 @@ class Graph:
                     connections_counts.add(junc.connections_count())
                     if junc.connections_count() <= 1:
                         print(junc.indices)
-                        raise Exception("bad juncs removal")
+                        raise Exception(f"bad juncs removal: {junc.indices}")
         # test number of connections for each junc
         if len(connections_counts.difference({2, 3, 4})) != 0:
             print(connections_counts)
-            raise Exception("bad connections counts")
+            raise Exception(f"bad connections counts: {connections_counts}")
         # test no diagonals crossing
         for hi in range(self.height - 1):
             for wi in range(self.width - 1):
@@ -179,7 +178,19 @@ class Graph:
                     continue
                 if self.are_juncs_connected(top_left, bottom_right) \
                         and self.are_juncs_connected(top_right, bottom_left):
-                    raise Exception("diagonals crossing")
+                    raise Exception(f"diagonals crossing: {top_left.indices},{bottom_right.indices}")
+        # test all connections have a road
+        for node in self.get_all_nodes():
+            for conn in node.get_connections():
+                source_junc = self.get_junc_from_node(conn.me)
+                target_junc = self.get_junc_from_node(conn.other)
+                if JuncRoadConnection(source_junc.indices, target_junc.indices) not in roads \
+                        and JuncRoadConnection(target_junc.indices, source_junc.indices) not in roads:
+                    raise Exception(f"connection has no road direction: {conn},"
+                                    f" for juncs: {source_junc.indices}, {target_junc.indices}")
+        for junc_road_conn in roads:
+            if not self.are_juncs_connected(self.get_junc(junc_road_conn.source), self.get_junc(junc_road_conn.target)):
+                raise Exception(f"road exists but no connection: {junc_road_conn}")
 
     def __create_graph(self):
         """
@@ -326,7 +337,7 @@ class Graph:
                     result.add(JuncIndices(ri, i))
         return result
 
-    def __dfs_roads_directions(self) -> Set[JuncRoadConnection]:
+    def __dfs_roads_directions(self, with_prints=False) -> Set[JuncRoadConnection]:
         """
         perform DFS of the graph to set road direction for each junctions connection.
         :return: the road directions
@@ -344,9 +355,23 @@ class Graph:
             visited_indices.add(junc.indices)
             # run on neighbors
             for neighbor in self.get_connected_juncs(junc):
+                # go over unvisited juncs and add roads to them from current
                 if neighbor.indices not in visited_indices:
+                    if with_prints:
+                        print(junc.indices, neighbor.indices)
                     roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
                     dfs_rec(neighbor)
+                """
+                there is a case where we are currently at junc 1, which has neighbors 2,3.
+                from junc 1 wwe move to 2, that moves to 3 from it.
+                3 will not go to 1 because 1 is visited, so the road 3->1 will not be created.
+                when returning to 1, it will not go to 3, because 3 is visited, so the road 1->3 will not be created.
+                so we result in a conncetion with no road, fix it:
+                """
+                if neighbor.indices in visited_indices \
+                        and JuncRoadConnection(junc.indices, neighbor.indices) not in roads:
+                    roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
+                    # do not call dfs recursivly
 
         def first_node(junc: JuncNode):
             """
@@ -356,12 +381,16 @@ class Graph:
             # add to visited
             visited_indices.add(junc.indices)
             # choose a random road to be in-road
-            neighbors = self.get_connected_juncs(junc)
+            neighbors = self.get_connected_juncs(junc).copy()
             in_road_junc = choice(neighbors)
+            if with_prints:
+                print("first in-road", in_road_junc.indices, junc.indices)
             roads.add(JuncRoadConnection(in_road_junc.indices, junc.indices))
             # run for the rest of the neighbors
             neighbors.remove(in_road_junc)
             for neighbor in neighbors:
+                if with_prints:
+                    print("first", junc.indices, neighbor.indices)
                 roads.add(JuncRoadConnection(junc.indices, neighbor.indices))
                 dfs_rec(neighbor)
 
