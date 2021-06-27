@@ -97,3 +97,7 @@ class Lane(il.ILane):
         distance_in_current_part = Line(current_part_start, car.position).length()
 
         return distance_of_previous_parts + distance_in_current_part
+
+
+    def get_all_cars(self):
+        return self.__cars
