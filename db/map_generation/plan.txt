@@ -51,9 +51,9 @@ The algortihm:
     Roads that where created through a 2-connected junction with have more than one part,
     Remove all 2-connected junctions (based on roads and not low-level connections)
 7. Set number of lanes for each road.
-TODO left:
 8. Set junction movement between each in-lane to the out-lanes.
     It is allowed that an out-lane will have no in-lane to it, but not for the whole out-road.
+TODO left:
 9. Set coordinates for each road and junction.
 10. For each junction, if it has exactly 1 in-road, do not set a traffic light to it.
     Else, there are 2/3 in-roads, set a traffic light for each of them.

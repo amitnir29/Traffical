@@ -15,6 +15,7 @@ class Lane(il.ILane):
         self.__cars = deque()
         self.__coordinates = coordinates
         self._goes_to: List[il.ILane] = list()
+        self._comes_from: List[il.ILane] = list()
         self.__road: irs.IRoadSection = road
 
     @property
@@ -29,8 +30,11 @@ class Lane(il.ILane):
     def goes_to_lanes(self):
         return self._goes_to
 
-    def add_movement(self, to_lane: il.ILane):
+    def add_movement_out(self, to_lane: il.ILane):
         self._goes_to.append(to_lane)
+
+    def add_movement_in(self, from_lane: il.ILane):
+        self._comes_from.append(from_lane)
 
     @staticmethod
     def _calculate_part_length(start: Tuple[Point, Point], end: Tuple[Point, Point]):

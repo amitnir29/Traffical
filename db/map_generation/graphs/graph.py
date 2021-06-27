@@ -392,7 +392,7 @@ class Graph:
         }
         tests[test_level]()
 
-    #step 1
+    # step 1
     def __create_graph(self):
         """
         create all nodes and connections
@@ -408,7 +408,7 @@ class Graph:
         # create all connections
         self.__create_connections()
 
-    #step 2
+    # step 2
     def __create_connections(self):
         """
         create all connections between nodes.
@@ -496,7 +496,7 @@ class Graph:
         self.add_connection(self.get_junc((-1, -1)).left, self.get_junc((-1, -2)).right)
         self.add_connection(self.get_junc((-1, -1)).up, self.get_junc((-2, -1)).down)
 
-    #step 3
+    # step 3
     def __remove_connections(self):
         nodes_left = set(self.__nodes.keys()).copy()
         while len(nodes_left) != 0:
@@ -516,7 +516,7 @@ class Graph:
             # now we should set this to be the only connection of this node
             curr_node.keep_only_connection(chosen_connection, apply_for_other=True)
 
-    #step 4
+    # step 4
     def __remove_01_connected_juncs(self) -> int:
         """
         remove all junctions that have 0/1 connections to all other junctions.
@@ -536,7 +536,7 @@ class Graph:
             total_removed += removed
         return total_removed
 
-    #step 5
+    # step 5
     def __dfs_roads_directions(self, with_prints=False) -> Set[JuncRoadSingleConnection]:
         """
         perform DFS of the graph to set road direction for each junctions connection.
@@ -573,7 +573,7 @@ class Graph:
                         and JuncRoadSingleConnection(junc.indices, neighbor.indices) not in roads \
                         and JuncRoadSingleConnection(neighbor.indices, junc.indices) not in roads:
                     if with_prints:
-                        print(junc.indices, neighbor.indices)
+                        print("special", junc.indices, neighbor.indices)
                     directions = self.get_connection_directions(junc, neighbor)
                     roads.add(JuncRoadSingleConnection(junc.indices, neighbor.indices, directions[0], directions[1]))
                     # do not call dfs recursivly
@@ -595,11 +595,12 @@ class Graph:
             # run for the rest of the neighbors
             neighbors.remove(in_road_junc)
             for neighbor in neighbors:
-                if with_prints:
-                    print("first", junc.indices, neighbor.indices)
-                directions = self.get_connection_directions(junc, neighbor)
-                roads.add(JuncRoadSingleConnection(junc.indices, neighbor.indices, directions[0], directions[1]))
-                dfs_rec(neighbor)
+                if neighbor.indices not in visited_indices: #the other case is handled through the neighbor in dfs_rec
+                    if with_prints:
+                        print("first", junc.indices, neighbor.indices)
+                    directions = self.get_connection_directions(junc, neighbor)
+                    roads.add(JuncRoadSingleConnection(junc.indices, neighbor.indices, directions[0], directions[1]))
+                    dfs_rec(neighbor)
 
         all_juncs_indices: Set[JuncIndices] = {junc.indices for junc in self.get_all_juncs()}
         # the graph may not be connected, should run until all connected parts are visited
@@ -609,7 +610,7 @@ class Graph:
             first_node(start_junc)
         return roads
 
-    #step 6
+    # step 6
     def __create_chain_roads(self, roads: Set[JuncRoadSingleConnection], with_removed=False) \
             -> Union[List[JuncRoadChainConnection], Tuple[List[JuncRoadChainConnection], int]]:
         """
@@ -756,7 +757,7 @@ class Graph:
         return {junc.indices for junc in self.get_all_juncs()
                 if len(in_roads[junc.indices]) == len(out_roads[junc.indices]) == 1}
 
-    #step 7
+    # step 7
     def __set_roads_lanes(self, roads_chains: List[JuncRoadChainConnection]):
         """
         set lanes for each road chain, based on number of in-roads and out-roads of the junctions.
@@ -785,7 +786,7 @@ class Graph:
             out_roads[road_chain.parts[0].source].append(road_chain)
         return in_roads, out_roads
 
-    #step 8
+    # step 8
     def __set_junction_movement(self, roads_chains: List[JuncRoadChainConnection]) \
             -> Dict[JuncIndices, List[Tuple[RoadLane, RoadLane]]]:
         """
