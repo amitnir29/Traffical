@@ -93,10 +93,18 @@ class ILane(ABC):
         pass
 
     @abstractmethod
-    def add_movement(self, to_lane: ILane):
+    def add_movement_out(self, to_lane: ILane):
         """
         add a lane to go to from this lane
         :param to_lane: the new lane to add
+        """
+        pass
+
+    @abstractmethod
+    def add_movement_in(self, from_lane: ILane):
+        """
+        add a lane that goes to self lane.
+        :param from_lane: the new lane to add
         """
         pass
 

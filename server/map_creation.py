@@ -164,7 +164,8 @@ def __set_lane_movements(roads: Dict[int, IRoadSection], from_roads: Dict[int, L
         for movement in movements:
             from_lane = roads[road_id].get_lane(movement[0].lane_num)
             to_lane = roads[movement[1].road_id].get_lane(movement[1].lane_num)
-            from_lane.add_movement(to_lane)
+            from_lane.add_movement_out(to_lane)
+            to_lane.add_movement_in(from_lane)
 
 
 def __get_all_junctions(junctions_data: List[JunctionData], roads: Dict[int, IRoadSection]) -> List[IJunction]:
