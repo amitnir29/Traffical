@@ -27,6 +27,6 @@ def generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_print
 
     if len(path) < min_len:
         return generate_car(roads, p, min_len, with_prints)
-    if with_prints:
-        print(path)
+    # if with_prints:
+        # print(path)
     return Car(path)
