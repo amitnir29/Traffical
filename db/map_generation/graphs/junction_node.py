@@ -48,6 +48,8 @@ class JuncRoadChainConnection:
         self.parts: List[JuncRoadSingleConnection] = parts
         self.lanes_num: int = None
         self.lanes: List[RoadLane] = None
+        self.first_junc: JuncIndices = parts[0].source
+        self.last_junc: JuncIndices = parts[-1].target
 
     def set_lanes(self, lanes_num: int):
         self.lanes_num = lanes_num
