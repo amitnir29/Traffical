@@ -274,7 +274,7 @@ class Graph:
                     raise Exception(f"road exists but no connection: {junc_road_conn}")
             # test all roads have directions set
             for road in single_roads:
-                if road.source_dir==JuncConnDirection.UNKNOWN or road.target_dir==JuncConnDirection.UNKNOWN:
+                if road.source_dir == JuncConnDirection.UNKNOWN or road.target_dir == JuncConnDirection.UNKNOWN:
                     raise Exception("test3 road has no connection directions set")
 
         def test4():
@@ -713,11 +713,19 @@ class Graph:
         :param junc_out_roads: the out_roads of the junc
         :return: the out_roads list but ordered from left to right.
         """
-        directions: Dict[str, Optional[JuncRoadChainConnection]] = {"l": None, "f": None, "r": None}
+        ordered_out_roads = list()
         in_road_single: JuncRoadSingleConnection = in_road.parts[-1]
-        out_roads_singles: List[JuncRoadSingleConnection] = [o.parts[0] for o in junc_out_roads]
-
-        # TODO
+        order: List[JuncConnDirection] \
+            = [JuncConnDirection.UP, JuncConnDirection.RIGHT, JuncConnDirection.DOWN, JuncConnDirection.LEFT]
+        in_direction_index = order.index(in_road_single.target_dir)
+        # go from left to right relative to the in_road.
+        for i in range(in_direction_index + 1, in_direction_index + 4):
+            direction = order[i % 4]
+            for out_road_chain in junc_out_roads:
+                if out_road_chain.parts[0].source_dir == direction:
+                    ordered_out_roads.append(out_road_chain)
+                    break
+        return ordered_out_roads
 
     def __set_junction_movement(self, roads_chains: List[JuncRoadChainConnection]) \
             -> Dict[JuncIndices, List[Tuple[RoadLane, RoadLane]]]:
