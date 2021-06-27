@@ -36,9 +36,20 @@ class Node:
         """
         self.__connections.remove(conn)
         # now from other:
-        for others_conn in conn.other.get_connections():
+        other = conn.other
+        for others_conn in other.get_connections():
             if others_conn.other.node_id == self.node_id:
-                conn.other.__connections.remove(others_conn)
+                other.__connections.remove(others_conn)
+                break
+
+    def remove_connection_by_id(self, node_id: int):
+        """
+        remove a connection from a node, by the id of the other node in the connection
+        :param node_id: the id of the other node
+        """
+        for conn in self.get_connections():
+            if conn.other.node_id == node_id:
+                self.remove_connection(conn)
                 break
 
     def keep_only_connection(self, conn_to_keep: Connection, apply_for_other=False):
@@ -47,15 +58,15 @@ class Node:
         :param apply_for_other: do the same for the other node
         :param conn_to_keep: the only connection to keep
         """
-        for conn in self.get_connections().copy():
-            if conn.other.node_id != conn_to_keep.other.node_id:
-                self.remove_connection(conn)
+        for conn_other_id in self.get_connections_ids().copy():
+            if conn_other_id != conn_to_keep.other.node_id:
+                self.remove_connection_by_id(conn_other_id)
         if not apply_for_other:
             return
         other_node = conn_to_keep.other
-        for other_conn in other_node.get_connections().copy():
-            if other_conn.other.node_id != self.node_id:
-                other_node.remove_connection(other_conn)
+        for other_conn_other_id in other_node.get_connections_ids().copy():
+            if other_conn_other_id != self.node_id:
+                other_node.remove_connection_by_id(other_conn_other_id)
 
     def clear_connections(self):
         """

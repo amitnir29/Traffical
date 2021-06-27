@@ -5,10 +5,13 @@ from db.map_generation.graphs.node import Node
 from server.geometry.point import Point
 
 
-@dataclass(init=True, eq=True, frozen=True, unsafe_hash=True, repr=True)
+@dataclass(init=True, eq=True, frozen=True, unsafe_hash=True)
 class JuncIndices:
     row: int
     col: int
+
+    def __repr__(self):
+        return f"({self.row},{self.col})"
 
 
 @dataclass(init=True, eq=True, frozen=True, unsafe_hash=True, repr=True)
@@ -36,7 +39,7 @@ class JuncNode:
         self.indices = JuncIndices(indices[0], indices[1])
 
     def __repr__(self):
-        return f"JuncNode: [up:{self.up}, down:{self.down}, right:{self.right}, left:{self.left}]"
+        return f"JuncNode {self.indices}: [up:{self.up}, down:{self.down}, right:{self.right}, left:{self.left}]"
 
     def __eq__(self, other):
         return self.indices == other.indices
