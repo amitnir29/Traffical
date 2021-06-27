@@ -42,3 +42,7 @@ class TrafficLight(itl.ITrafficLight):
     @property
     def lanes(self):
         return self.__coming_from_lanes
+
+    @property
+    def all_cars(self):
+        return sum([car for car in lane.get_all_cars()] for lane in self.lanes)
