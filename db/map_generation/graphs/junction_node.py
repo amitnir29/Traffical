@@ -24,7 +24,7 @@ class JuncConnDirection(Enum):
     UNKNOWN = "x"
 
 
-@dataclass(init=True, frozen=True, repr=True)
+@dataclass(init=True, repr=True, frozen=True)
 class JuncRoadSingleConnection:
     source: JuncIndices
     target: JuncIndices
@@ -42,7 +42,6 @@ class JuncRoadSingleConnection:
         return (self.source, self.target).__hash__()
 
 
-@dataclass(repr=True)
 class JuncRoadChainConnection:
     def __init__(self, road_id: int, parts: List[JuncRoadSingleConnection]):
         self.road_id: int = road_id
@@ -53,6 +52,10 @@ class JuncRoadChainConnection:
     def set_lanes(self, lanes_num: int):
         self.lanes_num = lanes_num
         self.lanes = [RoadLane(self.road_id, i) for i in range(lanes_num)]
+
+    def __repr__(self):
+        return f"JuncRoadChainConnection, id:{self.road_id}, parts:{self.parts}, " \
+               f"lanes_num:{self.lanes_num}, lanes:{self.lanes}"
 
 
 class JuncNode:
