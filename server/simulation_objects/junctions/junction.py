@@ -16,6 +16,11 @@ class Junction(ij.IJunction):
         self.__lights: List[itl.ITrafficLight] = traffic_lights
         self.__coordinates: List[Point] = junction_data.coordinates
 
+        self._algo = None
+
+    def set_algo(self, algo):
+        self._algo = algo
+
     @property
     def coordinates(self) -> List[Point]:
         return self.__coordinates
