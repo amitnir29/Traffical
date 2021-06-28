@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
+from algorithms.algo_to_index import index_to_algo
+from algorithms.naive import NaiveAlgo
 from algorithms.tl_manager import TLManager
 import pandas as pd
 
@@ -18,13 +20,14 @@ class MLAlgo(TLManager):
         self.time_interval = time_interval
 
         self._time_count = 0
+        self.running_algo: TLManager = NaiveAlgo(junction)
 
     @staticmethod
-    def _expected_traffic(tl: TrafficLight, depth):
+    def expected_traffic(tl: TrafficLight, depth):
         prev_junctions = [lane._comes_from for lane in tl.lanes]
         traff_per_junction = [sum(tl.all_cars for tl in junc.lights) for junc in prev_junctions]
         if depth > 0:
-            expected_traff_per_junction = [sum(MLAlgo._expected_traffic(tl, depth - 1) for tl in junc.lights) for junc
+            expected_traff_per_junction = [sum(MLAlgo.expected_traffic(tl, depth - 1) for tl in junc.lights) for junc
                                            in prev_junctions]
             return sum(traff_per_junction) + sum(expected_traff_per_junction)
         return sum(traff_per_junction)
@@ -40,7 +43,9 @@ class MLAlgo(TLManager):
 
         predict_input = pd.DataFrame(predict_input)
 
-        return self.model.predict(predict_input)
+        self.running_algo: TLManager = index_to_algo.get(self.model.predict(predict_input), self.running_algo)
+
+        return self.running_algo._manage_lights()
 
     def _manage_lights(self):
         if self._time_count % self.time_interval == 0:
