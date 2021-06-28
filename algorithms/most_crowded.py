@@ -1,4 +1,5 @@
 from collections import defaultdict
+from functools import partial
 from typing import Dict
 import numpy as np
 
@@ -27,3 +28,6 @@ class MCAlgo(TLManager):
         cars_count = self._map_cars_amount()
         mc_lane = self._junction.lights[max(cars_count, key=lambda k: cars_count[k])]
         return mc_lane
+
+
+MCTL = partial(MCAlgo, time_limit=10)
