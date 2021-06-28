@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
-from algorithms.algo_to_index import index_to_algo
+from algorithms.algo_to_index import index_to_algo, algos_list_to_num
 from algorithms.naive import NaiveAlgo
 from algorithms.tl_manager import TLManager
 import pandas as pd
@@ -36,7 +36,7 @@ class MLAlgo(TLManager):
         local_traffics = {f"local_traffic{i}": len(tl.all_cars) for i, tl in enumerate(self._lights)}
         expected_traffic = {f"expected_traffic{i}": MLAlgo._expected_traffic(tl, depth=self.depth - 1) for i, tl in
                             enumerate(self._lights)}
-        nearby_junctions_algos = {f"nearby_algos{i}": [lane._comes_from._algo for lane in tl.lanes] for i, tl in
+        nearby_junctions_algos = {f"nearby_algos{i}": algos_list_to_num([lane._comes_from._algo for lane in tl.lanes]) for i, tl in
                                   enumerate(self._lights)}
         predict_input = {**{**local_traffics, **expected_traffic}, **nearby_junctions_algos}
         predict_input["time_interval"] = self.time_interval
