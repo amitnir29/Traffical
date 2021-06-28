@@ -4,20 +4,28 @@ from collections import defaultdict
 from typing import Dict, List, Tuple, Optional, Set, Union
 from random import randint, sample, choice
 
+from db.dataclasses.junction_data import JunctionData
+from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
 from db.map_generation.graphs.junction_node import JuncNode, JuncIndices, JuncRoadSingleConnection, \
     JuncRoadChainConnection, JuncConnDirection
 from db.map_generation.graphs.node import Node, Connection
+from db.map_generation.graphs.calculations import calc_junc_points_from_lengths, get_diagonals, is_convex
+from server.geometry.line import Line
 from server.geometry.point import Point
+from server.geometry.triangle import area_by_3_sides, law_of_cosines_angle
+from math import pi, degrees, sqrt, radians
 
 
 class Graph:
-    def __init__(self, width, height):
+    def __init__(self, width, height, juncs_dist=100, lane_width=5):
         self.__nodes: Dict[int, Node] = dict()  # the graph
         self.__juncs: List[List[Optional[JuncNode]]] = list()
         self.__next_id: int = 0  # the next id to add
         self.width = width
         self.height = height
+        self.juncs_dist = juncs_dist
+        self.lane_width = lane_width
 
     def build_map(self, with_tests=True, with_prints=False):
         # steps 1,2
@@ -59,6 +67,12 @@ class Graph:
             self.__test(5, others={"roads_chains": roads_chains, "juncs_moves": juncs_movements})
         if with_prints:
             print(juncs_movements)
+        # step 9
+        juncs_data = self.__set_juctions_coordinates(roads_chains, juncs_movements)
+        roads_data = self.__set_roads_data(roads_chains, juncs_data)
+        # step 10
+        self.__set_traffic_lights(roads_data, juncs_data, roads_chains)
+        return list(roads_data.values()), list(juncs_data.values())
 
     def add_node(self) -> Node:
         """
@@ -210,7 +224,19 @@ class Graph:
         :param indices: indices of junc in 2d array of junctions.
         :return: location on the map of the junction indices
         """
-        return Point(100 * indices.col, 100 * indices.row)
+        return Point(self.juncs_dist * indices.col, self.juncs_dist * indices.row)
+
+    def road_width_by_lanes_num(self, lanes_num: int) -> float:
+        """
+        calc a formula for road width based on number of lanes.
+        SHOULD NOT be of form x*lanes_num, because then juncs like:
+        one in_road 3 lanes, 3 out_roads 1 lane
+        will not be possible
+        :param lanes_num: number of lanes of the road
+        :return: total road width
+        """
+        base_lane_width = self.juncs_dist // 10
+        return base_lane_width * (lanes_num * 0.6 + 0.4)
 
     def __len__(self):
         return len(self.__nodes)
@@ -585,17 +611,32 @@ class Graph:
             """
             # add to visited
             visited_indices.add(junc.indices)
-            # choose a random road to be in-road
+            #
+            """
+            first, choose a random road to be in-road. this prevents a first node with only out-roads.
+            a problem: if this is not the first first_node, it is possible that the random road will be 
+            an already existing road, in the otehr direction. so we need to make sure that the random road we choose
+            is not already set in the other side.
+            """
             neighbors = self.get_connected_juncs(junc).copy()
+            in_checked_indices: Set[JuncIndices] = set()
             in_road_junc = choice(neighbors)
-            if with_prints:
-                print("first in-road", in_road_junc.indices, junc.indices)
-            directions = self.get_connection_directions(in_road_junc, junc)
-            roads.add(JuncRoadSingleConnection(in_road_junc.indices, junc.indices, directions[0], directions[1]))
-            # run for the rest of the neighbors
-            neighbors.remove(in_road_junc)
+            in_checked_indices.add(in_road_junc.indices)
+            while JuncRoadSingleConnection(junc.indices, in_road_junc.indices) in roads and len(
+                    in_checked_indices) != len(neighbors):
+                in_road_junc = choice(neighbors)
+                in_checked_indices.add(in_road_junc.indices)
+            if len(in_checked_indices) != len(neighbors):
+                # regular stop, we have found a road to be in_road.
+                directions = self.get_connection_directions(in_road_junc, junc)
+                roads.add(JuncRoadSingleConnection(in_road_junc.indices, junc.indices, directions[0], directions[1]))
+                if with_prints:
+                    print("first in-road", in_road_junc.indices, junc.indices)
+                # run for the rest of the neighbors
+                neighbors.remove(in_road_junc)
+            # else, this junc has only out-roads and this cannot be fixed.
             for neighbor in neighbors:
-                if neighbor.indices not in visited_indices: #the other case is handled through the neighbor in dfs_rec
+                if neighbor.indices not in visited_indices:  # the other case is handled through the neighbor in dfs_rec
                     if with_prints:
                         print("first", junc.indices, neighbor.indices)
                     directions = self.get_connection_directions(junc, neighbor)
@@ -782,8 +823,8 @@ class Graph:
         # a dict of all roads that the key is their source
         out_roads: Dict[JuncIndices, List[JuncRoadChainConnection]] = defaultdict(list)
         for road_chain in roads_chains:
-            in_roads[road_chain.parts[-1].target].append(road_chain)
-            out_roads[road_chain.parts[0].source].append(road_chain)
+            in_roads[road_chain.last_junc].append(road_chain)
+            out_roads[road_chain.first_junc].append(road_chain)
         return in_roads, out_roads
 
     # step 8
@@ -801,14 +842,14 @@ class Graph:
             junc_out_roads = out_roads[junc.indices]
             """
             split to cases:
-            1. if the junction has only out_roads, raise an error
+            1. if the junction has only out_roads, do nothing.
             2. if the junction has only in_roads, do nothing.
             3. if the junction has 1-3 in_roads, then for each in_road, 
                 send each of its lanes to the matching out_road, in its right-most lane.
             """
             # case 1
             if len(junc_in_roads) == 0:
-                raise Exception(f"a junction must have an in_road. {junc}")
+                continue
             # case 2
             if len(junc_out_roads) == 0:
                 continue
@@ -844,3 +885,239 @@ class Graph:
                     ordered_out_roads.append(out_road_chain)
                     break
         return ordered_out_roads
+
+    # step 9
+    def __set_juctions_coordinates(self, roads_chains: List[JuncRoadChainConnection],
+                                   juncs_moves: Dict[JuncIndices, List[Tuple[RoadLane, RoadLane]]]) \
+            -> Dict[JuncIndices, JunctionData]:
+        """
+        set coordinates for all junctions, based on their place in the 2d array,
+        and the number of lanes in each of the connected roads.
+        :param roads_chains: a list of all road chains
+        :param juncs_moves: movements of roads
+        :return: a dict of junc indices to JunctionData for the db
+        """
+        roads_chains_dict: Dict[int, JuncRoadChainConnection] = {r.road_id: r for r in roads_chains}
+        roads_chains_by_junc: Dict[JuncIndices, List[JuncRoadChainConnection]] = defaultdict(list)
+        for road in roads_chains:
+            roads_chains_by_junc[road.first_junc].append(road)
+        # a small test
+        if roads_chains_by_junc.keys() != juncs_moves.keys():
+            raise Exception(f"there is not match between the dicts with junc indices keys.\n\n"
+                            f"roads in roads_by_junc but not in juncs_moves: "
+                            f"{set(roads_chains_by_junc).difference(juncs_moves)}\n\n"
+                            f"roads in juncs_moves but not in roads_by_junc: "
+                            f"{set(juncs_moves).difference(roads_chains_by_junc)}")
+        # now run:
+        juncs_data: Dict[JuncIndices, JunctionData] = dict()
+        for junc, moves in juncs_moves.items():
+            # convert moves to a dict by connection directions:
+            conn_dirs: Dict[JuncConnDirection, JuncRoadChainConnection] = dict()
+            for road_chain in roads_chains_by_junc[junc]:
+                if road_chain.first_junc == junc:  # it is an out-road
+                    conn_dirs[road_chain.parts[0].source_dir] = road_chain
+                else:  # it is an in-road
+                    conn_dirs[self.get_connection_directions(
+                        self.get_junc(road_chain.parts[-1].source),
+                        self.get_junc(road_chain.parts[-1].target))[1]] = road_chain
+            # get widht of each side, based on number of lanes in each side:
+            side_lanes: Dict[JuncConnDirection, float] = dict()
+            for side in [JuncConnDirection.UP, JuncConnDirection.RIGHT, JuncConnDirection.DOWN, JuncConnDirection.LEFT]:
+                if side in conn_dirs:
+                    side_lanes[side] = self.road_width_by_lanes_num(conn_dirs[side].lanes_num)
+                else:
+                    side_lanes[side] = self.road_width_by_lanes_num(1)
+            # now use geometry to get the coordinates of all the juncs points.
+            # the center is the diagonals crossing point
+            x1, x2, x3, x4 = side_lanes[JuncConnDirection.LEFT], side_lanes[JuncConnDirection.UP], side_lanes[
+                JuncConnDirection.RIGHT], side_lanes[JuncConnDirection.DOWN]
+            d1d2 = None
+            final_angle = None
+            for angle in range(0, 90, 10):
+                a2 = radians(90 + angle)
+                if is_convex(x1, x2, x3, x4, a2):
+                    d1d2 = get_diagonals(x1, x2, x3, x4, a2)
+                    if d1d2 is not None:
+                        final_angle = a2
+                        break
+                a1 = radians(90 - angle)
+                if is_convex(x1, x2, x3, x4, a1):
+                    d1d2 = get_diagonals(x1, x2, x3, x4, a1)
+                    if d1d2 is not None:
+                        final_angle = a1
+                        break
+            if d1d2 is None:
+                raise Exception("something is wrong in the get_diagonals values")
+            d1, d2 = d1d2
+            junc_center = self.location_of_junc_indices(junc)
+            coordinates = calc_junc_points_from_lengths(x1, x2, x3, x4, d1, d2, junc_center)
+            junc_id = junc.row * self.width + junc.col
+            juncs_data[junc] = JunctionData(junc_id, coordinates, moves)
+
+        return juncs_data
+
+    def __set_roads_data(self, roads_chains: List[JuncRoadChainConnection],
+                         juncs_data: Dict[JuncIndices, JunctionData]) -> Dict[int, RoadData]:
+        """
+        :param roads_chains: all roads chains data
+        :param juncs_data: junctions data
+        :return: a dict of road_id to road_data object for the db
+        """
+        roads_data: Dict[int, RoadData] = dict()
+        for road_chain in roads_chains:
+            # create a road_data object from it
+            # calc coordinates
+            source_coors = self.__get_road_ends_coordinates(road_chain.parts[0], False,
+                                                            juncs_data[road_chain.parts[0].source])
+            target_coors = self.__get_road_ends_coordinates(road_chain.parts[-1], True,
+                                                            juncs_data[road_chain.parts[-1].target])
+            # now middle coors if there is more than one part:
+            middle_coors: List[Tuple[Point, Point]] = list()
+            for i in range(0, len(road_chain.parts) - 1):
+                # look at chain[i].target and chain[i+1].source
+                in_road = road_chain.parts[i]
+                out_road = road_chain.parts[i + 1]
+                middle_coors.append(self.__get_road_middle_coordinates(in_road, out_road, road_chain.lanes_num))
+            coordinates: List[Tuple[Point, Point]] = [source_coors] + middle_coors + [target_coors]
+            result_road_data = RoadData(road_chain.road_id, coordinates,
+                                        road_chain.lanes_num, self.__calc_max_speed(coordinates))
+            roads_data[road_chain.road_id] = result_road_data
+        return roads_data
+
+    def __calc_max_speed(self, coordinates: List[Tuple[Point, Point]]) -> float:
+        """
+        :param coordinates: coordinates of a road
+        :return: the max speed in the road
+        """
+        return 50  # maybe set in the future
+
+    def __get_road_ends_coordinates(self, road: JuncRoadSingleConnection, is_in: bool, junc_data: JunctionData) \
+            -> Tuple[Point, Point]:
+        """
+        return the pair of coordinates of the road,
+        depending of the is_in bool: if is_in is False, it is out, look for source, if True, look for target.
+        get the direction of connection to the junction, and then find the right points of the junc_data
+        :param road: the road to get coordinates of
+        :param is_in: is the road in_road or out_road (should look on front or back of the road)
+        :param junc_data: the junction that has the coordinates
+        :return: the pair of coordinates
+        """
+        p1, p2, p3, p4 = junc_data.coordinates
+        # p1 is top left, then going clock-wise
+        if is_in:
+            # look for target
+            direction = road.target_dir
+            if direction == JuncConnDirection.UP:
+                return p2, p1
+            elif direction == JuncConnDirection.RIGHT:
+                return p3, p2
+            elif direction == JuncConnDirection.DOWN:
+                return p4, p3
+            elif direction == JuncConnDirection.LEFT:
+                return p1, p4
+            else:
+                raise Exception("error in direction mapping of the road to the junc")
+        else:  # is_out
+            # look for source
+            direction = road.source_dir
+            if direction == JuncConnDirection.UP:
+                return p1, p2
+            elif direction == JuncConnDirection.RIGHT:
+                return p2, p3
+            elif direction == JuncConnDirection.DOWN:
+                return p3, p4
+            elif direction == JuncConnDirection.LEFT:
+                return p4, p1
+            else:
+                raise Exception("error in direction mapping of the road to the junc")
+
+    def __get_road_middle_coordinates(self, in_road: JuncRoadSingleConnection, out_road: JuncRoadSingleConnection,
+                                      lanes_num: int) -> Tuple[Point, Point]:
+        """
+        calculate the points of the connection between the two parts of the road.
+
+        :param in_road: the in_road to the connection
+        :param out_road: the out_road to the connection
+        :param lanes_num: number of lanes
+        :return: pair of points coordinates
+        """
+
+        if in_road.target != out_road.source:
+            raise Exception("error in in_road and out_road, there is not connection between them.")
+        junc_center = self.location_of_junc_indices(in_road.target)
+        width = self.road_width_by_lanes_num(lanes_num)
+        in_dir = in_road.target_dir
+        out_dir = out_road.source_dir
+        """
+        now go over all the combinations:
+        if they connect forwards (up<->dowm/left<->right) keep the matching center coordinate,
+            and take a width/2 to each side of the other side's coordinate
+        if they match diagonaly, create a square with diagonal length=width,
+            so each coordinate is width/sqrt(8) to any side
+        """
+        forwards_delta = width / 2
+        diagonal_delta = width / sqrt(8)
+        x, y = junc_center.x, junc_center.y
+        if in_dir == JuncConnDirection.UP:
+            if out_dir == JuncConnDirection.LEFT:
+                return Point(x + diagonal_delta, y + diagonal_delta), Point(x - diagonal_delta, y - diagonal_delta)
+            elif out_dir == JuncConnDirection.RIGHT:
+                return Point(x + diagonal_delta, y - diagonal_delta), Point(x - diagonal_delta, y + diagonal_delta)
+            elif out_dir == JuncConnDirection.DOWN:
+                return Point(x + forwards_delta, y), Point(x - forwards_delta, y)
+            else:
+                raise Exception(f"error in direction: in_road: {in_dir}, out_road: {out_dir}")
+        elif in_dir == JuncConnDirection.DOWN:
+            if out_dir == JuncConnDirection.RIGHT:
+                return Point(x - diagonal_delta, y - diagonal_delta), Point(x + diagonal_delta, y + diagonal_delta)
+            elif out_dir == JuncConnDirection.LEFT:
+                return Point(x - diagonal_delta, y + diagonal_delta), Point(x + diagonal_delta, y - diagonal_delta)
+            elif out_dir == JuncConnDirection.UP:
+                return Point(x - forwards_delta, y), Point(x + forwards_delta, y)
+            else:
+                raise Exception(f"error in direction: in_road: {in_dir}, out_road: {out_dir}")
+        elif in_dir == JuncConnDirection.RIGHT:
+            if out_dir == JuncConnDirection.UP:
+                return Point(x - diagonal_delta, y + diagonal_delta), Point(x + diagonal_delta, y - diagonal_delta)
+            elif out_dir == JuncConnDirection.DOWN:
+                return Point(x + diagonal_delta, y + diagonal_delta), Point(x - diagonal_delta, y - diagonal_delta)
+            elif out_dir == JuncConnDirection.LEFT:
+                return Point(x, y + forwards_delta), Point(x, y - forwards_delta)
+            else:
+                raise Exception(f"error in direction: in_road: {in_dir}, out_road: {out_dir}")
+        elif in_dir == JuncConnDirection.LEFT:
+            if out_dir == JuncConnDirection.UP:
+                return Point(x - diagonal_delta, y - diagonal_delta), Point(x + diagonal_delta, y + diagonal_delta)
+            elif out_dir == JuncConnDirection.DOWN:
+                return Point(x + diagonal_delta, y - diagonal_delta), Point(x - diagonal_delta, y + diagonal_delta)
+            elif out_dir == JuncConnDirection.RIGHT:
+                return Point(x, y - forwards_delta), Point(x, y + forwards_delta)
+            else:
+                raise Exception(f"error in direction: in_road: {in_dir}, out_road: {out_dir}")
+        else:
+            raise Exception(f"error in direction: in_road: {in_dir}")
+
+    # step 10
+    def __set_traffic_lights(self, roads_data: Dict[int, RoadData], juncs_data: Dict[JuncIndices, JunctionData],
+                             roads_chains: List[JuncRoadChainConnection]):
+        """
+        Set traffic lights in junctions.
+        For each junction, if it has exactly 1 in-road, do not set a traffic light to it.
+        Else, there are 2/3 in-roads, set a traffic light for each of them.
+        If there are only in-roads or only out-roads, do not set a traffic light.
+        :param roads_data: a dict of all road_data object
+        :param juncs_data: a dict of all junction_data object
+        :param roads_chains: a list of all road chains
+        """
+        in_roads, out_roads = self.__get_in_out_roads_dicts_by_chains(roads_chains)
+        for junc_indices, junc_data in juncs_data.items():
+            out_roads_count = len(out_roads[junc_indices])
+            in_roads_count = len(in_roads[junc_indices])
+            if out_roads_count == 0 or in_roads_count == 0 or in_roads_count == 1:
+                # dont set traffic lights
+                continue
+            # else, set a traffic light for each in_road
+            junc_data.num_traffic_lights = in_roads_count
+            for in_road in in_roads[junc_indices]:
+                junc_data.traffic_lights.append(in_road.lanes)
+                junc_data.traffic_lights_coords.append(roads_data[in_road.road_id].coordinates[-1][1])

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from math import inf
-from typing import Optional
+from math import inf, sqrt
+from typing import Optional, Tuple
 
 from server.geometry.point import Point
 
@@ -135,6 +135,20 @@ class Line:
         inter_y = self.value_at_x(inter_x)
         return Point(inter_x, inter_y)
 
+    def intersection_point_infinite(self, other: Line) -> Optional[Point]:
+        """
+        intersecting point between lines, but do not treat the length of the lines, just the (m,b).
+        returned point may not be on the lines.
+        :param other: the other line
+        :return: intersetion point if lines were infinite to both sides
+        """
+        if self.m == other.m:
+            # parallel lines never meet
+            return None
+        # m1x+b1=m2x+b2 -> x = (m1-m2)/(b2-b1)
+        x = (self.m - other.m) / (other.b - self.b)
+        return Point(x, self.m * x + self.b)
+
     def length(self) -> float:
         """
         :return: length of the line
@@ -159,3 +173,37 @@ class Line:
         :return: middle Point of the line
         """
         return self.split_by_ratio(1 / 2)
+
+    def distance_of_point(self, p: Point):
+        """
+        :param p: input point
+        :return: distance of the point from self
+        """
+        if self.contains_point(p):
+            return 0
+        # else, get the formula
+        new_line_m = -1 / self.m
+        new_line = Line(p, Point(p.x + 1, p.y + new_line_m))
+        cross_point = self.intersection_point_infinite(new_line)
+        return p.distance(cross_point)
+
+    def point_at_distance_from_point(self, source: Point, distance: float) -> Optional[Tuple[Point, Point]]:
+        """
+        return the 2 points that are on the line and also with input distance from input point
+        :param source: input point
+        :param distance: input distance
+        :return: the 2 result points
+        """
+        """
+        x^2*(1+m^2)+x*(2mb-2*s.x*-2*m*s.y)+(s.x^2+s.y^2+b^2-d^2-2*b*s.y)=0
+        """
+        if distance < self.distance_of_point(source):
+            return None
+        ns_a = 1 + self.m ** 2
+        ns_b = 2 * self.m * self.b - 2 * source.x - 2 * self.m * source.y
+        ns_c = source.x ** 2 + source.y ** 2 + self.b ** 2 - distance ** 2 - 2 * self.b * source.y
+
+        delta = ns_b ** 2 - 4 * ns_a * ns_c
+        x1 = (-ns_b + sqrt(delta)) / (2 * ns_a)
+        x2 = (-ns_b - sqrt(delta)) / (2 * ns_a)
+        return Point(x1, self.value_at_x(x1)), Point(x2, self.value_at_x(x2))

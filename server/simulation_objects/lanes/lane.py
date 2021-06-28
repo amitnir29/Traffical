@@ -1,5 +1,6 @@
 from collections import deque
 from typing import List, Optional, Tuple
+from copy import deepcopy
 
 from server.geometry.line import Line
 from server.geometry.point import Point
@@ -13,7 +14,7 @@ class Lane(il.ILane):
 
     def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
         self.__cars = deque()
-        self.__coordinates = coordinates
+        self.__coordinates = deepcopy(coordinates)
         self._goes_to: List[il.ILane] = list()
         self._comes_from: List[il.ILane] = list()
         self.__road: irs.IRoadSection = road

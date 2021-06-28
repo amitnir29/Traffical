@@ -15,9 +15,9 @@ def main():
     gm = GraphicsManager(fps=10, width=win_width, height=win_height)
 
     # get the simulation map
-    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/tel_aviv")
+    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/2")
 
-    cars: List = generate_cars(roads, 3, p=1, min_len=6, with_prints=True)
+    cars: List = generate_cars(roads, 3, p=0.7, min_len=6, with_prints=True)
     # cars: List = generate_cars(roads, 14, p=1, min_len=6, with_prints=True)
 
     # while the screen is not closed, draw the current state and calculate the next state
@@ -51,7 +51,7 @@ def main():
 
     while gm.draw(roads, traffic_lights, cars, all_junctions):
         i = i + 1
-        # print(i)
+        print(i)
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
         reporter.next_iter(cars)
 
