@@ -1,9 +1,5 @@
-from typing import List
-
 from db.map_generation.graphs.graph import Graph
-from db.map_generation.graphs.junction_node import JuncRoadChainConnection
 from db.map_generation.new_dir_creation import create_new_dir
-from db.map_generation.save_to_files import save_junctions
 from db.pickle_help import jsonpickle_to_file
 
 

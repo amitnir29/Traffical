@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Dict, List, Tuple, Optional, Set, Union
+from math import sqrt, radians, asin
 from random import randint, sample, choice
+from typing import Dict, List, Tuple, Optional, Set, Union
 
 from db.dataclasses.junction_data import JunctionData
 from db.dataclasses.road_data import RoadData
 from db.dataclasses.road_lane import RoadLane
+from db.map_generation.graphs.calculations import calc_junc_points_from_lengths, get_diagonals, all_degrees_limited
 from db.map_generation.graphs.junction_node import JuncNode, JuncIndices, JuncRoadSingleConnection, \
     JuncRoadChainConnection, JuncConnDirection
 from db.map_generation.graphs.node import Node, Connection
-from db.map_generation.graphs.calculations import calc_junc_points_from_lengths, get_diagonals, all_degrees_limited
 from server.geometry.line import Line
 from server.geometry.point import Point
-from server.geometry.triangle import area_by_3_sides, law_of_cosines_angle
-from math import pi, degrees, sqrt, radians, asin
 
 
 class Graph:
@@ -441,7 +440,7 @@ class Graph:
                                                 f"in:{roads_chains[in_road]}\nfirst:{roads_chains[first_move[1]]}\n"
                                                 f"second:{roads_chains[second_move[1]]}\n")
             # test no lane number higher than max lane number for road
-            all_road_lanes: Set[RoadLane] = {rl for l in juncs_moves.values() for pair in l for rl in pair}
+            all_road_lanes: Set[RoadLane] = {rl for ll in juncs_moves.values() for pair in ll for rl in pair}
             all_lanes_for_road: Dict[int, List[int]] = defaultdict(list)
             for rl in all_road_lanes:
                 all_lanes_for_road[rl.road_id].append(rl.lane_num)
@@ -853,7 +852,7 @@ class Graph:
             -> Tuple[Dict[JuncIndices, List[JuncRoadChainConnection]],
                      Dict[JuncIndices, List[JuncRoadChainConnection]]]:
         """
-        :param roads: a set of all road chains
+        :param roads_chains: a list of all road chains
         :return: in_roads dict and out_roads dict of chains
         """
         # a dict of all roads that the key is their taget
@@ -935,7 +934,6 @@ class Graph:
         :param juncs_moves: movements of roads
         :return: a dict of junc indices to JunctionData for the db
         """
-        roads_chains_dict: Dict[int, JuncRoadChainConnection] = {r.road_id: r for r in roads_chains}
         roads_chains_by_junc: Dict[JuncIndices, List[JuncRoadChainConnection]] = defaultdict(list)
         for road in roads_chains:
             roads_chains_by_junc[road.first_junc].append(road)
@@ -970,19 +968,16 @@ class Graph:
             x1, x2, x3, x4 = side_lanes[JuncConnDirection.LEFT], side_lanes[JuncConnDirection.UP], side_lanes[
                 JuncConnDirection.RIGHT], side_lanes[JuncConnDirection.DOWN]
             d1d2 = None
-            final_angle = None
             for angle in range(0, 90, 10):
                 a2 = radians(90 + angle)
                 if all_degrees_limited(x1, x2, x3, x4, a2, max_degree=self.__get_max_degree()):
                     d1d2 = get_diagonals(x1, x2, x3, x4, a2)
                     if d1d2 is not None:
-                        final_angle = a2
                         break
                 a1 = radians(90 - angle)
                 if all_degrees_limited(x1, x2, x3, x4, a1, max_degree=self.__get_max_degree()):
                     d1d2 = get_diagonals(x1, x2, x3, x4, a1)
                     if d1d2 is not None:
-                        final_angle = a1
                         break
             if d1d2 is None:
                 raise Exception("something is wrong in the get_diagonals values")

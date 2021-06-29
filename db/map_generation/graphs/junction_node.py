@@ -1,10 +1,9 @@
-from typing import Tuple, List
 from dataclasses import dataclass
 from enum import Enum
+from typing import Tuple, List
 
 from db.dataclasses.road_lane import RoadLane
 from db.map_generation.graphs.node import Node
-from server.geometry.point import Point
 
 
 @dataclass(init=True, eq=True, frozen=True, unsafe_hash=True)

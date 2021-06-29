@@ -25,8 +25,9 @@ class CostBased(TLManager):
 
         passing_cars_gain = self.passing_car_revenue * len(passing_cars)
 
-        waiting_cars_punishment = self.waiting_penalty * len([car for car in all_cars if car not in passing_cars and self.time_tracker[
-            car] % self.waiting_time_to_charge == 0])
+        waiting_cars_punishment = self.waiting_penalty * len([car for car in all_cars if car not in passing_cars
+                                                              and self.time_tracker[car] %
+                                                              self.waiting_time_to_charge == 0])
 
         # passing_cars_gain = sum(lane.cars_amount() for lane in tl.lanes) * self.passing_car_revenue  # TODO fix
         #

@@ -1,4 +1,4 @@
-from math import sqrt, cos, radians, acos
+from math import sqrt, cos, acos
 
 
 def law_of_cosines(a, b, alpha):
