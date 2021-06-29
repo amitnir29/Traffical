@@ -1,5 +1,6 @@
 from typing import List
 
+from algorithms.cost_based import CostBased
 from algorithms.naive import NaiveAlgo
 from graphics.graphics_manager import GraphicsManager
 from server.cars_generator import generate_cars
@@ -20,11 +21,12 @@ def main():
     # cars: List = generate_cars(roads, 14, p=1, min_len=6, with_prints=True)
 
     # while the screen is not closed, draw the current state and calculate the next state
-    light_algos = [NaiveAlgo(junction) for junction in all_junctions]
+    # light_algos = [NaiveAlgo(junction) for junction in all_junctions]
     # light_algos = [MCAlgo(junction) for junction in all_junctions]
     # light_algos = [MCTL(junction) for junction in all_junctions]
     # light_algos = [RLQTL(junction) for junction in all_junctions]
     # light_algos = [RLQRS(junction) for junction in all_junctions]
+    light_algos = [CostBased(junction) for junction in all_junctions]
 
     # lights_algorithm = NaiveAlgo(traffic_lights, all_junctions)
     # lights_algorithm = MCAlgo(traffic_lights, all_junctions)
@@ -45,16 +47,15 @@ def main():
     # cars.append(Car([roads[54], roads[55]]))
     i = 0
 
-    reporter = StatsReporter(cars)
+    reporter = StatsReporter(cars, all_junctions)
 
     while gm.draw(roads, traffic_lights, cars, all_junctions):
         i = i + 1
         print(i)
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
+        reporter.next_iter(cars)
 
-    # gm.draw(roads, traffic_lights, cars, all_junctions)
-
-    print(reporter.report())
+    reporter.report()
 
 
 if __name__ == '__main__':

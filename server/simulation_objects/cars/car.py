@@ -275,3 +275,9 @@ class Car(ICar):
         if x_diff > 0:
             res = 360 - res
         return res
+
+    def get_speed(self):
+        return self.__speed
+
+    def get_acceleration(self):
+        return self.__acceleration
