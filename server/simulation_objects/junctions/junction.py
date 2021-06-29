@@ -24,3 +24,6 @@ class Junction(ij.IJunction):
     @property
     def lights(self) -> List[ITrafficLight]:
         return self.__lights
+
+    def __repr__(self):
+        return str(self.__idnum)

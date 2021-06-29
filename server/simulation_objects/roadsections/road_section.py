@@ -16,7 +16,7 @@ class RoadSection(irs.IRoadSection):
     def __init__(self, road_data: RoadData, notified_lanes_nums: Set[int]):
         # data from road_data
         self.__id: int = road_data.idnum
-        self.__coordinates: List[Tuple[Point, Point]] = deepcopy(road_data.coordinates)
+        self.__coordinates: List[Tuple[Point, Point]] = [deepcopy(p) for p in road_data.coordinates]
         self.__number_of_lanes: int = road_data.num_lanes
         self.__max_speed: float = road_data.max_speed
         self.__lanes: List[il.ILane] = self._create_lanes(road_data.num_lanes, notified_lanes_nums)

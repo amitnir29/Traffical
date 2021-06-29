@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from math import inf, sqrt
+from math import inf, sqrt, tan
 from typing import Optional, Tuple
 
 from server.geometry.point import Point
@@ -187,23 +187,40 @@ class Line:
         cross_point = self.intersection_point_infinite(new_line)
         return p.distance(cross_point)
 
-    def point_at_distance_from_point(self, source: Point, distance: float) -> Optional[Tuple[Point, Point]]:
+    def is_above_line(self, p: Point):
         """
-        return the 2 points that are on the line and also with input distance from input point
-        :param source: input point
-        :param distance: input distance
-        :return: the 2 result points
+        :param p: input point
+        :return: True if the input point is above the infinite continuation of self
         """
-        """
-        x^2*(1+m^2)+x*(2mb-2*s.x*-2*m*s.y)+(s.x^2+s.y^2+b^2-d^2-2*b*s.y)=0
-        """
-        if distance < self.distance_of_point(source):
-            return None
-        ns_a = 1 + self.m ** 2
-        ns_b = 2 * self.m * self.b - 2 * source.x - 2 * self.m * source.y
-        ns_c = source.x ** 2 + source.y ** 2 + self.b ** 2 - distance ** 2 - 2 * self.b * source.y
+        matching_y = self.value_at_x(p.x)
+        return p.y < matching_y  # because y=0 is the top
 
-        delta = ns_b ** 2 - 4 * ns_a * ns_c
-        x1 = (-ns_b + sqrt(delta)) / (2 * ns_a)
-        x2 = (-ns_b - sqrt(delta)) / (2 * ns_a)
-        return Point(x1, self.value_at_x(x1)), Point(x2, self.value_at_x(x2))
+    def points_at_angle_from_line(self, angle) -> Tuple[Point, Point]:
+        """
+        return the 2 points that create (combined with the 2 points of self) an isosceles triangle
+        that self is its base, and its head angle is the input angle.
+        the first point of the pair should be above the line, the second is below the line.
+        :param angle: input angle for head angle, in radians
+        """
+        middle = self.middle()
+        h = (self.length() / 2) / tan(angle / 2)
+        """
+        line of (res_p,middle) is: y = (-1/self.m)*x+(middle_x/m)+middle_y
+        so we can represent res_p as: (res_x, (-1/self.m)*res_x+(middle_x/m)+middle_y
+        and distance (res_p,middle) is h, solve this equation and get:
+        """
+        helper = 1 + 1 / self.m ** 2
+        ns_a = helper
+        ns_b = (-2 * middle.x) * helper
+        ns_c = (middle.x ** 2 * helper - h ** 2)
+        det = ns_b ** 2 - 4 * ns_a * ns_c
+        # now:
+        x1 = (-ns_b + sqrt(det)) / (2 * ns_a)
+        x2 = (-ns_b - sqrt(det)) / (2 * ns_a)
+        # so:
+        p1 = Point(x1, -x1 / self.m + middle.x / self.m + middle.y)
+        p2 = Point(x2, -x2 / self.m + middle.x / self.m + middle.y)
+        if self.is_above_line(p1):
+            return p1, p2
+        else:
+            return p2, p1

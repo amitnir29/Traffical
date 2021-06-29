@@ -18,7 +18,7 @@ def jsonpickle_to_file(obj, filename):
     :param filename: the file to write to
     """
     with open(filename, "w") as f:
-        f.write(jsonpickle.encode(obj))
+        f.write(jsonpickle.encode(obj, make_refs=False))
 
 
 def pickle_from_file(filename):

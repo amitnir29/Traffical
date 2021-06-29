@@ -10,11 +10,11 @@ from db.dataclasses.road_lane import RoadLane
 from db.map_generation.graphs.junction_node import JuncNode, JuncIndices, JuncRoadSingleConnection, \
     JuncRoadChainConnection, JuncConnDirection
 from db.map_generation.graphs.node import Node, Connection
-from db.map_generation.graphs.calculations import calc_junc_points_from_lengths, get_diagonals, is_convex
+from db.map_generation.graphs.calculations import calc_junc_points_from_lengths, get_diagonals, all_degrees_limited
 from server.geometry.line import Line
 from server.geometry.point import Point
 from server.geometry.triangle import area_by_3_sides, law_of_cosines_angle
-from math import pi, degrees, sqrt, radians
+from math import pi, degrees, sqrt, radians, asin
 
 
 class Graph:
@@ -237,6 +237,44 @@ class Graph:
         """
         base_lane_width = self.juncs_dist // 10
         return base_lane_width * (lanes_num * 0.6 + 0.4)
+
+    def middle_point_of_junc_side(self, junc: JunctionData, direction: JuncConnDirection) -> Point:
+        """
+        :param junc: an input junction
+        :param direction: a direction of the junction
+        :return: the middle point between the 2 points of the input direction in the junc
+        """
+        if direction == JuncConnDirection.UP:
+            return Line(junc.coordinates[0], junc.coordinates[1]).middle()
+        elif direction == JuncConnDirection.RIGHT:
+            return Line(junc.coordinates[1], junc.coordinates[2]).middle()
+        elif direction == JuncConnDirection.DOWN:
+            return Line(junc.coordinates[2], junc.coordinates[3]).middle()
+        elif direction == JuncConnDirection.LEFT:
+            return Line(junc.coordinates[3], junc.coordinates[0]).middle()
+        else:
+            raise Exception(f"bad direction in middle_point_of_junc_side func: {direction}")
+
+    def points_pair_of_junc_side(self, junc: JunctionData, direction: JuncConnDirection,
+                                 is_out: bool) -> Tuple[Point, Point]:
+        """
+        return the pair of points of the direction of the input junc.
+        if is_out is True, return clock-wise direction. else, return counter-clock-wise direction.
+        """
+        pair = None
+        if direction == JuncConnDirection.UP:
+            pair = (junc.coordinates[0], junc.coordinates[1])
+        elif direction == JuncConnDirection.RIGHT:
+            pair = (junc.coordinates[1], junc.coordinates[2])
+        elif direction == JuncConnDirection.DOWN:
+            pair = (junc.coordinates[2], junc.coordinates[3])
+        elif direction == JuncConnDirection.LEFT:
+            pair = (junc.coordinates[3], junc.coordinates[0])
+        else:
+            raise Exception(f"bad direction in middle_point_of_junc_side func: {direction}")
+        if not is_out:
+            pair = (pair[1], pair[0])
+        return pair
 
     def __len__(self):
         return len(self.__nodes)
@@ -935,13 +973,13 @@ class Graph:
             final_angle = None
             for angle in range(0, 90, 10):
                 a2 = radians(90 + angle)
-                if is_convex(x1, x2, x3, x4, a2):
+                if all_degrees_limited(x1, x2, x3, x4, a2, max_degree=self.__get_max_degree()):
                     d1d2 = get_diagonals(x1, x2, x3, x4, a2)
                     if d1d2 is not None:
                         final_angle = a2
                         break
                 a1 = radians(90 - angle)
-                if is_convex(x1, x2, x3, x4, a1):
+                if all_degrees_limited(x1, x2, x3, x4, a1, max_degree=self.__get_max_degree()):
                     d1d2 = get_diagonals(x1, x2, x3, x4, a1)
                     if d1d2 is not None:
                         final_angle = a1
@@ -971,14 +1009,24 @@ class Graph:
                                                             juncs_data[road_chain.parts[0].source])
             target_coors = self.__get_road_ends_coordinates(road_chain.parts[-1], True,
                                                             juncs_data[road_chain.parts[-1].target])
+            coordinates: List[Tuple[Point, Point]] = [source_coors]
             # now middle coors if there is more than one part:
-            middle_coors: List[Tuple[Point, Point]] = list()
             for i in range(0, len(road_chain.parts) - 1):
                 # look at chain[i].target and chain[i+1].source
                 in_road = road_chain.parts[i]
                 out_road = road_chain.parts[i + 1]
-                middle_coors.append(self.__get_road_middle_coordinates(in_road, out_road, road_chain.lanes_num))
-            coordinates: List[Tuple[Point, Point]] = [source_coors] + middle_coors + [target_coors]
+                # first, if the in_road is diagonal, add a middle-split pair
+                out_pair = coordinates[-1]
+                in_pair = self.__get_road_middle_coordinates(in_road, out_road, road_chain.lanes_num)
+                if in_road.is_diagonal:
+                    coordinates.append(self.__get_diagonal_split_coordiantes(in_road, out_pair, in_pair))
+                coordinates.append(in_pair)
+            # same check of diagonal road for the last road, which is not handled in the loop
+            if road_chain.parts[-1].is_diagonal:
+                out_pair = coordinates[-1]
+                coordinates.append(self.__get_diagonal_split_coordiantes(road_chain.parts[-1], out_pair, target_coors))
+            # lastly, add the target_coors:
+            coordinates.append(target_coors)
             result_road_data = RoadData(road_chain.road_id, coordinates,
                                         road_chain.lanes_num, self.__calc_max_speed(coordinates))
             roads_data[road_chain.road_id] = result_road_data
@@ -989,7 +1037,17 @@ class Graph:
         :param coordinates: coordinates of a road
         :return: the max speed in the road
         """
-        return 50  # maybe set in the future
+        return min(len(coordinates) * 25, 60)
+
+    def __get_max_degree(self) -> float:
+        """
+        :return: limit of all inner degrees of a junction, based on length of sides.
+        """
+        short = self.road_width_by_lanes_num(1)
+        long = self.road_width_by_lanes_num(3)
+        delta = (long - short) / 2
+        extra = radians(10)
+        return min(radians(90) + asin(delta / short) + extra, radians(180))
 
     def __get_road_ends_coordinates(self, road: JuncRoadSingleConnection, is_in: bool, junc_data: JunctionData) \
             -> Tuple[Point, Point]:
@@ -1096,6 +1154,49 @@ class Graph:
                 raise Exception(f"error in direction: in_road: {in_dir}, out_road: {out_dir}")
         else:
             raise Exception(f"error in direction: in_road: {in_dir}")
+
+    def __get_diagonal_split_coordiantes(self, road: JuncRoadSingleConnection, out_points: Tuple[Point, Point],
+                                         in_points: Tuple[Point, Point], angle=radians(150)) -> Tuple[Point, Point]:
+        """
+        if the road is diagonal, we should not treat it as a straight line, but instead split it to 2 parts.
+        :param road: the road to split
+        :return: the middle pair of points of the diagonal split
+        """
+        if not road.is_diagonal:
+            raise Exception(f"road is not diagonal but getting __get_diagonal_split_coordiantes called on, {road}")
+        if angle < radians(120) or angle > radians(180):
+            raise Exception(f"invalid middle-split angle: {angle}")
+        out_dir = road.source_dir
+        in_dir = road.target_dir
+        # get the left/right side points
+        left_points = (out_points[0], in_points[0])
+        right_points = (out_points[1], in_points[1])
+        """
+        now for each side points pair we want to get a point s.t. that combining all 3 results in an isosceles triangle 
+        that the side points are its base, and the head angle is the input angle.
+        there are 2 such valid points for each side pair, so we will need to later choose the matching one,
+        base on the directions of the road.
+        """
+        left_angle_points = Line(*left_points).points_at_angle_from_line(angle)
+        right_angle_points = Line(*right_points).points_at_angle_from_line(angle)
+        # no go over all combinations of diagonal directions, for each of them get the pair
+        if out_dir == JuncConnDirection.UP:
+            if in_dir not in [JuncConnDirection.LEFT, JuncConnDirection.RIGHT]:
+                raise Exception(f"error in middle-split directions: out_dir={out_dir}, in_dir={in_dir}")
+            return left_angle_points[0], right_angle_points[0]  # above lines
+        elif out_dir == JuncConnDirection.DOWN:
+            if in_dir not in [JuncConnDirection.LEFT, JuncConnDirection.RIGHT]:
+                raise Exception(f"error in middle-split directions: out_dir={out_dir}, in_dir={in_dir}")
+            return left_angle_points[1], right_angle_points[1]  # below lines
+        elif out_dir == JuncConnDirection.LEFT or out_dir == JuncConnDirection.RIGHT:
+            if in_dir == JuncConnDirection.UP:
+                return left_angle_points[0], right_angle_points[0]  # above lines
+            elif in_dir == JuncConnDirection.DOWN:
+                return left_angle_points[1], right_angle_points[1]  # below lines
+            else:
+                raise Exception(f"error in middle-split directions: out_dir={out_dir}, in_dir={in_dir}")
+        else:
+            raise Exception(f"error in middle-split directions: out_dir={out_dir}")
 
     # step 10
     def __set_traffic_lights(self, roads_data: Dict[int, RoadData], juncs_data: Dict[JuncIndices, JunctionData],

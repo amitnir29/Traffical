@@ -1,4 +1,4 @@
-from math import sqrt, degrees, pi, sin
+from math import sqrt, degrees, pi, sin, radians
 from typing import List, Optional, Tuple
 
 from server.geometry.point import Point
@@ -66,9 +66,9 @@ def calc_junc_points_from_lengths(x1, x2, x3, x4, d1, d2, center) -> List[Point]
     # now get the height to x1
     x1_delta_x = round(2 * s_x1d1d2 / x1, ROUND_FAC)
     # get height of p1:
-    p1_delta_y = round(sqrt(round(d2_px1x2 ** 2 - x1_delta_x ** 2,ROUND_FAC)), ROUND_FAC)
+    p1_delta_y = round(sqrt(round(d2_px1x2 ** 2 - x1_delta_x ** 2, ROUND_FAC)), ROUND_FAC)
     # get height (down) of p4:
-    p4_delta_y = round(sqrt(round(d1_px1x4 ** 2 - x1_delta_x ** 2,ROUND_FAC)), ROUND_FAC)
+    p4_delta_y = round(sqrt(round(d1_px1x4 ** 2 - x1_delta_x ** 2, ROUND_FAC)), ROUND_FAC)
     # now we have p1, p4:
     p1 = Point(center.x - x1_delta_x, center.y - p1_delta_y)
     p4 = Point(center.x - x1_delta_x, center.y + p4_delta_y)
@@ -77,7 +77,7 @@ def calc_junc_points_from_lengths(x1, x2, x3, x4, d1, d2, center) -> List[Point]
     s_x1x2d1 = round(area_by_3_sides(x1, x2, d1), ROUND_FAC)
     p2_delta_x_from_p1 = round(2 * s_x1x2d1 / x1, ROUND_FAC)
     # p2.y:
-    p2_delta_y_from_p1 = round(sqrt(round(x2 ** 2 - p2_delta_x_from_p1 ** 2,ROUND_FAC)), ROUND_FAC)
+    p2_delta_y_from_p1 = round(sqrt(round(x2 ** 2 - p2_delta_x_from_p1 ** 2, ROUND_FAC)), ROUND_FAC)
     angle_12 = round(degrees(law_of_cosines_angle(d1, x1, x2)), ROUND_FAC)
     if angle_12 > 90:
         p2_delta_y_from_p1 = -p2_delta_y_from_p1  # p2 is above p1
@@ -95,9 +95,9 @@ def calc_junc_points_from_lengths(x1, x2, x3, x4, d1, d2, center) -> List[Point]
     return [p1, p2, p3, p4]
 
 
-def is_convex(x1, x2, x3, x4, a_12) -> bool:
+def all_degrees_limited(x1, x2, x3, x4, a_12, max_degree=radians(180)) -> bool:
     """
-    :return: True if the quadrilateral is convex (all degrees are less than 180)
+    :return: True if all degrees are less than the input max_degree
     """
     diagonals = get_diagonals(x1, x2, x3, x4, a_12)
     if diagonals is None:
@@ -115,18 +115,18 @@ def is_convex(x1, x2, x3, x4, a_12) -> bool:
     """
     p1a1 = law_of_cosines_angle(x4, x1, d2)
     p1a2 = law_of_cosines_angle(x3, x2, d2)
-    if p1a1 + p1a2 > pi:
+    if p1a1 + p1a2 > max_degree:
         return False
     p2a1 = law_of_cosines_angle(x1, x2, d1)
     p2a2 = law_of_cosines_angle(x4, x3, d1)
-    if p2a1 + p2a2 > pi:
+    if p2a1 + p2a2 > max_degree:
         return False
     p3a1 = law_of_cosines_angle(x2, x3, d2)
     p3a2 = law_of_cosines_angle(x1, x4, d2)
-    if p3a1 + p3a2 > pi:
+    if p3a1 + p3a2 > max_degree:
         return False
     p4a1 = law_of_cosines_angle(x3, x4, d1)
     p4a2 = law_of_cosines_angle(x2, x1, d1)
-    if p4a1 + p4a2 > pi:
+    if p4a1 + p4a2 > max_degree:
         return False
     return True
