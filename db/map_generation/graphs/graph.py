@@ -17,14 +17,14 @@ from server.geometry.point import Point
 
 
 class Graph:
-    def __init__(self, width, height, juncs_dist=100, lane_width=5):
+    def __init__(self, width, height, lane_length, juncs_dist=100):
         self.__nodes: Dict[int, Node] = dict()  # the graph
         self.__juncs: List[List[Optional[JuncNode]]] = list()
         self.__next_id: int = 0  # the next id to add
         self.width = width
         self.height = height
         self.juncs_dist = juncs_dist
-        self.lane_width = lane_width
+        self.__lane_length = lane_length
 
     def build_map(self, with_tests=True, with_prints=False):
         # steps 1,2
@@ -234,7 +234,7 @@ class Graph:
         :param lanes_num: number of lanes of the road
         :return: total road width
         """
-        base_lane_width = self.juncs_dist // 10
+        base_lane_width = self.juncs_dist // self.__lane_length
         return base_lane_width * (lanes_num * 0.6 + 0.4)
 
     def middle_point_of_junc_side(self, junc: JunctionData, direction: JuncConnDirection) -> Point:
