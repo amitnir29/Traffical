@@ -64,3 +64,6 @@ class SmallMap(Drawable):
     def get_all_points(self) -> List[Point]:
         return [point for road in self.roads for point in road.get_all_points()] + \
                [point for junc in self.juncs for point in junc.get_all_points()]
+
+    def is_inside_camera(self, camera: Camera):
+        return True

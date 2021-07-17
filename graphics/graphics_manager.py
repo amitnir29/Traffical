@@ -156,9 +156,9 @@ class GraphicsManager:
             car.draw(self.screen, scale)
 
     def draw_lights(self, traffic_lights: List[DrawableLight]):
+        # scale formula that looks nice:
+        scale = 0.1 * pow((self.camera.width / self.camera.delta_x), 1 / 3)
         for light in traffic_lights:
-            # scale formula that looks nice:
-            scale = 0.1 * pow((self.camera.width / self.camera.delta_x), 1 / 3)
             light.draw(self.screen, scale)
 
     def draw_junctions(self, junctions: List[DrawableJunction]):

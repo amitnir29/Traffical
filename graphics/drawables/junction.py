@@ -6,6 +6,7 @@ from typing import List
 
 import pygame
 
+from graphics.camera import Camera
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from server.geometry.point import Point
@@ -26,3 +27,9 @@ class DrawableJunction(Drawable):
 
     def get_all_points(self) -> List[Point]:
         return self.coordinates
+
+    def is_inside_camera(self, camera: Camera):
+        for coor in self.coordinates:
+            if camera.is_inside_camera(coor):
+                return True
+        return False

@@ -7,6 +7,7 @@ from typing import List
 import pygame
 from pygame import Rect
 
+from graphics.camera import Camera
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from server.geometry.point import Point
@@ -51,3 +52,6 @@ class DrawableLight(Drawable):
 
     def get_all_points(self) -> List[Point]:
         return [self.center]
+
+    def is_inside_camera(self, camera: Camera):
+        return camera.is_inside_camera(self.center)

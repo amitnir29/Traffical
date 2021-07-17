@@ -6,6 +6,7 @@ from typing import List
 
 import pygame
 
+from graphics.camera import Camera
 from graphics.drawables.drawable import Drawable
 from server.simulation_objects.cars.i_car import ICar
 from server.geometry.point import Point
@@ -30,3 +31,6 @@ class DrawableCar(Drawable):
 
     def get_all_points(self) -> List[Point]:
         return [self.center]
+
+    def is_inside_camera(self, camera: Camera):
+        return camera.is_inside_camera(self.center)

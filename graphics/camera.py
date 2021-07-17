@@ -108,3 +108,6 @@ class Camera:
         movement = min(self.delta_x * self.arrow_press_move_ratio, self.width - self.max_x)
         self.min_x += movement
         self.max_x += movement
+
+    def is_inside_camera(self, p: Point):
+        return self.min_x <= p.x <= self.max_x and self.min_y <= p.y <= self.max_y

@@ -6,6 +6,7 @@ from typing import List, Tuple
 
 import pygame
 
+from graphics.camera import Camera
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from server.geometry.point import Point
@@ -35,3 +36,10 @@ class DrawableRoad(Drawable):
 
     def get_all_points(self) -> List[Point]:
         return [p for pair in self.border_coordinates for p in pair] + [p for line in self.inner_lines for p in line]
+
+    def is_inside_camera(self, camera: Camera):
+        for pair in self.border_coordinates:
+            for coor in pair:
+                if camera.is_inside_camera(coor):
+                    return True
+        return False
