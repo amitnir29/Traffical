@@ -27,7 +27,6 @@ def main():
     frames_counter = 0
     while gm.draw(roads, traffic_lights, cars, all_junctions):
         frames_counter = frames_counter + 1
-        print(frames_counter)
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
         reporter.next_iter(cars)
     # when run is over, report the stats

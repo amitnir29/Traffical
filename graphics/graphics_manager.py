@@ -137,6 +137,15 @@ class GraphicsManager:
                 elif event.button == 5:
                     # scroll down
                     self.camera.zoom_out(*pygame.mouse.get_pos())
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.camera.up()
+                if event.key == pygame.K_DOWN:
+                    self.camera.down()
+                if event.key == pygame.K_RIGHT:
+                    self.camera.right()
+                if event.key == pygame.K_LEFT:
+                    self.camera.left()
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:

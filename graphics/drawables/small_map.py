@@ -40,8 +40,8 @@ class SmallMap(Drawable):
         rect_sizes = (
             int(self.camera.min_x * self.width / self.screen_width),
             int(self.camera.min_y * self.height / self.screen_height),
-            int((self.camera.max_x - self.camera.min_x) * self.width / self.screen_width),
-            int((self.camera.max_y - self.camera.min_y) * self.height / self.screen_height)
+            int(self.camera.delta_x * self.width / self.screen_width),
+            int(self.camera.delta_y * self.height / self.screen_height)
         )
         pygame.draw.rect(self.screen, RED, rect_sizes, width=3)
 
