@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import List
 
@@ -25,7 +26,7 @@ class DrawableCar(Drawable):
 
     @staticmethod
     def from_server_obj(obj: ICar) -> DrawableCar:
-        return DrawableCar(obj.position, obj.get_angle())
+        return DrawableCar(deepcopy(obj.position), obj.get_angle())
 
     def get_all_points(self) -> List[Point]:
         return [self.center]

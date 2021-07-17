@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import List
 
@@ -21,7 +22,7 @@ class DrawableJunction(Drawable):
 
     @staticmethod
     def from_server_obj(obj: IJunction) -> DrawableJunction:
-        return DrawableJunction(obj.coordinates)
+        return DrawableJunction(deepcopy(obj.coordinates))
 
     def get_all_points(self) -> List[Point]:
         return self.coordinates

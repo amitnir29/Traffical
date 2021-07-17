@@ -16,7 +16,8 @@ class Drawable(ABC):
     @abstractmethod
     def from_server_obj(obj):
         """
-        create a drawable from the matching server object
+        create a drawable from the matching server object.
+        must not affect the input by having same fields withour deepcopy!
         :param obj: the server object
         :return: the drawable object
         """

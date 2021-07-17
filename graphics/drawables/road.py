@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -29,7 +31,7 @@ class DrawableRoad(Drawable):
 
     @staticmethod
     def from_server_obj(obj: IRoadSection) -> DrawableRoad:
-        return DrawableRoad(obj.coordinates, obj.get_lines_between_lanes())
+        return DrawableRoad(deepcopy(obj.coordinates), deepcopy(obj.get_lines_between_lanes()))
 
     def get_all_points(self) -> List[Point]:
         return [p for pair in self.border_coordinates for p in pair] + [p for line in self.inner_lines for p in line]

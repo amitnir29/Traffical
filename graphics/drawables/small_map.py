@@ -49,8 +49,8 @@ class SmallMap(Drawable):
     def from_server_obj(obj: (int, int, int, int, List[IRoadSection], List[IJunction],
                               pygame.Surface, Camera)) -> SmallMap:
         width, height, screen_width, screen_height, roads, juncs, screen, camera = obj
-        roads = [DrawableRoad.from_server_obj(deepcopy(road)) for road in roads]
-        juncs = [DrawableJunction.from_server_obj(deepcopy(junc)) for junc in juncs]
+        roads = [DrawableRoad.from_server_obj(road) for road in roads]
+        juncs = [DrawableJunction.from_server_obj(junc) for junc in juncs]
         # now normalize the points:
         all_points = [point for lst in [roads, juncs] for obj in lst for point in obj.get_all_points()]
         norm_x = lambda x: x * width / screen_width

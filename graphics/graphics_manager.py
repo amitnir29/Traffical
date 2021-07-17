@@ -75,10 +75,10 @@ class GraphicsManager:
     def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
                          cars: List[ICar], junctions: List[IJunction]) \
             -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar], List[DrawableJunction]]:
-        roads = [DrawableRoad.from_server_obj(deepcopy(road)) for road in roads]
-        lights = [DrawableLight.from_server_obj(deepcopy(tl)) for tl in lights]
-        cars = [DrawableCar.from_server_obj(deepcopy(car)) for car in cars]
-        junctions = [DrawableJunction.from_server_obj(deepcopy(junc)) for junc in junctions]
+        roads = [DrawableRoad.from_server_obj(road) for road in roads]
+        lights = [DrawableLight.from_server_obj(tl) for tl in lights]
+        cars = [DrawableCar.from_server_obj(car) for car in cars]
+        junctions = [DrawableJunction.from_server_obj(junc) for junc in junctions]
         self.normalize_data(roads, lights, cars, junctions)
         return roads, lights, cars, junctions
 
@@ -164,7 +164,3 @@ class GraphicsManager:
     def draw_junctions(self, junctions: List[DrawableJunction]):
         for junc in junctions:
             junc.draw(self.screen)
-
-    def draw_small_map(self):
-        for obj in self.small_map:
-            obj.draw(self.screen)
