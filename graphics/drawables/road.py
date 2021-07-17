@@ -15,16 +15,17 @@ class DrawableRoad(Drawable):
     border_coordinates: List[Tuple[Point, Point]]
     inner_lines: List[List[Point]]
 
-    def draw(self, screen, scale=None):
+    def draw(self, screen, scale=None, with_lanes=True):
         # DRAWS THE ROAD SECTION:
         coors = self.border_coordinates
         polygon_points = [pair[0].to_tuple() for pair in coors] + [pair[1].to_tuple() for pair in reversed(coors)]
         pygame.draw.polygon(screen, BLACK, polygon_points)
 
         # DRAWS THE LANES:
-        for line in self.inner_lines:
-            for i in range(len(line) - 1):
-                pygame.draw.line(screen, WHITE, line[i].to_tuple(), line[i + 1].to_tuple())
+        if with_lanes:
+            for line in self.inner_lines:
+                for i in range(len(line) - 1):
+                    pygame.draw.line(screen, WHITE, line[i].to_tuple(), line[i + 1].to_tuple())
 
     @staticmethod
     def from_server_obj(obj: IRoadSection) -> DrawableRoad:

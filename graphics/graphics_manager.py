@@ -6,8 +6,10 @@ import pygame.font
 from graphics.camera import Camera
 from graphics.colors import GREEN
 from graphics.drawables.car import DrawableCar
+from graphics.drawables.drawable import Drawable
 from graphics.drawables.junction import DrawableJunction
 from graphics.drawables.road import DrawableRoad
+from graphics.drawables.small_map import SmallMap
 from graphics.drawables.traffic_light import DrawableLight
 from server.simulation_objects.cars.i_car import ICar
 from server.geometry.line import Line
@@ -26,13 +28,20 @@ class GraphicsManager:
         self.background = background
         self.screen = self.create_screen(width, height, background)
         self.camera = Camera(0, 0, width, height, width, height)
+        self.screen_width = width
+        self.screen_height = height
         self.clock = pygame.time.Clock()
         self.fps = fps
+        self.small_map: SmallMap = None
 
     def create_screen(self, width, height, background):
         screen = pygame.display.set_mode((width, height))
         screen.fill(background)
         return screen
+
+    def set_small_map(self, roads, juncs, width=100, height=100):
+        self.small_map = SmallMap.from_server_obj((width, height, self.screen_width, self.screen_height,
+                                                   roads, juncs, self.screen, self.camera))
 
     def __del__(self):
         # Shutdown
@@ -53,6 +62,9 @@ class GraphicsManager:
         self.draw_junctions(drawable_junctions)
         self.draw_cars(drawable_cars)
         self.draw_lights(drawable_lights)
+        # draw small map
+        if self.small_map is not None:
+            self.small_map.draw(self.screen)
 
         # Display
         pygame.display.flip()
@@ -144,3 +156,7 @@ class GraphicsManager:
     def draw_junctions(self, junctions: List[DrawableJunction]):
         for junc in junctions:
             junc.draw(self.screen)
+
+    def draw_small_map(self):
+        for obj in self.small_map:
+            obj.draw(self.screen)
