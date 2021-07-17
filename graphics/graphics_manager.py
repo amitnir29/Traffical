@@ -26,7 +26,7 @@ class GraphicsManager:
         pygame.init()
         self.running = True
         self.background = background
-        self.screen = self.create_screen(width, height, background)
+        self.screen = self.create_screen(width, height)
         self.camera = Camera(0, 0, width, height, width, height)
         self.screen_width = width
         self.screen_height = height
@@ -34,9 +34,8 @@ class GraphicsManager:
         self.fps = fps
         self.small_map: SmallMap = None
 
-    def create_screen(self, width, height, background):
+    def create_screen(self, width, height):
         screen = pygame.display.set_mode((width, height))
-        screen.fill(background)
         return screen
 
     def set_small_map(self, roads, juncs, width=100, height=100):
