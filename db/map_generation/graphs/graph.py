@@ -1029,10 +1029,13 @@ class Graph:
 
     def __calc_max_speed(self, coordinates: List[Tuple[Point, Point]]) -> float:
         """
+        calculate the max speed of the read.
+        should depend on lane length and size of grid
         :param coordinates: coordinates of a road
         :return: the max speed in the road
         """
-        return min(len(coordinates) * 25, 60)
+        size_avg = (self.width + self.height) / 2
+        return min(len(coordinates) * 12, 30) * min(1, 10 / self.__lane_length) * min(1, 5 / size_avg)
 
     def __get_max_degree(self) -> float:
         """
