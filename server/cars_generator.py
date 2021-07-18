@@ -15,6 +15,9 @@ def generate_cars(roads, amount: int, p=DEF_P, min_len=MIN_LEN, with_prints=WITH
 
 
 def generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> ICar:
+    if p < 0.01 or p > 0.99:
+        raise Exception("p should be in [0.01,0.99]")
+
     start = choice(roads)
     path = [start]
     while random() < p:
@@ -28,5 +31,5 @@ def generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_print
     if len(path) < min_len:
         return generate_car(roads, p, min_len, with_prints)
     # if with_prints:
-        # print(path)
+    # print(path)
     return Car(path)

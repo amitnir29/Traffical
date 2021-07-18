@@ -81,8 +81,8 @@ class Car(ICar):
         self.__speed = max(0, min(self.__speed, self.__max_speed))
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
         # if self.__speed < 1:
-            # print("speed is " + str(self.__speed))
-            # print("acc is " + str(self.__acceleration))
+        # print("speed is " + str(self.__speed))
+        # print("acc is " + str(self.__acceleration))
 
     def _full_gass(self):
         # print("full_gass")
@@ -275,3 +275,9 @@ class Car(ICar):
         if x_diff > 0:
             res = 360 - res
         return res
+
+    def get_speed(self):
+        return self.__speed
+
+    def get_acceleration(self):
+        return self.__acceleration

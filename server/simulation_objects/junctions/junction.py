@@ -1,4 +1,5 @@
 from typing import List
+from copy import deepcopy
 
 import server.simulation_objects.junctions.i_junction as ij
 import server.simulation_objects.roadsections.i_road_section as irs
@@ -14,7 +15,7 @@ class Junction(ij.IJunction):
         self.__in_roads: List[irs.IRoadSection] = in_roads
         self._out_roads: List[irs.IRoadSection] = out_roads
         self.__lights: List[itl.ITrafficLight] = traffic_lights
-        self.__coordinates: List[Point] = junction_data.coordinates
+        self.__coordinates: List[Point] = deepcopy(junction_data.coordinates)
 
         self._algo = None
 
@@ -28,3 +29,6 @@ class Junction(ij.IJunction):
     @property
     def lights(self) -> List[ITrafficLight]:
         return self.__lights
+
+    def __repr__(self):
+        return str(self.__idnum)

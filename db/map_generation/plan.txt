@@ -45,7 +45,7 @@ The algortihm:
 4. Each Junction that has 0/1 connections to it will be removed.
 5. Apply DFS on the graph to determine the direction of each road.
     Before the run from the first randomly chosen junction, choose one in-road to it.
-    This may lead to junctions with only in-roads but no out-roads, thats ok.
+    This may lead to junctions with only in-roads or only out-roads, thats ok.
     (These are like work places where all drivers arrive at the morning and no one leaves until the evening).
 6. Create a list of all chain roads connections.
     Roads that where created through a 2-connected junction with have more than one part,
@@ -54,8 +54,7 @@ The algortihm:
 8. Set junction movement between each in-lane to the out-lanes.
     It is allowed that an out-lane will have no in-lane to it, but not for the whole out-road.
 TODO left:
-9. Set coordinates for each road and junction.
+9. Set coordinates for each road and junction, Convert the data to db objects
 10. For each junction, if it has exactly 1 in-road, do not set a traffic light to it.
     Else, there are 2/3 in-roads, set a traffic light for each of them.
-    If there are only in-roads, do not set a traffic light.
-11. Convert the data to db objects
+    If there are only in-roads or only out-roads, do not set a traffic light.

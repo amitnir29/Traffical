@@ -1,4 +1,5 @@
 from typing import List
+from copy import deepcopy
 
 import server.simulation_objects.lanes.i_notified_lane as nlane
 import server.simulation_objects.trafficlights.i_traffic_light as itl
@@ -19,7 +20,7 @@ class TrafficLight(itl.ITrafficLight):
         # set the lanes to have this traffic light
         for lane in lanes:
             lane.traffic_light = self
-        self.__coordinate = coordinate
+        self.__coordinate = deepcopy(coordinate)
 
     @property
     def can_pass(self) -> bool:

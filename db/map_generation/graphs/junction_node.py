@@ -1,10 +1,9 @@
-from typing import Tuple, List
 from dataclasses import dataclass
 from enum import Enum
+from typing import Tuple, List
 
 from db.dataclasses.road_lane import RoadLane
 from db.map_generation.graphs.node import Node
-from server.geometry.point import Point
 
 
 @dataclass(init=True, eq=True, frozen=True, unsafe_hash=True)
@@ -48,6 +47,8 @@ class JuncRoadChainConnection:
         self.parts: List[JuncRoadSingleConnection] = parts
         self.lanes_num: int = None
         self.lanes: List[RoadLane] = None
+        self.first_junc: JuncIndices = parts[0].source
+        self.last_junc: JuncIndices = parts[-1].target
 
     def set_lanes(self, lanes_num: int):
         self.lanes_num = lanes_num

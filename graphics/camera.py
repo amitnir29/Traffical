@@ -14,6 +14,7 @@ class Camera:
     height: int
     ratio_to_change_size = 1.2
     ratio_towards_new_center = 0.25
+    arrow_press_move_ratio = 0.2
 
     @property
     def delta_x(self):
@@ -87,3 +88,26 @@ class Camera:
         self.max_x = max_x
         self.min_y = min_y
         self.max_y = max_y
+
+    def up(self):
+        movement = min(self.delta_y * self.arrow_press_move_ratio, self.min_y)
+        self.min_y -= movement
+        self.max_y -= movement
+
+    def down(self):
+        movement = min(self.delta_y * self.arrow_press_move_ratio, self.height - self.max_y)
+        self.min_y += movement
+        self.max_y += movement
+
+    def left(self):
+        movement = min(self.delta_x * self.arrow_press_move_ratio, self.min_x)
+        self.min_x -= movement
+        self.max_x -= movement
+
+    def right(self):
+        movement = min(self.delta_x * self.arrow_press_move_ratio, self.width - self.max_x)
+        self.min_x += movement
+        self.max_x += movement
+
+    def is_inside_camera(self, p: Point):
+        return self.min_x <= p.x <= self.max_x and self.min_y <= p.y <= self.max_y

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import List
 
 import pygame
 
+from graphics.camera import Camera
 from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from server.geometry.point import Point
@@ -21,7 +23,13 @@ class DrawableJunction(Drawable):
 
     @staticmethod
     def from_server_obj(obj: IJunction) -> DrawableJunction:
-        return DrawableJunction(obj.coordinates)
+        return DrawableJunction(deepcopy(obj.coordinates))
 
     def get_all_points(self) -> List[Point]:
         return self.coordinates
+
+    def is_inside_camera(self, camera: Camera):
+        for coor in self.coordinates:
+            if camera.is_inside_camera(coor):
+                return True
+        return False
