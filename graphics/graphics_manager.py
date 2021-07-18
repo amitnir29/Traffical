@@ -120,7 +120,7 @@ class GraphicsManager:
         norm_x = lambda x: x_line.value_at_x(x)
         norm_y = lambda y: y_line.value_at_x(y)
         # part 3
-        all_drawables = sum(drawables_lists, start=[])
+        all_drawables = sum(drawables_lists, [])
         for drawable in all_drawables:
             for point in drawable.get_all_points():
                 point.normalize(norm_x, norm_y)
