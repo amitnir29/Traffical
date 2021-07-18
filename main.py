@@ -21,11 +21,11 @@ def main():
     # init simulation's stats reporter
     reporter = StatsReporter(cars, all_junctions)
     # create the graphics manager
-    gm = GraphicsManager(roads, all_junctions, width=win_width, height=win_height, fps=10)
+    gm = GraphicsManager(width=win_width, height=win_height, fps=10)
     gm.set_small_map(roads, all_junctions)
     # while the screen is not closed, draw the current state and calculate the next state
     frames_counter = 0
-    while gm.draw(traffic_lights, cars):
+    while gm.draw(roads, traffic_lights, cars, all_junctions):
         frames_counter = frames_counter + 1
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
         reporter.next_iter(cars)

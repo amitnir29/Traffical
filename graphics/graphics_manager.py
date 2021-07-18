@@ -1,5 +1,4 @@
 from copy import deepcopy
-from dataclasses import dataclass
 from typing import List, Tuple
 
 import pygame.font
@@ -12,7 +11,6 @@ from graphics.drawables.junction import DrawableJunction
 from graphics.drawables.road import DrawableRoad
 from graphics.drawables.small_map import SmallMap
 from graphics.drawables.traffic_light import DrawableLight
-from graphics.gm_data import GMData
 from server.simulation_objects.cars.i_car import ICar
 from server.geometry.line import Line
 from server.geometry.point import Point
@@ -23,7 +21,7 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 class GraphicsManager:
 
-    def __init__(self, roads, juncs, background=GREEN, width=800, height=800, fps=60):
+    def __init__(self, background=GREEN, width=800, height=800, fps=60):
         # Start pygame
         pygame.init()
         self.running = True
@@ -35,17 +33,10 @@ class GraphicsManager:
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.small_map: SmallMap = None
-        self.gm_data = self.create_base_data(roads, juncs)
-        self.normalize_data(self.gm_data.roads, self.gm_data.juncs)
 
     def create_screen(self, width, height):
         screen = pygame.display.set_mode((width, height))
         return screen
-
-    def create_base_data(self, roads, juncs) -> GMData:
-        d_roads = [DrawableRoad.from_server_obj(road) for road in roads]
-        d_juncs = [DrawableJunction.from_server_obj(junc) for junc in juncs]
-        return GMData(d_roads, d_juncs)
 
     def set_small_map(self, roads, juncs, width=100, height=100):
         self.small_map = SmallMap.from_server_obj((width, height, self.screen_width, self.screen_height,
@@ -55,17 +46,19 @@ class GraphicsManager:
         # Shutdown
         pygame.quit()
 
-    def draw(self, lights: List[ITrafficLight], cars: List[ICar]) -> bool:
+    def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],
+             cars: List[ICar], junctions: List[IJunction]) -> bool:
         self.screen.fill(self.background)
         # Check if window has been closed
         self.handle_events()
         if not self.running:
             return False
         # Convert the data to drawables
-        drawable_lights, drawable_cars = self.create_drawables(lights, cars)
+        drawable_roads, drawable_lights, drawable_cars, drawable_junctions \
+            = self.create_drawables(roads, lights, cars, junctions)
         # Draw all data
-        self.draw_roads()
-        self.draw_junctions()
+        self.draw_roads(drawable_roads)
+        self.draw_junctions(drawable_junctions)
         self.draw_cars(drawable_cars)
         self.draw_lights(drawable_lights)
         # draw small map
@@ -79,22 +72,31 @@ class GraphicsManager:
         self.clock.tick(self.fps)
         return len(cars) > 0
 
-    def create_drawables(self, lights: List[ITrafficLight], cars: List[ICar]) \
-            -> Tuple[List[DrawableLight], List[DrawableCar]]:
+    def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
+                         cars: List[ICar], junctions: List[IJunction]) \
+            -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar], List[DrawableJunction]]:
+        roads = [DrawableRoad.from_server_obj(road) for road in roads]
         lights = [DrawableLight.from_server_obj(tl) for tl in lights]
         cars = [DrawableCar.from_server_obj(car) for car in cars]
-        self.normalize_data(lights, cars)
-        return lights, cars
+        junctions = [DrawableJunction.from_server_obj(junc) for junc in junctions]
+        self.normalize_data(roads, lights, cars, junctions)
+        return roads, lights, cars, junctions
 
-    def normalize_data(self, *drawables_lists: List[Drawable]):
-        normalization_objects: List[Drawable] = self.gm_data.roads + self.gm_data.juncs
-        normalization_points: List[Point] = list()
+    def normalize_data(self, roads: List[DrawableRoad], lights: List[DrawableLight],
+                       cars: List[DrawableCar], junctions: List[DrawableJunction]):
+        all_points: List[Point] = list()
         # get all points of the simulation
-        for drawable in normalization_objects:
-            normalization_points += drawable.get_all_points()
+        for road in roads:
+            all_points += road.get_all_points()
+        for light in lights:
+            all_points += light.get_all_points()
+        for car in cars:
+            all_points += car.get_all_points()
+        for junc in junctions:
+            all_points += junc.get_all_points()
         # get min and max x,y values of the whole map
-        x_values = [p.x for p in normalization_points]
-        y_values = [p.y for p in normalization_points]
+        x_values = [p.x for p in all_points]
+        y_values = [p.y for p in all_points]
         min_x = min(x_values)
         min_y = min(y_values)
         max_x = max(x_values)
@@ -120,10 +122,8 @@ class GraphicsManager:
         norm_x = lambda x: x_line.value_at_x(x)
         norm_y = lambda y: y_line.value_at_x(y)
         # part 3
-        all_drawables = sum(drawables_lists, start=[])
-        for drawable in all_drawables:
-            for point in drawable.get_all_points():
-                point.normalize(norm_x, norm_y)
+        for point in all_points:
+            point.normalize(norm_x, norm_y)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -133,11 +133,9 @@ class GraphicsManager:
                 if event.button == 4:
                     # scroll up
                     self.camera.zoom_in(*pygame.mouse.get_pos())
-                    self.normalize_data(self.gm_data.roads, self.gm_data.juncs)
                 elif event.button == 5:
                     # scroll down
                     self.camera.zoom_out(*pygame.mouse.get_pos())
-                    self.normalize_data(self.gm_data.roads, self.gm_data.juncs)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.camera.up()
@@ -148,13 +146,9 @@ class GraphicsManager:
                 if event.key == pygame.K_LEFT:
                     self.camera.left()
 
-    def draw_roads(self):
-        for road in self.gm_data.roads:
+    def draw_roads(self, roads: List[DrawableRoad]):
+        for road in roads:
             road.draw(self.screen)
-
-    def draw_junctions(self):
-        for junc in self.gm_data.juncs:
-            junc.draw(self.screen)
 
     def draw_cars(self, cars: List[DrawableCar]):
         scale = 0.05
@@ -166,3 +160,7 @@ class GraphicsManager:
         scale = 0.1 * pow((self.camera.width / self.camera.delta_x), 1 / 3)
         for light in traffic_lights:
             light.draw(self.screen, scale)
+
+    def draw_junctions(self, junctions: List[DrawableJunction]):
+        for junc in junctions:
+            junc.draw(self.screen)
