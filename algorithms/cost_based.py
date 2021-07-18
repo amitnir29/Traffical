@@ -16,18 +16,16 @@ class CostBased(TLManager):
 
         self.time_tracker = defaultdict(int)
 
-    def _cost_for_tl(self, tl: TrafficLight):
-        all_cars = sum(
-            [sum([[car for car in lane.get_all_cars()] for lane in tl.lanes], []) for tl in self._junction.lights],
-            [])
-        cars_per_lane_in_green_tl = [[car for car in lane.get_all_cars()] for lane in tl.lanes]
+    def _cost_for_tl(self, current_tl: TrafficLight):
+        all_cars = sum([tl.all_cars for tl in self._junction.lights], [])
+        cars_per_lane_in_green_tl = [[car for car in lane.get_all_cars()] for lane in current_tl.lanes]
         passing_cars = [cars[0] for cars in cars_per_lane_in_green_tl if len(cars) > 0]
 
         passing_cars_gain = self.passing_car_revenue * len(passing_cars)
 
-        waiting_cars_punishment = self.waiting_penalty * len([car for car in all_cars if car not in passing_cars
-                                                              and self.time_tracker[car] %
-                                                              self.waiting_time_to_charge == 0])
+        waiting_cars_punishment = self.waiting_penalty * len(
+            [car for car in all_cars if car not in passing_cars and self.time_tracker[
+                car] % self.waiting_time_to_charge == 0])
 
         # passing_cars_gain = sum(lane.cars_amount() for lane in tl.lanes) * self.passing_car_revenue  # TODO fix
         #
@@ -38,9 +36,7 @@ class CostBased(TLManager):
         return passing_cars_gain - waiting_cars_punishment
 
     def _track_time(self):
-        all_cars = sum(
-            [sum([[car for car in lane.get_all_cars()] for lane in tl.lanes], []) for tl in self._junction.lights],
-            [])
+        all_cars = sum([tl.all_cars for tl in self._junction.lights], [])
         for car in self.time_tracker.keys() - set(all_cars):
             self.time_tracker.pop(car)
 

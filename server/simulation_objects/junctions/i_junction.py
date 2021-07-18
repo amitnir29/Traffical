@@ -15,3 +15,7 @@ class IJunction(ABC):
     @abstractmethod
     def lights(self) -> List[ITrafficLight]:
         pass
+
+    @abstractmethod
+    def set_algo(self, algo):
+        pass

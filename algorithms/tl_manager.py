@@ -11,6 +11,8 @@ class TLManager(ABC):
         self._current_light = self._lights[0] if len(self._lights) > 0 else None
         self._time_limit = time_limit
 
+        self._junction.set_algo(self)
+
     @abstractmethod
     def _manage_lights(self):
         raise NotImplemented
