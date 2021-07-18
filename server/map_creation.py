@@ -52,6 +52,12 @@ def __create_objects_from_data(path: str):
     __set_lane_movements(roads, from_roads)
     # part 5
     all_junctions = __get_all_junctions(junctions_data, roads)
+
+    for junction in all_junctions:
+        for road in junction._out_roads:
+            for lane in road.lanes:
+                lane.set_prev_junction(junction)
+
     roads_list = list(roads.values())
     return roads_list, traffic_lights, all_junctions
 

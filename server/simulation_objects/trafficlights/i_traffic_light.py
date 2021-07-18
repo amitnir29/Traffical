@@ -39,3 +39,8 @@ class ITrafficLight(ABC):
     @abstractmethod
     def lanes(self):
         pass
+
+    @property
+    @abstractmethod
+    def all_cars(self):
+        pass

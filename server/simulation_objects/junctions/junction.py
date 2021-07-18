@@ -13,9 +13,14 @@ class Junction(ij.IJunction):
     def __init__(self, junction_data: JunctionData, in_roads, out_roads, traffic_lights):
         self.__idnum: int = junction_data.idnum
         self.__in_roads: List[irs.IRoadSection] = in_roads
-        self.__out_roads: List[irs.IRoadSection] = out_roads
+        self._out_roads: List[irs.IRoadSection] = out_roads
         self.__lights: List[itl.ITrafficLight] = traffic_lights
         self.__coordinates: List[Point] = deepcopy(junction_data.coordinates)
+
+        self._algo = None
+
+    def set_algo(self, algo):
+        self._algo = algo
 
     @property
     def coordinates(self) -> List[Point]:

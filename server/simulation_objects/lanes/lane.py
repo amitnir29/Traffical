@@ -19,6 +19,8 @@ class Lane(il.ILane):
         self._comes_from: List[il.ILane] = list()
         self.__road: irs.IRoadSection = road
 
+        self._comes_from_junction = None
+
     @property
     def coordinates(self) -> List[Tuple[Point, Point]]:
         return self.__coordinates
@@ -36,6 +38,9 @@ class Lane(il.ILane):
 
     def add_movement_in(self, from_lane: il.ILane):
         self._comes_from.append(from_lane)
+
+    def set_prev_junction(self, junction):
+        self._comes_from_junction = junction
 
     @staticmethod
     def _calculate_part_length(start: Tuple[Point, Point], end: Tuple[Point, Point]):
