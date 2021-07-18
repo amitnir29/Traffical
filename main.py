@@ -15,7 +15,7 @@ def main():
     # get the simulation map
     roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/33")
     # init cars list
-    cars: List = generate_cars(roads, 10, p=0.9, min_len=20, with_prints=True)
+    cars: List = generate_cars(roads, 20, p=0.9, min_len=20, with_prints=True)
     # init traffic lights algorithm
     light_algos = choose_algorithm(all_junctions)
     # init simulation's stats reporter
@@ -25,7 +25,7 @@ def main():
     gm.set_small_map(roads, all_junctions)
     # while the screen is not closed, draw the current state and calculate the next state
     frames_counter = 0
-    while gm.draw(roads, traffic_lights, cars, all_junctions):
+    while gm.draw(traffic_lights, cars):
         frames_counter = frames_counter + 1
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
         reporter.next_iter(cars)
