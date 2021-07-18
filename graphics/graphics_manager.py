@@ -1,4 +1,5 @@
 from copy import deepcopy
+from dataclasses import dataclass
 from typing import List, Tuple
 
 import pygame.font
@@ -11,6 +12,7 @@ from graphics.drawables.junction import DrawableJunction
 from graphics.drawables.road import DrawableRoad
 from graphics.drawables.small_map import SmallMap
 from graphics.drawables.traffic_light import DrawableLight
+from graphics.gm_data import GMData
 from server.simulation_objects.cars.i_car import ICar
 from server.geometry.line import Line
 from server.geometry.point import Point
@@ -21,7 +23,7 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 class GraphicsManager:
 
-    def __init__(self, background=GREEN, width=800, height=800, fps=60):
+    def __init__(self, roads, juncs, background=GREEN, width=800, height=800, fps=60):
         # Start pygame
         pygame.init()
         self.running = True
@@ -33,6 +35,8 @@ class GraphicsManager:
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.small_map: SmallMap = None
+        self.gm_data = GMData(roads, juncs)
+        self.normalize_data(roads, juncs)
 
     def create_screen(self, width, height):
         screen = pygame.display.set_mode((width, height))
@@ -82,18 +86,12 @@ class GraphicsManager:
         self.normalize_data(roads, lights, cars, junctions)
         return roads, lights, cars, junctions
 
-    def normalize_data(self, roads: List[DrawableRoad], lights: List[DrawableLight],
-                       cars: List[DrawableCar], junctions: List[DrawableJunction]):
+    def normalize_data(self, *drawables_lists: List[Drawable]):
+        all_drawables = sum(drawables_lists, start=[])
         all_points: List[Point] = list()
         # get all points of the simulation
-        for road in roads:
-            all_points += road.get_all_points()
-        for light in lights:
-            all_points += light.get_all_points()
-        for car in cars:
-            all_points += car.get_all_points()
-        for junc in junctions:
-            all_points += junc.get_all_points()
+        for drawable in all_drawables:
+            all_points += drawable.get_all_points()
         # get min and max x,y values of the whole map
         x_values = [p.x for p in all_points]
         y_values = [p.y for p in all_points]

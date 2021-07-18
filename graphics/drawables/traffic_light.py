@@ -21,6 +21,7 @@ class DrawableLight(Drawable):
     width: float = 160
     height: float = 330
 
+
     def draw(self, screen, scale):
         # SETTING SIZES AND SCALES
         w = 160 * scale
