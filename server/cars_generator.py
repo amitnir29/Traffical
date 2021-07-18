@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from random import random, choice
 
 from server.simulation_objects.cars.car import Car
@@ -11,10 +11,19 @@ MIN_LEN = 1
 
 
 def generate_cars(roads, amount: int, p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> List[ICar]:
-    return [generate_car(roads, p, min_len, with_prints) for _ in range(amount)]
+    tries = 0
+    cars = list()
+    while len(cars) < amount:
+        if tries == 100 * amount:
+            raise Exception("looks like this is not going to work, change the parameters")
+        car = generate_car(roads, p, min_len, with_prints)
+        if car is not None:
+            cars.append(car)
+        tries += 1
+    return cars
 
 
-def generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> ICar:
+def generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> Optional[ICar]:
     if p < 0.01 or p > 0.99:
         raise Exception("p should be in [0.01,0.99]")
 
@@ -29,7 +38,7 @@ def generate_car(roads: List[IRoadSection], p=DEF_P, min_len=MIN_LEN, with_print
         path.append(chosen_next_road)
 
     if len(path) < min_len:
-        return generate_car(roads, p, min_len, with_prints)
-    # if with_prints:
-    # print(path)
+        return None
+    if with_prints:
+        print(path)
     return Car(path)
