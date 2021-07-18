@@ -1,6 +1,5 @@
 .idea/
 main.py
 temp.py
-db/databases/generated
 __pycache__/
 *.pyc
