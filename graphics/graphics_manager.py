@@ -87,14 +87,14 @@ class GraphicsManager:
         return lights, cars
 
     def normalize_data(self, *drawables_lists: List[Drawable]):
-        all_drawables = sum(drawables_lists, start=[])
-        all_points: List[Point] = list()
+        normalization_objects: List[Drawable] = self.gm_data.roads + self.gm_data.juncs
+        normalization_points: List[Point] = list()
         # get all points of the simulation
-        for drawable in all_drawables:
-            all_points += drawable.get_all_points()
+        for drawable in normalization_objects:
+            normalization_points += drawable.get_all_points()
         # get min and max x,y values of the whole map
-        x_values = [p.x for p in all_points]
-        y_values = [p.y for p in all_points]
+        x_values = [p.x for p in normalization_points]
+        y_values = [p.y for p in normalization_points]
         min_x = min(x_values)
         min_y = min(y_values)
         max_x = max(x_values)
@@ -120,8 +120,10 @@ class GraphicsManager:
         norm_x = lambda x: x_line.value_at_x(x)
         norm_y = lambda y: y_line.value_at_x(y)
         # part 3
-        for point in all_points:
-            point.normalize(norm_x, norm_y)
+        all_drawables = sum(drawables_lists, start=[])
+        for drawable in all_drawables:
+            for point in drawable.get_all_points():
+                point.normalize(norm_x, norm_y)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -131,7 +133,7 @@ class GraphicsManager:
                 if event.button == 4:
                     # scroll up
                     self.camera.zoom_in(*pygame.mouse.get_pos())
-                    self.normalize_data(self.gm_data.roads,self.gm_data.juncs)
+                    self.normalize_data(self.gm_data.roads, self.gm_data.juncs)
                 elif event.button == 5:
                     # scroll down
                     self.camera.zoom_out(*pygame.mouse.get_pos())
