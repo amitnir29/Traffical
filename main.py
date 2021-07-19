@@ -13,7 +13,7 @@ def main():
     # size of window
     win_width, win_height = (800, 800)
     # get the simulation map
-    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/25")
+    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/22")
     # init cars list
     cars: List = generate_cars(roads, 1, p=0.9, min_len=10, with_prints=False)
     # init traffic lights algorithm
