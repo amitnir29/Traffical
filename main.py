@@ -23,8 +23,11 @@ def main():
     light_algos = choose_algorithm(all_junctions)
     # init simulation's stats reporter
     reporter = StatsReporter(cars, all_junctions)
-    # create the graphics manager
+
     menu = Menu(screen)
+    menu.run()
+
+    # create the graphics manager
     gm = GameManager(screen, fps=10)
     gm.set_small_map(roads, all_junctions)
     # while the screen is not closed, draw the current state and calculate the next state

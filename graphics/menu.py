@@ -4,7 +4,7 @@ from typing import List, Tuple
 import pygame.font
 
 from graphics.camera import Camera
-from graphics.colors import GREEN, TURQUOISE, DARK_BLUE
+from graphics.colors import GREEN, TURQUOISE, DARK_BLUE, WHITE
 from graphics.drawables.car import DrawableCar
 from graphics.drawables.drawable import Drawable
 from graphics.drawables.junction import DrawableJunction
@@ -24,25 +24,33 @@ class Menu:
     def __init__(self, screen: pygame.Surface, background=DARK_BLUE):
         self.background = background
         self.screen = screen
+
+    def __text(self, txt, x, y, size, color=WHITE):
+        font = pygame.font.Font('freesansbold.ttf', size)
+
+        # create a text surface object,
+        # on which text is drawn on it.
+        text = font.render(txt, True, color, self.background)
+
+        # create a rectangular object for the
+        # text surface object
+        textRect = text.get_rect()
+
+        # set the center of the rectangular object.
+        textRect.center = (x, y)
+        self.screen.blit(text, textRect)
+
+    def run(self):
         self.start_screen()
 
     def start_screen(self):
         running = True
         while running:
             self.screen.fill(self.background)
-            font = pygame.font.Font('freesansbold.ttf', 32)
 
-            # create a text surface object,
-            # on which text is drawn on it.
-            text = font.render('GeeksForGeeks', True, GREEN, DARK_BLUE)
-
-            # create a rectangular object for the
-            # text surface object
-            textRect = text.get_rect()
-
-            # set the center of the rectangular object.
-            textRect.center = (self.screen.get_width() // 2, self.screen.get_height() // 8)
-            self.screen.blit(text, textRect)
+            self.__text("Welcome to", self.screen.get_width() // 2, self.screen.get_height() // 4, 80)
+            self.__text("Traffical", self.screen.get_width() // 2, self.screen.get_height() // 4 + 140, 140)
+            self.__text("click to continue", self.screen.get_width() // 2, 3 * self.screen.get_height() // 4, 40)
 
             for event in pygame.event.get():
                 # if event object type is QUIT
