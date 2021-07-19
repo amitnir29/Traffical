@@ -3,6 +3,7 @@ from typing import List
 from algorithms.cost_based import CostBased
 from algorithms.naive import NaiveAlgo
 from graphics.game_manager import GameManager
+from graphics.menu import Menu
 from graphics.screen import create_screen, finish_screen
 from server.cars_generator import generate_cars
 from server.map_creation import create_map
@@ -13,16 +14,17 @@ from server.statistics.stats_reporter import StatsReporter
 def main():
     # size of window
     win_width, win_height = (800, 800)
+    screen = create_screen(win_width, win_height)
     # get the simulation map
-    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/2")
+    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/1")
     # init cars list
-    cars: List = generate_cars(roads, 20, p=0.9, min_len=20, with_prints=False)
+    cars: List = generate_cars(roads, 10, p=0.9, min_len=20, with_prints=False)
     # init traffic lights algorithm
     light_algos = choose_algorithm(all_junctions)
     # init simulation's stats reporter
     reporter = StatsReporter(cars, all_junctions)
     # create the graphics manager
-    screen = create_screen(win_width, win_height)
+    menu = Menu(screen)
     gm = GameManager(screen, fps=10)
     gm.set_small_map(roads, all_junctions)
     # while the screen is not closed, draw the current state and calculate the next state
