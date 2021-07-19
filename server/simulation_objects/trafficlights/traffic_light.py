@@ -38,7 +38,7 @@ class TrafficLight(itl.ITrafficLight):
         return self.__light_time
 
     @property
-    def lanes(self):
+    def lanes(self) -> List[nlane.INotifiedLane]:
         return self.__coming_from_lanes
 
     @property

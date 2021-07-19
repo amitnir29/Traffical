@@ -8,11 +8,6 @@ import server.simulation_objects.trafficlights.i_traffic_light as itl
 
 
 class NotifiedLane(inlane.INotifiedLane, lane.Lane):
-
-    def notified(self) -> None:
-        # TODO
-        pass
-
     def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
         lane.Lane.__init__(self, road, coordinates)
         self.__light = None
