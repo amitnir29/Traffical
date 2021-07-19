@@ -1,9 +1,8 @@
 from typing import List
 
 from algorithms.cost_based import CostBased
-from algorithms.naive import NaiveAlgo
-from graphics.game_manager import GameManager
-from graphics.menu import Menu
+from graphics.simaltion_graphics import SimulationGraphics
+from graphics.menu.menu import Menu
 from graphics.screen import create_screen, finish_screen
 from server.cars_generator import generate_cars
 from server.map_creation import create_map
@@ -28,8 +27,8 @@ def main():
     menu.run()
 
     # create the graphics manager
-    gm = GameManager(screen, fps=10)
-    gm.set_small_map(roads, all_junctions)
+    gm = SimulationGraphics(screen, fps=10)
+    gm.set_small_map(roads)
     # while the screen is not closed, draw the current state and calculate the next state
     frames_counter = 0
     while gm.draw(roads, traffic_lights, cars, all_junctions):

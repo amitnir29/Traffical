@@ -1,15 +1,13 @@
-from copy import deepcopy
 from typing import List, Tuple
 
 import pygame.font
 
 from graphics.camera import Camera
-from graphics.colors import GREEN, TURQUOISE
+from graphics.colors import TURQUOISE
 from graphics.drawables.car import DrawableCar
-from graphics.drawables.drawable import Drawable
 from graphics.drawables.junction import DrawableJunction
 from graphics.drawables.road import DrawableRoad
-from graphics.drawables.small_map import SmallMap
+from graphics.drawables.corner_small_map import CornerSmallMap
 from graphics.drawables.traffic_light import DrawableLight
 from server.simulation_objects.cars.i_car import ICar
 from server.geometry.line import Line
@@ -19,7 +17,7 @@ from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
 
-class GameManager:
+class SimulationGraphics:
 
     def __init__(self, screen: pygame.Surface, background=TURQUOISE, fps=60):
         self.running = True
@@ -28,11 +26,11 @@ class GameManager:
         self.camera = Camera(0, 0, screen.get_width(), screen.get_height(), screen.get_width(), screen.get_height())
         self.clock = pygame.time.Clock()
         self.fps = fps
-        self.small_map: SmallMap = None
+        self.small_map: CornerSmallMap = None
 
-    def set_small_map(self, roads, juncs, width=100, height=100):
-        self.small_map = SmallMap.from_server_obj((width, height, self.screen.get_width(), self.screen.get_height(),
-                                                   roads, juncs, self.screen, self.camera))
+    def set_small_map(self, roads, width=100, height=100):
+        self.small_map = CornerSmallMap.from_server_obj((width, height, self.screen.get_width(), self.screen.get_height(),
+                                                         roads, self.screen, self.camera))
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],
              cars: List[ICar], junctions: List[IJunction]) -> bool:

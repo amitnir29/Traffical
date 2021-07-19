@@ -17,13 +17,12 @@ from server.simulation_objects.roadsections.i_road_section import IRoadSection
 
 
 @dataclass(init=True, repr=True)
-class SmallMap(Drawable):
+class CornerSmallMap(Drawable):
     width: int
     height: int
     screen_width: int
     screen_height: int
     roads: List[DrawableRoad]
-    juncs: List[DrawableJunction]
     screen: pygame.Surface
     camera: Camera
 
@@ -33,9 +32,6 @@ class SmallMap(Drawable):
         # draw the objects
         for road in self.roads:
             road.draw(self.screen, with_lanes=False)
-        # TODO we dont draw the junctions, they are too small to be noticable. decide later.
-        # for junc in self.juncs:
-        #     junc.draw(self.screen)
         # draw the red rectangle of the camera
         rect_sizes = (
             int(self.camera.min_x * self.width / self.screen_width),
@@ -46,24 +42,21 @@ class SmallMap(Drawable):
         pygame.draw.rect(self.screen, RED, rect_sizes, width=3)
 
     @staticmethod
-    def from_server_obj(obj: (int, int, int, int, List[IRoadSection], List[IJunction],
-                              pygame.Surface, Camera)) -> SmallMap:
-        width, height, screen_width, screen_height, roads, juncs, screen, camera = obj
+    def from_server_obj(obj: (int, int, int, int, List[IRoadSection], pygame.Surface, Camera)) -> CornerSmallMap:
+        width, height, screen_width, screen_height, roads, screen, camera = obj
         roads = [DrawableRoad.from_server_obj(road) for road in roads]
-        juncs = [DrawableJunction.from_server_obj(junc) for junc in juncs]
         # now normalize the points:
-        all_points = [point for lst in [roads, juncs] for obj in lst for point in obj.get_all_points()]
+        all_points = [point for road in roads for point in road.get_all_points()]
         norm_x = lambda x: x * width / screen_width
         norm_y = lambda y: y * height / screen_height
         # part 3
         for point in all_points:
             point.normalize(norm_x, norm_y)
         # finally, set the small map to a field
-        return SmallMap(width, height, screen_width, screen_height, roads, juncs, screen, camera)
+        return CornerSmallMap(width, height, screen_width, screen_height, roads, screen, camera)
 
     def get_all_points(self) -> List[Point]:
-        return [point for road in self.roads for point in road.get_all_points()] + \
-               [point for junc in self.juncs for point in junc.get_all_points()]
+        return [point for road in self.roads for point in road.get_all_points()]
 
     def is_inside_camera(self, camera: Camera):
         return True
