@@ -234,9 +234,11 @@ class Car(ICar):
         pass
 
     def has_arrived_destination(self):
-        # return True if passed the middle of the last road
         last_road = self.__path[-1]
         return self.__current_road == last_road
+
+    def reached_destination(self):
+        self.__current_lane.remove_car(self)
 
     def __repr__(self):
         return str([road for road in self.__path])
