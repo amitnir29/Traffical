@@ -1,3 +1,4 @@
+import copy
 from collections import deque
 from typing import List, Optional, Tuple
 from copy import deepcopy
@@ -20,6 +21,14 @@ class Lane(il.ILane):
         self.__road: irs.IRoadSection = road
 
         self._comes_from_junction = None
+
+    def __deepcopy__(self, memodict={}):
+        res = Lane.__new__(Lane)
+        res.__dict__ = copy.copy(self.__dict__)
+
+        res._cars = copy.copy(self._cars)
+
+        return res
 
     @property
     def coordinates(self) -> List[Tuple[Point, Point]]:

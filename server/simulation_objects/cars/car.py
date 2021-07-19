@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from copy import deepcopy
 from math import atan, degrees
 from typing import List, Optional, Tuple
@@ -40,6 +41,18 @@ class Car(ICar):
         self._enter_road_section(initial_road_section, initial_distance)
 
         self.__speed = max_speed  # TODO remove
+
+    def __deepcopy__(self, memodict={}):
+        res = Car.__new__(Car)
+        res.__dict__ = copy.copy(self.__dict__)
+
+        res.__position = copy.copy(self.position)
+        res.__current_road = deepcopy(self.__current_road)
+        res.__current_lane = deepcopy(self.__current_lane)
+        res.__path = deepcopy(self.__path)
+        res.__current_lane._cars.appendleft(res)
+
+        return res
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
         if self.__current_lane is not None:
@@ -125,6 +138,7 @@ class Car(ICar):
 
                     simulation_car = deepcopy(front_car)
                     simulation_car._advance(simulation_car.estimated_speed())
+
                     estimated_front_car_pos = simulation_car.position
 
                     distance_to_move = Line(self.position, estimated_front_car_pos).length() - distance_to_keep
