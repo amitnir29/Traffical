@@ -14,8 +14,12 @@ class Menu:
         self.screen = screen
 
     def run(self):
-        self.__start_screen()
-        self.__map_choosing()
+        maps_padding = 10
+        menu_small_maps = load_all_small_maps(self.screen,
+                                              self.screen.get_width() // NUMBER_OF_SMALL_MAPS - 2 * maps_padding,
+                                              self.screen.get_height() // NUMBER_OF_SMALL_MAPS - 2 * maps_padding)
+        self._start_screen()
+        self._map_choosing(menu_small_maps, maps_padding)
 
     def __text(self, txt, x, y, size, color=WHITE, font='freesansbold.ttf'):
         """
@@ -38,7 +42,7 @@ class Menu:
         # write the text
         self.screen.blit(text, textRect)
 
-    def __start_screen(self):
+    def _start_screen(self):
         self.screen.fill(self.background)
         # write the text
         self.__text("Welcome to", self.screen.get_width() // 2, self.screen.get_height() // 4, 80)
@@ -56,40 +60,53 @@ class Menu:
                         running = False
                         break
 
-    def __map_choosing(self):
+    def __draw_all_small_maps(self, all_small_maps, padding, delta_y):
+        # draw the small maps
+        for i, small_map in enumerate(all_small_maps):
+            row = i // NUMBER_OF_SMALL_MAPS + 1  # first row is for the title
+            col = i % NUMBER_OF_SMALL_MAPS
+            row_jump = self.screen.get_width() // NUMBER_OF_SMALL_MAPS
+            col_jump = self.screen.get_height() // NUMBER_OF_SMALL_MAPS
+            small_map.draw(self.screen, Point(col * col_jump + padding, row * row_jump + padding - delta_y))
+
+    def __draw_map_choosing_menu(self, menu_small_maps, padding, scroll_delta_y):
+        self.screen.fill(self.background)
+        # write the text
+        self.__draw_all_small_maps(menu_small_maps, padding, scroll_delta_y)
+        pygame.draw.rect(self.screen, self.background, [0, 0, self.screen.get_width(),
+                                                        self.screen.get_height() // NUMBER_OF_SMALL_MAPS])
+        self.__text("Please choose a map", self.screen.get_width() // 2, self.screen.get_height() // 10, 70)
+
+        # Draws the surface object to the screen.
+        pygame.display.flip()
+        pygame.display.update()
+
+    def _map_choosing(self, menu_small_maps, padding):
         """
         first load all small maps. say there are NUMBER_OF_SMALL_MAPS in each row and column, when text is not there.
         then add a padding to each dimension
         """
-        padding = 10
-        menu_small_maps = load_all_small_maps(self.screen,
-                                              self.screen.get_width() // NUMBER_OF_SMALL_MAPS - 2 * padding,
-                                              self.screen.get_height() // NUMBER_OF_SMALL_MAPS - 2 * padding)
+        total_delta_y = 0
+        scroll_delta_y = 20
+        self.__draw_map_choosing_menu(menu_small_maps, padding, total_delta_y)
         # block until click
         running = True
         while running:
-            self.screen.fill(self.background)
-            # write the text
-            self.__text("Please choose a map", self.screen.get_width() // 2, self.screen.get_height() // 8, 60)
-            # draw the small maps
-            for i, small_map in enumerate(menu_small_maps):
-                row = i // NUMBER_OF_SMALL_MAPS + 1  # first row is for the title
-                col = i % NUMBER_OF_SMALL_MAPS
-                row_jump = self.screen.get_width() // NUMBER_OF_SMALL_MAPS
-                col_jump = self.screen.get_height() // NUMBER_OF_SMALL_MAPS
-                small_map.draw(self.screen, Point(col * col_jump + padding, row * row_jump + padding))
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         # click
+                        # find the clicked map
+
                         running = False
                         break
                     if event.button == 4:
                         # scroll up
-                        self.background = (self.background[0], self.background[1], min(255, self.background[2] + 5))
+                        total_delta_y = max(0, total_delta_y - scroll_delta_y)
+                        self.__draw_map_choosing_menu(menu_small_maps, padding, total_delta_y)
                     elif event.button == 5:
                         # scroll down
-                        self.background = (self.background[0], self.background[1], max(0, self.background[2] - 5))
-
-            # Draws the surface object to the screen.
-            pygame.display.update()
+                        max_scroll = (len(menu_small_maps) // NUMBER_OF_SMALL_MAPS - 2) \
+                                     * (self.screen.get_height() // NUMBER_OF_SMALL_MAPS)
+                        total_delta_y = min(max_scroll, total_delta_y + scroll_delta_y)
+                        self.__draw_map_choosing_menu(menu_small_maps, padding, total_delta_y)
