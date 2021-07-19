@@ -1197,6 +1197,20 @@ class Graph:
             raise Exception(f"error in middle-split directions: out_dir={out_dir}")
 
     # step 10
+    def __calculate_tl_coors(self, in_road: JuncRoadChainConnection, center: Point) -> Point:
+        direction: JuncConnDirection = in_road.parts[-1].target_dir
+        delta = self.juncs_dist * 0.1
+        if direction == JuncConnDirection.UP:
+            return Point(center.x - delta, center.y - delta)
+        elif direction == JuncConnDirection.DOWN:
+            return Point(center.x + delta, center.y + delta)
+        elif direction == JuncConnDirection.RIGHT:
+            return Point(center.x + delta, center.y - delta)
+        elif direction == JuncConnDirection.LEFT:
+            return Point(center.x - delta, center.y + delta)
+        else:
+            raise Exception("error in direction, in traffic light position calculation")
+
     def __set_traffic_lights(self, roads_data: Dict[int, RoadData], juncs_data: Dict[JuncIndices, JunctionData],
                              roads_chains: List[JuncRoadChainConnection]):
         """
@@ -1219,4 +1233,6 @@ class Graph:
             junc_data.num_traffic_lights = in_roads_count
             for in_road in in_roads[junc_indices]:
                 junc_data.traffic_lights.append(in_road.lanes)
-                junc_data.traffic_lights_coords.append(roads_data[in_road.road_id].coordinates[-1][1])
+                # calculate the coordinates of the traffic light
+                center = roads_data[in_road.road_id].coordinates[-1][1]
+                junc_data.traffic_lights_coords.append(self.__calculate_tl_coors(in_road, center))

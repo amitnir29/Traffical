@@ -23,25 +23,16 @@ class DrawableLight(Drawable):
 
     def draw(self, screen, scale):
         # SETTING SIZES AND SCALES
-        w = 160 * scale
-        h = 250 * scale
         x, y = self.center.to_tuple()
-        rect = Rect(x, y, w, h)
-        rect.center = x, y
-        circle_radius = 55 * scale
-
-        # CENTERS
-        red_center = (x, y - 55 * scale)
-        green_center = (x, y + 55 * scale)
+        circle_radius = 70 * scale
+        back_circle_radius = 95 * scale
 
         # COLORS
-        red_color = RED if not self.is_green else DARK_GRAY
-        green_color = GREEN if self.is_green else DARK_GRAY
+        color = GREEN if self.is_green else RED
 
         # DRAWING
-        pygame.draw.rect(screen, GRAY, rect)
-        pygame.draw.circle(screen, red_color, red_center, circle_radius)
-        pygame.draw.circle(screen, green_color, green_center, circle_radius)
+        pygame.draw.circle(screen, GRAY, (x, y), back_circle_radius)
+        pygame.draw.circle(screen, color, (x, y), circle_radius)
 
     @staticmethod
     def from_server_obj(obj: ITrafficLight) -> DrawableLight:

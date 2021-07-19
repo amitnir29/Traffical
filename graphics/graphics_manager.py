@@ -4,7 +4,7 @@ from typing import List, Tuple
 import pygame.font
 
 from graphics.camera import Camera
-from graphics.colors import GREEN
+from graphics.colors import GREEN,TURQUOISE
 from graphics.drawables.car import DrawableCar
 from graphics.drawables.drawable import Drawable
 from graphics.drawables.junction import DrawableJunction
@@ -21,7 +21,7 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 class GraphicsManager:
 
-    def __init__(self, background=GREEN, width=800, height=800, fps=60):
+    def __init__(self, background=TURQUOISE, width=800, height=800, fps=60):
         # Start pygame
         pygame.init()
         self.running = True
