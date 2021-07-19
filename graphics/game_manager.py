@@ -4,7 +4,7 @@ from typing import List, Tuple
 import pygame.font
 
 from graphics.camera import Camera
-from graphics.colors import GREEN,TURQUOISE
+from graphics.colors import GREEN, TURQUOISE
 from graphics.drawables.car import DrawableCar
 from graphics.drawables.drawable import Drawable
 from graphics.drawables.junction import DrawableJunction
@@ -19,14 +19,12 @@ from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
 
 
-class GraphicsManager:
+class GameManager:
 
-    def __init__(self, background=TURQUOISE, width=800, height=800, fps=60):
-        # Start pygame
-        pygame.init()
+    def __init__(self, screen, background=TURQUOISE, width=800, height=800, fps=60):
         self.running = True
         self.background = background
-        self.screen = self.create_screen(width, height)
+        self.screen = screen
         self.camera = Camera(0, 0, width, height, width, height)
         self.screen_width = width
         self.screen_height = height
@@ -34,17 +32,9 @@ class GraphicsManager:
         self.fps = fps
         self.small_map: SmallMap = None
 
-    def create_screen(self, width, height):
-        screen = pygame.display.set_mode((width, height))
-        return screen
-
     def set_small_map(self, roads, juncs, width=100, height=100):
         self.small_map = SmallMap.from_server_obj((width, height, self.screen_width, self.screen_height,
                                                    roads, juncs, self.screen, self.camera))
-
-    def __del__(self):
-        # Shutdown
-        pygame.quit()
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],
              cars: List[ICar], junctions: List[IJunction]) -> bool:
