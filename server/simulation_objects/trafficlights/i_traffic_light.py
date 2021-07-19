@@ -1,9 +1,8 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import List
 
 from server.geometry.point import Point
-import server.simulation_objects.lanes.i_notified_lane as nlane
 
 
 class ITrafficLight(ABC):

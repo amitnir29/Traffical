@@ -120,7 +120,6 @@ class ILane(ABC):
     def goes_to_lanes(self):
         pass
 
-
     @abstractmethod
     def get_all_cars(self):
         pass

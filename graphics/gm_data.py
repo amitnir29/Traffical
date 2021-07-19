@@ -1,8 +1,7 @@
-from typing import List, Dict
+from typing import List
 
 from graphics.drawables.junction import DrawableJunction
 from graphics.drawables.road import DrawableRoad
-from graphics.drawables.traffic_light import DrawableLight
 
 
 class GMData:

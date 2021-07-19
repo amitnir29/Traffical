@@ -142,7 +142,7 @@ class Menu:
         then add a padding to each dimension
         :return path of chosen map
         """
-        total_delta_y = 0
+        0
         scroll_delta_y = 20
         self.__draw_algos_menu(algos_list)
         # block until click
@@ -182,7 +182,7 @@ class Menu:
         # draw the small maps
         for algo in algos_list:
             pygame.draw.rect(self.screen, self.background, [algo.x, algo.y, algo.width, algo.height])
-            self.__text(str(algo.algo_class.__name__),algo.x+algo.width//2,algo.y+algo.height//2,30)
+            self.__text(str(algo.algo_class.__name__), algo.x + algo.width // 2, algo.y + algo.height // 2, 30)
 
     def __draw_algos_menu(self, algos_list: List[Algo]):
         self.screen.fill(self.background)

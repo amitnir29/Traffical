@@ -1,7 +1,7 @@
-from copy import copy
-from collections import defaultdict
-import xlwt
 import os
+from collections import defaultdict
+from copy import copy
+
 from xlwt import Workbook
 
 

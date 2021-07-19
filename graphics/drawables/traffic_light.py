@@ -6,10 +6,8 @@ from math import degrees, atan
 from typing import List
 
 import pygame
-from pygame import Rect
 
 from graphics.camera import Camera
-from graphics.colors import *
 from graphics.drawables.drawable import Drawable
 from server.geometry.line import Line
 from server.geometry.point import Point

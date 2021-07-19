@@ -1,22 +1,13 @@
 from __future__ import annotations
 
-import os
-from copy import deepcopy
-from dataclasses import dataclass
-from typing import List, Any, Dict
+from typing import List
 
 import pygame
 
-from db.load_map_data import get_db_road_sections
-from graphics.camera import Camera
 from graphics.colors import *
-from graphics.drawables.drawable import Drawable
-from graphics.drawables.junction import DrawableJunction
 from graphics.drawables.road import DrawableRoad
 from server.geometry.point import Point
-from server.simulation_objects.junctions.i_junction import IJunction
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
-from server.simulation_objects.roadsections.road_section import RoadSection
 
 
 class MenuSmallMap:

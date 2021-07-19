@@ -1,8 +1,6 @@
-from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Type
-
-import pygame
+from dataclasses import dataclass
+from typing import Type
 
 from algorithms.algo_to_index import index_to_algo
 from algorithms.ml_algo import MLAlgo

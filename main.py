@@ -1,9 +1,8 @@
 from typing import List
 
-from algorithms.cost_based import CostBased
-from graphics.simaltion_graphics import SimulationGraphics
 from graphics.menu.menu import Menu
 from graphics.screen import create_screen, finish_screen
+from graphics.simaltion_graphics import SimulationGraphics
 from server.cars_generator import generate_cars
 from server.map_creation import create_map
 from server.server_runner import next_iter
