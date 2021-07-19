@@ -13,7 +13,7 @@ import server.simulation_objects.roadsections.i_road_section as irs
 class Lane(il.ILane):
 
     def __init__(self, road: irs.IRoadSection, coordinates: List[Tuple[Point, Point]]):
-        self.__cars = deque()
+        self._cars = deque()
         self.__coordinates = deepcopy(coordinates)
         self._goes_to: List[il.ILane] = list()
         self._comes_from: List[il.ILane] = list()
@@ -65,21 +65,21 @@ class Lane(il.ILane):
         return road in [lane.road for lane in self._goes_to]
 
     def get_car_ahead(self, car: ic.ICar) -> Optional[ic.ICar]:
-        car_index = self.__cars.index(car)
+        car_index = self._cars.index(car)
 
         if car_index == 0:
             return None
 
-        return self.__cars[car_index - 1]
+        return self._cars[car_index - 1]
 
     def cars_amount(self) -> int:
-        return len(self.__cars)
+        return len(self._cars)
 
     def add_car(self, car):
-        self.__cars.append(car)
+        self._cars.append(car)
 
     def remove_car(self, car):
-        self.__cars.remove(car)
+        self._cars.remove(car)
 
     def cars_from_end(self, distance: float) -> List[ic.ICar]:
         return self.get_cars_between(self.lane_length() - distance, self.lane_length())
@@ -87,7 +87,7 @@ class Lane(il.ILane):
     def get_cars_between(self, start: float, end: float) -> List[ic.ICar]:
         res = list()
 
-        for car in reversed(self.__cars):
+        for car in reversed(self._cars):
             position_in_line = self.car_position_in_lane(car)
 
             if start <= position_in_line <= end:
@@ -109,4 +109,4 @@ class Lane(il.ILane):
         return distance_of_previous_parts + distance_in_current_part
 
     def get_all_cars(self):
-        return self.__cars
+        return self._cars
