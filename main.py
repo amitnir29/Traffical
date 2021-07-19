@@ -16,13 +16,14 @@ def main():
     screen = create_screen(win_width, win_height)
     # run the menu
     menu = Menu(screen)
-    map_path = menu.run()
+    map_path, chosen_algo = menu.run()
+
     # get the simulation map
     roads, traffic_lights, all_junctions = create_map(win_width, win_height, map_path)
     # init cars list
     cars: List = generate_cars(roads, 10, p=0.9, min_len=20, with_prints=False)
     # init traffic lights algorithm
-    light_algos = choose_algorithm(all_junctions)
+    light_algos = [chosen_algo(junction) for junction in all_junctions]
     # init simulation's stats reporter
     reporter = StatsReporter(cars, all_junctions)
 
@@ -38,15 +39,6 @@ def main():
     finish_screen()
     # when run is over, report the stats
     reporter.report()
-
-
-def choose_algorithm(all_junctions):
-    # return [NaiveAlgo(junction) for junction in all_junctions]
-    # return [MCAlgo(junction) for junction in all_junctions]
-    # return [MCTL(junction) for junction in all_junctions]
-    # return [RLQTL(junction) for junction in all_junctions]
-    # return [RLQRS(junction) for junction in all_junctions]
-    return [CostBased(junction) for junction in all_junctions]
 
 
 if __name__ == '__main__':

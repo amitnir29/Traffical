@@ -31,3 +31,4 @@ class MCAlgo(TLManager):
 
 
 MCTL = partial(MCAlgo, time_limit=10)
+MCTL.__name__ = "MCTL"
