@@ -80,22 +80,15 @@ class Car(ICar):
         self.__speed += self.__acceleration
         self.__speed = max(0, min(self.__speed, self.__max_speed))
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
-        # if self.__speed < 1:
-        # print("speed is " + str(self.__speed))
-        # print("acc is " + str(self.__acceleration))
 
     def _full_gass(self):
-        # print("full_gass")
-        # print(self.__speed + self.__max_speed_change <= self.__current_road.max_speed)
         if self.__speed + self.__max_speed_change <= self.__current_road.max_speed:
             self.__acceleration = self.__max_speed_change
         else:
             self.__acceleration = self.__current_road.max_speed - self.__speed
 
     def _set_acceleration(self):
-        # print("in acc, " + str(self.__state))
         front_car = self.__current_lane.get_car_ahead(self)
-        # print(front_car)
         red_light = self._get_closest_traffic_light()
 
         if self.__state.moving_lane == self.__current_lane:
@@ -106,7 +99,7 @@ class Car(ICar):
         if front_car == self.__state.letting_car_in:
             # The car already moved into the lane
             self.__state.letting_car_in = None
-        if self.__state.driving:  # Equivalent to else
+        if self.__state.driving:
             if front_car is None:
                 if red_light is None or red_light.can_pass:
                     # update speed s.t. we do not pass the max speed and the max acceleration.
@@ -145,9 +138,7 @@ class Car(ICar):
         return self.__position
 
     def _stop(self, distance: float):
-        # print("I'm stopping!")
         self.__state.stopping = True
-        position_in_lane = self.__current_lane.car_position_in_lane(self)
 
         # We want, where currentPosition = location then speed = 0
         # Gives us:
@@ -157,9 +148,7 @@ class Car(ICar):
         # Results in:
         # a = -speed ^ 2 / (2 * (location - currentPosition))
 
-        # print(self.__speed, distance, -pow(self.__speed, 2) / (2 * distance), self.__acceleration, sep="\t")
         self.__acceleration = -pow(self.__speed, 2) / (2 * distance)
-        # print(-self.__speed / self.__acceleration)
 
     def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
@@ -247,11 +236,6 @@ class Car(ICar):
     def has_arrived_destination(self):
         # return True if passed the middle of the last road
         last_road = self.__path[-1]
-        # if self.__current_road != last_road:
-        #     return False
-        # begin_middle = Line(*last_road.coordinates[0]).middle()
-        # end_middle = Line(*last_road.coordinates[-1]).middle()
-        # return self.__position.distance(end_middle) < self.__position.distance(begin_middle)
         return self.__current_road == last_road
 
     def __repr__(self):
