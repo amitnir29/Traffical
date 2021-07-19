@@ -21,30 +21,26 @@ class DrawableLight(Drawable):
     width: float = 160
     height: float = 330
 
-
     def draw(self, screen, scale):
         # SETTING SIZES AND SCALES
         w = 160 * scale
-        h = 330 * scale
+        h = 250 * scale
         x, y = self.center.to_tuple()
         rect = Rect(x, y, w, h)
         rect.center = x, y
-        circle_radius = 42 * scale
+        circle_radius = 55 * scale
 
         # CENTERS
-        red_center = (x, y - 96 * scale)
-        yellow_center = (x, y)
-        green_center = (x, y + 96 * scale)
+        red_center = (x, y - 55 * scale)
+        green_center = (x, y + 55 * scale)
 
         # COLORS
         red_color = RED if not self.is_green else DARK_GRAY
-        yellow_color = DARK_GRAY
         green_color = GREEN if self.is_green else DARK_GRAY
 
         # DRAWING
         pygame.draw.rect(screen, GRAY, rect)
         pygame.draw.circle(screen, red_color, red_center, circle_radius)
-        pygame.draw.circle(screen, yellow_color, yellow_center, circle_radius)
         pygame.draw.circle(screen, green_color, green_center, circle_radius)
 
     @staticmethod
