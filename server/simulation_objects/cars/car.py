@@ -5,6 +5,8 @@ from copy import deepcopy
 from math import atan, degrees
 from typing import List, Optional, Tuple
 
+import numpy as np
+
 from server.geometry.line import Line
 from server.geometry.point import Point
 from server.simulation_objects.cars.car_state import CarState
@@ -122,7 +124,20 @@ class Car(ICar):
                     # update speed s.t. we do not pass the max speed, max deceleration, and light distance
                     lane_end_coordinates = self.__current_lane.coordinates[-1]
                     distance_to_stop = self._distance_to_part_end(self.position, lane_end_coordinates)
-                    self._stop(distance_to_stop)
+
+                    if self.__acceleration == 0:
+                        if self.__speed == 0:
+                            current_expected_distance_to_stop = 0
+                        else:
+                            current_expected_distance_to_stop = np.inf
+                    else:
+                        current_expected_distance_to_stop = -pow(self.__speed, 2) / (2 * self.__acceleration)
+
+                    distance_in_full_gas = min(self.__speed + self.__max_speed_change, self.__current_road.max_speed)
+                    if current_expected_distance_to_stop < distance_to_stop and distance_to_stop > distance_in_full_gas:
+                        self._full_gass()
+                    else:
+                        self._stop(distance_to_stop)
             else:
                 if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
                     # distance_to_keep = self.MIN_DISTANCE_TO_KEEP
