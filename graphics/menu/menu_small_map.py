@@ -20,7 +20,9 @@ from server.simulation_objects.roadsections.road_section import RoadSection
 
 
 class MenuSmallMap:
-    def __init__(self, screen: pygame.Surface, width: int, height: int, roads: List[IRoadSection], top_left=None):
+    def __init__(self, path: str, screen: pygame.Surface,
+                 width: int, height: int, roads: List[IRoadSection], top_left=None):
+        self.path = path
         self.roads = [DrawableRoad.from_server_obj(road) for road in roads]
         self.all_points = [point for road in self.roads for point in road.get_all_points()]
         self.width = width
@@ -59,3 +61,7 @@ class MenuSmallMap:
         # draw the roads
         for road in self.roads:
             road.draw(self.screen, with_lanes=False)
+
+    def click_inside(self, p: Point):
+        return self.curr_top_left.x <= p.x <= self.curr_top_left.x + self.width and \
+               self.curr_top_left.y <= p.y <= self.curr_top_left.y + self.height

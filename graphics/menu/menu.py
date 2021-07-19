@@ -1,6 +1,9 @@
+from typing import List
+
 import pygame.font
 
 from graphics.colors import DARK_BLUE, WHITE
+from graphics.menu.menu_small_map import MenuSmallMap
 from graphics.menu.menu_small_maps_creator import load_all_small_maps
 from server.geometry.point import Point
 
@@ -19,7 +22,8 @@ class Menu:
                                               self.screen.get_width() // NUMBER_OF_SMALL_MAPS - 2 * maps_padding,
                                               self.screen.get_height() // NUMBER_OF_SMALL_MAPS - 2 * maps_padding)
         self._start_screen()
-        self._map_choosing(menu_small_maps, maps_padding)
+        map_path = self._map_choosing(menu_small_maps, maps_padding)
+        return map_path
 
     def __text(self, txt, x, y, size, color=WHITE, font='freesansbold.ttf'):
         """
@@ -54,6 +58,8 @@ class Menu:
         running = True
         while running:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         # click
@@ -81,26 +87,37 @@ class Menu:
         pygame.display.flip()
         pygame.display.update()
 
-    def _map_choosing(self, menu_small_maps, padding):
+    def __find_pressed_map(self, all_maps: List[MenuSmallMap], press_point: Point):
+        for small_map in all_maps:
+            if small_map.click_inside(press_point):
+                return small_map
+        return None
+
+    def _map_choosing(self, menu_small_maps, padding) -> str:
         """
         first load all small maps. say there are NUMBER_OF_SMALL_MAPS in each row and column, when text is not there.
         then add a padding to each dimension
+        :return path of chosen map
         """
         total_delta_y = 0
         scroll_delta_y = 20
         self.__draw_map_choosing_menu(menu_small_maps, padding, total_delta_y)
         # block until click
-        running = True
-        while running:
+        while True:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         # click
                         # find the clicked map
-
-                        running = False
-                        break
-                    if event.button == 4:
+                        press_point = Point(*pygame.mouse.get_pos())
+                        if press_point.y < self.screen.get_height() // NUMBER_OF_SMALL_MAPS:
+                            continue
+                        pressed_map = self.__find_pressed_map(menu_small_maps, press_point)
+                        if pressed_map is not None:
+                            return pressed_map.path
+                    elif event.button == 4:
                         # scroll up
                         total_delta_y = max(0, total_delta_y - scroll_delta_y)
                         self.__draw_map_choosing_menu(menu_small_maps, padding, total_delta_y)

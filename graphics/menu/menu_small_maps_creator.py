@@ -32,7 +32,7 @@ def load_all_small_maps(screen, width, height, path: str = "db/databases") -> Li
 
 def __load_small_map(path: str, screen, width, height) -> MenuSmallMap:
     roads = __get_roads(path)
-    return MenuSmallMap(screen, width, height, roads)
+    return MenuSmallMap(path, screen, width, height, roads)
 
 
 def __get_roads(path: str) -> List[IRoadSection]:
