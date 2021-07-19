@@ -148,8 +148,6 @@ class Car(ICar):
                     # TODO MIN DISTANCE depends on velocity
                     # distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
                     distance_to_keep = self.__speed * 1.1
-                    # TODO not completely correct. should be relative to the lane, and not the whole road's width
-                    # part_end = Line(*self.__current_road.coordinates[self.__current_lane_part]).middle()
 
                     simulation_car = deepcopy(front_car)
                     simulation_car._advance(simulation_car.estimated_speed())
@@ -217,7 +215,7 @@ class Car(ICar):
         """
         # We have the current part of the road, calculate the line to the next part.
         # We want to meet the next part's start line at the middle of the line.
-        next_line_points = self.__current_road.coordinates[self.__current_lane_part + 1]
+        next_line_points = self.__current_lane.coordinates[self.__current_lane_part + 1]
 
         next_middle = Line(*next_line_points).middle()
         path = Line(self.position, next_middle)

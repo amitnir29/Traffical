@@ -1,0 +1,2352 @@
+[
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 1,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.073022293997525,
+            "_Point__y": 34.77585141307725
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07300865702329,
+            "_Point__y": 34.775882929031724
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07351320228871,
+            "_Point__y": 34.77615241653425
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07349729257065,
+            "_Point__y": 34.776182591384284
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 2,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07320856566603,
+            "_Point__y": 34.775412595649726
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07318811024558,
+            "_Point__y": 34.7753971729486
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07302048926671,
+            "_Point__y": 34.77585180735568
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072997760974744,
+            "_Point__y": 34.775835714102335
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 3,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07300865702329,
+            "_Point__y": 34.775882929031724
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07298236659244,
+            "_Point__y": 34.77586664742901
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0728529148951,
+            "_Point__y": 34.776257146530796
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07282961835306,
+            "_Point__y": 34.77623300665078
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072806321805075,
+            "_Point__y": 34.77628530972416
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072798935093495,
+            "_Point__y": 34.77625044100857
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07274836451359,
+            "_Point__y": 34.77629402690305
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07275006914035,
+            "_Point__y": 34.776257146530796
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072719385854086,
+            "_Point__y": 34.7762866508286
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072726204363036,
+            "_Point__y": 34.77625245266524
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07177014177212,
+            "_Point__y": 34.77586667356617
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071783919008006,
+            "_Point__y": 34.77582927888141
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 4,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07199570705623,
+            "_Point__y": 34.77516334340594
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071977483107474,
+            "_Point__y": 34.77521232972175
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072997760974744,
+            "_Point__y": 34.775835714102335
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07298236659244,
+            "_Point__y": 34.77586664742901
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 5,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072436193500856,
+            "_Point__y": 34.77425499293783
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07240305360601,
+            "_Point__y": 34.774208641806595
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07223367173375,
+            "_Point__y": 34.77459248711208
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072193167326496,
+            "_Point__y": 34.77456062070936
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07199570705623,
+            "_Point__y": 34.77516334340594
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07195505014535,
+            "_Point__y": 34.775134215958325
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 6,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071977483107474,
+            "_Point__y": 34.77521232972175
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07194162934432,
+            "_Point__y": 34.77518470940088
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071783919008006,
+            "_Point__y": 34.77582927888141
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071750107835804,
+            "_Point__y": 34.77581203470584
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 7,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07177014177212,
+            "_Point__y": 34.77586667356617
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071741568514256,
+            "_Point__y": 34.775852484123604
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07153487651756,
+            "_Point__y": 34.77655239591989
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07150249992172,
+            "_Point__y": 34.77654264078474
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 8,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07199931430021,
+            "_Point__y": 34.77676978484087
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07201450092079,
+            "_Point__y": 34.77672199331325
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07152751536446,
+            "_Point__y": 34.776597735341454
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07153487651756,
+            "_Point__y": 34.77655239591989
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 9,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0730305646692,
+            "_Point__y": 34.777057818335024
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07305054138523,
+            "_Point__y": 34.77702286243405
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072038741054335,
+            "_Point__y": 34.77677492723958
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072046696040616,
+            "_Point__y": 34.77674072907622
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 10,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071784961135705,
+            "_Point__y": 34.77747929276649
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07181280366193,
+            "_Point__y": 34.77749002160206
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07199931430021,
+            "_Point__y": 34.77676978484087
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072038741054335,
+            "_Point__y": 34.77677492723958
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 11,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07181280366193,
+            "_Point__y": 34.77749002160206
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071804538877004,
+            "_Point__y": 34.777519961308485
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07257920011382,
+            "_Point__y": 34.77769079654667
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07257408622394,
+            "_Point__y": 34.77772164194892
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07267409112979,
+            "_Point__y": 34.777735723545604
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07266102231307,
+            "_Point__y": 34.77776321618674
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 12,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071596666082414,
+            "_Point__y": 34.77819762651525
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07162564509774,
+            "_Point__y": 34.77820701424637
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07177584552065,
+            "_Point__y": 34.77751092134244
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071804538877004,
+            "_Point__y": 34.777519961308485
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 13,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07162564509774,
+            "_Point__y": 34.77820701424637
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071617723892025,
+            "_Point__y": 34.77823951111198
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07227864653885,
+            "_Point__y": 34.778423229584185
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072266145877535,
+            "_Point__y": 34.778456086643104
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07234796835693,
+            "_Point__y": 34.77847754431423
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07233489949362,
+            "_Point__y": 34.77851040137315
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 14,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07114801277135,
+            "_Point__y": 34.77806667774945
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0711406259258,
+            "_Point__y": 34.77810020536059
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071596666082414,
+            "_Point__y": 34.77819762651525
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071590676001165,
+            "_Point__y": 34.77823237343761
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 15,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07152751536446,
+            "_Point__y": 34.776597735341454
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071492851995096,
+            "_Point__y": 34.77657833883543
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07114801277135,
+            "_Point__y": 34.77806667774945
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07111911960482,
+            "_Point__y": 34.77805819048023
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 16,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071492851995096,
+            "_Point__y": 34.77657833883543
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07150249992172,
+            "_Point__y": 34.77654264078474
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071097310284586,
+            "_Point__y": 34.77648398415574
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071111507515724,
+            "_Point__y": 34.77644259173999
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 17,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071646993065485,
+            "_Point__y": 34.77493025641977
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0716356287495,
+            "_Point__y": 34.7749631134787
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07195505014535,
+            "_Point__y": 34.775134215958325
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07194162934432,
+            "_Point__y": 34.77518470940088
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 18,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07162022656227,
+            "_Point__y": 34.77491314427799
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071646993065485,
+            "_Point__y": 34.77493025641977
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.072071918067216,
+            "_Point__y": 34.77371522166664
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07209351016336,
+            "_Point__y": 34.77374271430777
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 19,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07107561827784,
+            "_Point__y": 34.776437765131405
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071111507515724,
+            "_Point__y": 34.77644259173999
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071609318299394,
+            "_Point__y": 34.77494537049808
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0716356287495,
+            "_Point__y": 34.7749631134787
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 20,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07065899380911,
+            "_Point__y": 34.77792993362818
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07070136831374,
+            "_Point__y": 34.777930875603296
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071064823765774,
+            "_Point__y": 34.77647066671088
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071097310284586,
+            "_Point__y": 34.77648398415574
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 21,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07070136831374,
+            "_Point__y": 34.777930875603296
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07068013015284,
+            "_Point__y": 34.77797263243132
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07111911960482,
+            "_Point__y": 34.77805819048023
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071112117169406,
+            "_Point__y": 34.7780922298722
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 22,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07051616616955,
+            "_Point__y": 34.77862113306191
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070545145527326,
+            "_Point__y": 34.77862985024081
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07065024823806,
+            "_Point__y": 34.77796357414761
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07068013015284,
+            "_Point__y": 34.77797263243132
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 23,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07026287688326,
+            "_Point__y": 34.77780412814736
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07025492174179,
+            "_Point__y": 34.77783698520628
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07065899380911,
+            "_Point__y": 34.77792993362818
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07065024823806,
+            "_Point__y": 34.77796357414761
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 24,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07023446566058,
+            "_Point__y": 34.77779541096846
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07026287688326,
+            "_Point__y": 34.77780412814736
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07064445497979,
+            "_Point__y": 34.77635286146895
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07067601519943,
+            "_Point__y": 34.7763687323769
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 25,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071064823765774,
+            "_Point__y": 34.77647066671088
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07107561827784,
+            "_Point__y": 34.776437765131405
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07067601519943,
+            "_Point__y": 34.7763687323769
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07068854222591,
+            "_Point__y": 34.776326354427454
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 26,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07065297830933,
+            "_Point__y": 34.776319333856264
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07068854222591,
+            "_Point__y": 34.776326354427454
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07080259222817,
+            "_Point__y": 34.77576282828749
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07083178765031,
+            "_Point__y": 34.77577229130535
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 27,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07081133169815,
+            "_Point__y": 34.77573272872421
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070839742741626,
+            "_Point__y": 34.77574278700753
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07092714628304,
+            "_Point__y": 34.775271842611204
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07097260389074,
+            "_Point__y": 34.77529330028234
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07113568845208,
+            "_Point__y": 34.774625221497764
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07116574484363,
+            "_Point__y": 34.77465321269033
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 28,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0706135611877,
+            "_Point__y": 34.775644131610825
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070583183892374,
+            "_Point__y": 34.775683052163906
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07081133169815,
+            "_Point__y": 34.77573272872421
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07080259222817,
+            "_Point__y": 34.77576282828749
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 29,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071171887358055,
+            "_Point__y": 34.77460991815842
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07116574484363,
+            "_Point__y": 34.77465321269033
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07162022656227,
+            "_Point__y": 34.77491314427799
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071609318299394,
+            "_Point__y": 34.77494537049808
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 30,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07114648461134,
+            "_Point__y": 34.774593034989586
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071171887358055,
+            "_Point__y": 34.77460991815842
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07158893759679,
+            "_Point__y": 34.77322132784151
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07161507553481,
+            "_Point__y": 34.77323339778152
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07161734839862,
+            "_Point__y": 34.77310398120251
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.071639508817945,
+            "_Point__y": 34.77313415605254
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 31,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07044019404002,
+            "_Point__y": 34.77364131297306
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07048285282191,
+            "_Point__y": 34.77363750630023
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07081883282042,
+            "_Point__y": 34.772069030781374
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070842129874094,
+            "_Point__y": 34.772099876204166
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 32,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07046100306998,
+            "_Point__y": 34.77368202049053
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070432591908855,
+            "_Point__y": 34.773675314968
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07036162429998,
+            "_Point__y": 34.77424090080378
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07033207666012,
+            "_Point__y": 34.77423486583349
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 33,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07036162429998,
+            "_Point__y": 34.77424090080378
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07035480561472,
+            "_Point__y": 34.774275098968715
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07085953362553,
+            "_Point__y": 34.77441265643332
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07087146625855,
+            "_Point__y": 34.77445557177756
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07114648461134,
+            "_Point__y": 34.774593034989586
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07113568845208,
+            "_Point__y": 34.774625221497764
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 34,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07035480561472,
+            "_Point__y": 34.774275098968715
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07032487741636,
+            "_Point__y": 34.77426687994018
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069926127688255,
+            "_Point__y": 34.77609417310435
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06989657990767,
+            "_Point__y": 34.77608679702955
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 35,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07022773547085,
+            "_Point__y": 34.776215471565955
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07023625883922,
+            "_Point__y": 34.77618194395326
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069918326847464,
+            "_Point__y": 34.77612768317191
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069926127688255,
+            "_Point__y": 34.77609417310435
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 36,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07064445497979,
+            "_Point__y": 34.77635286146895
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07065297830933,
+            "_Point__y": 34.776319333856264
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070256634470724,
+            "_Point__y": 34.77622397229107
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07026572606071,
+            "_Point__y": 34.776190444678384
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 37,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070256634470724,
+            "_Point__y": 34.77622397229107
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07022773547085,
+            "_Point__y": 34.776215471565955
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07002520743431,
+            "_Point__y": 34.77702589866024
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069997364363815,
+            "_Point__y": 34.77701651092869
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 38,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0700161158196,
+            "_Point__y": 34.77705808516844
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06998770452026,
+            "_Point__y": 34.77704936798914
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06985156672407,
+            "_Point__y": 34.77767686120653
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069822600596304,
+            "_Point__y": 34.777668646158155
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 39,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06985156672407,
+            "_Point__y": 34.77767686120653
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069841338638916,
+            "_Point__y": 34.77771105937147
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07023414906051,
+            "_Point__y": 34.77779460783912
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070226193916554,
+            "_Point__y": 34.7778267943473
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 40,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069841338638916,
+            "_Point__y": 34.77771105937147
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069812978662796,
+            "_Point__y": 34.777702002270196
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06967641404179,
+            "_Point__y": 34.77834675965769
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0696474344087,
+            "_Point__y": 34.77833804247839
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 41,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.068387523787436,
+            "_Point__y": 34.77722568075073
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06838070495498,
+            "_Point__y": 34.77725987891567
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069822600596304,
+            "_Point__y": 34.777668646158155
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069812978662796,
+            "_Point__y": 34.777702002270196
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 42,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069594223080884,
+            "_Point__y": 34.776887998351974
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06958569965267,
+            "_Point__y": 34.77692152596466
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069997364363815,
+            "_Point__y": 34.77701651092869
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06998770452026,
+            "_Point__y": 34.77704936798914
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 43,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06907363211785,
+            "_Point__y": 34.776705967009626
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06906681333655,
+            "_Point__y": 34.77673949462231
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06956838835706,
+            "_Point__y": 34.77687949388829
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069559864926454,
+            "_Point__y": 34.77691235094873
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 44,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069888871096225,
+            "_Point__y": 34.77612064593176
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06989657990767,
+            "_Point__y": 34.77608679702955
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069257079266805,
+            "_Point__y": 34.77597921996459
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06926389803394,
+            "_Point__y": 34.775945692351904
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 45,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06923435003853,
+            "_Point__y": 34.775939657381606
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06926389803394,
+            "_Point__y": 34.775945692351904
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069796978917225,
+            "_Point__y": 34.77346093657004
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069825390275824,
+            "_Point__y": 34.77347032430159
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 46,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06983279452957,
+            "_Point__y": 34.773436457176814
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069825390275824,
+            "_Point__y": 34.77347032430159
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07044019404002,
+            "_Point__y": 34.77364131297306
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070432591908855,
+            "_Point__y": 34.773675314968
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 47,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069804016794656,
+            "_Point__y": 34.77342715453357
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06983279452957,
+            "_Point__y": 34.773436457176814
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06998113072358,
+            "_Point__y": 34.77261672790211
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07000954202496,
+            "_Point__y": 34.77262343342465
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 48,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06998908588953,
+            "_Point__y": 34.772583200289425
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07001749718846,
+            "_Point__y": 34.77259124691647
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.070273613789524,
+            "_Point__y": 34.77145462020155
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07029975210353,
+            "_Point__y": 34.77147004290339
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07035032403855,
+            "_Point__y": 34.771312463123756
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.07036964364646,
+            "_Point__y": 34.77134196742292
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 49,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06998113072358,
+            "_Point__y": 34.77261672790211
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06998908588953,
+            "_Point__y": 34.772583200289425
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0694638842109,
+            "_Point__y": 34.772450520779095
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06947127119189,
+            "_Point__y": 34.772416993166416
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 50,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069907386919034,
+            "_Point__y": 34.770590709816766
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06988636253336,
+            "_Point__y": 34.77055852330858
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06947127119189,
+            "_Point__y": 34.772416993166416
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069443405253224,
+            "_Point__y": 34.77241105938696
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 51,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0694638842109,
+            "_Point__y": 34.772450520779095
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06943545003993,
+            "_Point__y": 34.772443245895154
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06928323644134,
+            "_Point__y": 34.773279335870484
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06925425668368,
+            "_Point__y": 34.77326994813893
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 52,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06928323644134,
+            "_Point__y": 34.773279335870484
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06927471298405,
+            "_Point__y": 34.77331219293093
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069804016794656,
+            "_Point__y": 34.77342715453357
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069796978917225,
+            "_Point__y": 34.77346093657004
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 53,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06927471298405,
+            "_Point__y": 34.77331219293093
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069246301454356,
+            "_Point__y": 34.77330414630389
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06910736881618,
+            "_Point__y": 34.773981943470645
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06907895723448,
+            "_Point__y": 34.77397255573909
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 54,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06909998180514,
+            "_Point__y": 34.774014129978816
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06907213845294,
+            "_Point__y": 34.77400541279952
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.068727744638224,
+            "_Point__y": 34.77580398190273
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06870160587487,
+            "_Point__y": 34.775796605827956
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 55,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069228126863486,
+            "_Point__y": 34.77597302111908
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06923435003853,
+            "_Point__y": 34.775939657381606
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06872211132977,
+            "_Point__y": 34.77583792027267
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.068727744638224,
+            "_Point__y": 34.77580398190273
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 56,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06872211132977,
+            "_Point__y": 34.77583792027267
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06869369962838,
+            "_Point__y": 34.77583054419789
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06854486730816,
+            "_Point__y": 34.776529325694405
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06851588731649,
+            "_Point__y": 34.77651993796285
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 57,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06854486730816,
+            "_Point__y": 34.776529325694405
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0685363437814,
+            "_Point__y": 34.77656218275478
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06904840981105,
+            "_Point__y": 34.77669681477225
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06904107141253,
+            "_Point__y": 34.77673081433413
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 58,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0685363437814,
+            "_Point__y": 34.77656218275478
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.068507964767335,
+            "_Point__y": 34.7765544193382
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.068387523787436,
+            "_Point__y": 34.77722568075073
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06835877984426,
+            "_Point__y": 34.77721733068772
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 59,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06838070495498,
+            "_Point__y": 34.77725987891567
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06835082453629,
+            "_Point__y": 34.777250858300405
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.0682269489492,
+            "_Point__y": 34.7779187283451
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.068197968856786,
+            "_Point__y": 34.77790934061355
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 60,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06904840981105,
+            "_Point__y": 34.77669681477225
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06907363211785,
+            "_Point__y": 34.776705967009626
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06910605035693,
+            "_Point__y": 34.77638211783258
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06913162077327,
+            "_Point__y": 34.77638815280287
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  },
+  {
+    "py/object": "db.dataclasses.road_data.RoadData",
+    "idnum": 61,
+    "coordinates": [
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06956838835706,
+            "_Point__y": 34.77687949388829
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069594223080884,
+            "_Point__y": 34.776887998351974
+          }
+        ]
+      },
+      {
+        "py/tuple": [
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.06967623255937,
+            "_Point__y": 34.77651487492415
+          },
+          {
+            "py/object": "server.geometry.point.Point",
+            "_Point__x": 32.069698961676984,
+            "_Point__y": 34.77653029762598
+          }
+        ]
+      }
+    ],
+    "num_lanes": 1,
+    "max_speed": 50.0
+  }
+]

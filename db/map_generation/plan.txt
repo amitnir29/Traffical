@@ -53,7 +53,6 @@ The algortihm:
 7. Set number of lanes for each road.
 8. Set junction movement between each in-lane to the out-lanes.
     It is allowed that an out-lane will have no in-lane to it, but not for the whole out-road.
-TODO left:
 9. Set coordinates for each road and junction, Convert the data to db objects
 10. For each junction, if it has exactly 1 in-road, do not set a traffic light to it.
     Else, there are 2/3 in-roads, set a traffic light for each of them.

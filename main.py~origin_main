@@ -2,7 +2,7 @@ from typing import List
 
 from algorithms.cost_based import CostBased
 from algorithms.naive import NaiveAlgo
-from graphics.graphics_manager import GraphicsManager
+from graphics.graphics_manager import SimulationGraphics
 from server.cars_generator import generate_cars
 from server.map_creation import create_map
 from server.server_runner import next_iter
@@ -21,7 +21,7 @@ def main():
     # init simulation's stats reporter
     reporter = StatsReporter(cars, all_junctions)
     # create the graphics manager
-    gm = GraphicsManager(roads, all_junctions, width=win_width, height=win_height, fps=10)
+    gm = SimulationGraphics(roads, all_junctions, width=win_width, height=win_height, fps=10)
     gm.set_small_map(roads, all_junctions)
     # while the screen is not closed, draw the current state and calculate the next state
     frames_counter = 0

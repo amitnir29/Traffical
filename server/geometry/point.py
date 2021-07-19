@@ -31,5 +31,12 @@ class Point:
         self.__x = x_norm(self.__x)
         self.__y = y_norm(self.__y)
 
+    def shift(self, delta_x, delta_y):
+        self.__x += delta_x
+        self.__y += delta_y
+
     def __repr__(self):
         return f"({self.x},{self.y})"
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
