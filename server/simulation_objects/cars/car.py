@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import copy
 from copy import deepcopy
 from math import atan, degrees
 from typing import List, Optional, Tuple
+
+import numpy as np
 
 from server.geometry.line import Line
 from server.geometry.point import Point
@@ -40,6 +43,18 @@ class Car(ICar):
         self._enter_road_section(initial_road_section, initial_distance)
 
         self.__speed = max_speed  # TODO remove
+
+    def __deepcopy__(self, memodict={}):
+        res = Car.__new__(Car)
+        res.__dict__ = copy.copy(self.__dict__)
+
+        res.__position = copy.copy(self.position)
+        res.__current_road = deepcopy(self.__current_road)
+        res.__current_lane = deepcopy(self.__current_lane)
+        res.__path = deepcopy(self.__path)
+        res.__current_lane._cars.appendleft(res)
+
+        return res
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
         if self.__current_lane is not None:
@@ -80,22 +95,15 @@ class Car(ICar):
         self.__speed += self.__acceleration
         self.__speed = max(0, min(self.__speed, self.__max_speed))
         self.__acceleration = min(self.__acceleration, self.__current_road.max_speed - self.__speed)
-        # if self.__speed < 1:
-        # print("speed is " + str(self.__speed))
-        # print("acc is " + str(self.__acceleration))
 
     def _full_gass(self):
-        # print("full_gass")
-        # print(self.__speed + self.__max_speed_change <= self.__current_road.max_speed)
         if self.__speed + self.__max_speed_change <= self.__current_road.max_speed:
             self.__acceleration = self.__max_speed_change
         else:
             self.__acceleration = self.__current_road.max_speed - self.__speed
 
     def _set_acceleration(self):
-        # print("in acc, " + str(self.__state))
         front_car = self.__current_lane.get_car_ahead(self)
-        # print(front_car)
         red_light = self._get_closest_traffic_light()
 
         if self.__state.moving_lane == self.__current_lane:
@@ -106,7 +114,7 @@ class Car(ICar):
         if front_car == self.__state.letting_car_in:
             # The car already moved into the lane
             self.__state.letting_car_in = None
-        if self.__state.driving:  # Equivalent to else
+        if self.__state.driving:
             if front_car is None:
                 if red_light is None or red_light.can_pass:
                     # update speed s.t. we do not pass the max speed and the max acceleration.
@@ -116,7 +124,20 @@ class Car(ICar):
                     # update speed s.t. we do not pass the max speed, max deceleration, and light distance
                     lane_end_coordinates = self.__current_lane.coordinates[-1]
                     distance_to_stop = self._distance_to_part_end(self.position, lane_end_coordinates)
-                    self._stop(distance_to_stop)
+
+                    if self.__acceleration == 0:
+                        if self.__speed == 0:
+                            current_expected_distance_to_stop = 0
+                        else:
+                            current_expected_distance_to_stop = np.inf
+                    else:
+                        current_expected_distance_to_stop = -pow(self.__speed, 2) / (2 * self.__acceleration)
+
+                    distance_in_full_gas = min(self.__speed + self.__max_speed_change, self.__current_road.max_speed)
+                    if current_expected_distance_to_stop < distance_to_stop and distance_to_stop > distance_in_full_gas:
+                        self._full_gass()
+                    else:
+                        self._stop(distance_to_stop)
             else:
                 if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
                     # distance_to_keep = self.MIN_DISTANCE_TO_KEEP
@@ -132,6 +153,7 @@ class Car(ICar):
 
                     simulation_car = deepcopy(front_car)
                     simulation_car._advance(simulation_car.estimated_speed())
+
                     estimated_front_car_pos = simulation_car.position
 
                     distance_to_move = Line(self.position, estimated_front_car_pos).length() - distance_to_keep
@@ -145,9 +167,7 @@ class Car(ICar):
         return self.__position
 
     def _stop(self, distance: float):
-        # print("I'm stopping!")
         self.__state.stopping = True
-        position_in_lane = self.__current_lane.car_position_in_lane(self)
 
         # We want, where currentPosition = location then speed = 0
         # Gives us:
@@ -157,9 +177,7 @@ class Car(ICar):
         # Results in:
         # a = -speed ^ 2 / (2 * (location - currentPosition))
 
-        # print(self.__speed, distance, -pow(self.__speed, 2) / (2 * distance), self.__acceleration, sep="\t")
         self.__acceleration = -pow(self.__speed, 2) / (2 * distance)
-        # print(-self.__speed / self.__acceleration)
 
     def _is_car_done_this_iter(self, test_car: ICar) -> bool:
         """
@@ -245,14 +263,11 @@ class Car(ICar):
         pass
 
     def has_arrived_destination(self):
-        # return True if passed the middle of the last road
         last_road = self.__path[-1]
-        # if self.__current_road != last_road:
-        #     return False
-        # begin_middle = Line(*last_road.coordinates[0]).middle()
-        # end_middle = Line(*last_road.coordinates[-1]).middle()
-        # return self.__position.distance(end_middle) < self.__position.distance(begin_middle)
         return self.__current_road == last_road
+
+    def reached_destination(self):
+        self.__current_lane.remove_car(self)
 
     def __repr__(self):
         return str([road for road in self.__path])
