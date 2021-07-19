@@ -1,6 +1,10 @@
 import pygame.font
 
 from graphics.colors import DARK_BLUE, WHITE
+from graphics.menu.menu_small_maps_creator import load_all_small_maps
+from server.geometry.point import Point
+
+NUMBER_OF_SMALL_MAPS = 4
 
 
 class Menu:
@@ -53,12 +57,27 @@ class Menu:
                         break
 
     def __map_choosing(self):
+        """
+        first load all small maps. say there are NUMBER_OF_SMALL_MAPS in each row and column, when text is not there.
+        then add a padding to each dimension
+        """
+        padding = 10
+        menu_small_maps = load_all_small_maps(self.screen,
+                                              self.screen.get_width() // NUMBER_OF_SMALL_MAPS - 2 * padding,
+                                              self.screen.get_height() // NUMBER_OF_SMALL_MAPS - 2 * padding)
         # block until click
         running = True
         while running:
             self.screen.fill(self.background)
             # write the text
             self.__text("Please choose a map", self.screen.get_width() // 2, self.screen.get_height() // 8, 60)
+            # draw the small maps
+            for i, small_map in enumerate(menu_small_maps):
+                row = i // NUMBER_OF_SMALL_MAPS + 1  # first row is for the title
+                col = i % NUMBER_OF_SMALL_MAPS
+                row_jump = self.screen.get_width() // NUMBER_OF_SMALL_MAPS
+                col_jump = self.screen.get_height() // NUMBER_OF_SMALL_MAPS
+                small_map.draw(self.screen, Point(col * col_jump + padding, row * row_jump + padding))
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:

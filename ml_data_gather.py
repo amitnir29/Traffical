@@ -106,7 +106,7 @@ def main():
     win_width, win_height = (800, 800)
 
     # get the simulation map
-    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/tel_aviv")
+    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/handmade/tel_aviv")
 
     junctions_with_lights = [junction for junction in all_junctions if len(junction.lights) > 0]
     reporting_junctions = [2, 3, 5]

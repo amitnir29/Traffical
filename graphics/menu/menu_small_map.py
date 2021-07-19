@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import List, Any, Dict
@@ -29,8 +30,15 @@ class MenuSmallMap:
         self.__normalize_points()
 
     def __normalize_points(self):
-        norm_x = lambda x: x / self.width
-        norm_y = lambda y: y / self.height
+        x_values = [p.x for p in self.all_points]
+        y_values = [p.y for p in self.all_points]
+        min_x = min(x_values)
+        max_x = max(x_values)
+        min_y = min(y_values)
+        max_y = max(y_values)
+
+        norm_x = lambda x: self.width * (x - min_x) / (max_x - min_x)
+        norm_y = lambda y: self.height * (y - min_y) / (max_y - min_y)
         # normalize the points:
         for point in self.all_points:
             point.normalize(norm_x, norm_y)
@@ -45,21 +53,9 @@ class MenuSmallMap:
         self.curr_top_left = top_left
 
     def draw(self, screen, top_left: Point):
+        self.__shift_points(top_left)
         # draw rectangle of the map
         pygame.draw.rect(screen, GRAY, [top_left.x, top_left.y, self.width, self.height])
         # draw the roads
         for road in self.roads:
             road.draw(self.screen, with_lanes=False)
-
-
-def load_small_map(path: str):
-    roads = __get_roads(path)
-    return CornerSmallMap()
-
-
-def __get_roads(path: str) -> Dict[int, IRoadSection]:
-    roads: Dict[int, IRoadSection] = dict()
-    # create all roads
-    for road_data in get_db_road_sections(path):
-        roads[road_data.idnum] = RoadSection(road_data, set())
-    return roads
