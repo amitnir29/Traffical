@@ -21,19 +21,17 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 class GameManager:
 
-    def __init__(self, screen, background=TURQUOISE, width=800, height=800, fps=60):
+    def __init__(self, screen: pygame.Surface, background=TURQUOISE, fps=60):
         self.running = True
         self.background = background
         self.screen = screen
-        self.camera = Camera(0, 0, width, height, width, height)
-        self.screen_width = width
-        self.screen_height = height
+        self.camera = Camera(0, 0, screen.get_width(), screen.get_height(), screen.get_width(), screen.get_height())
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.small_map: SmallMap = None
 
     def set_small_map(self, roads, juncs, width=100, height=100):
-        self.small_map = SmallMap.from_server_obj((width, height, self.screen_width, self.screen_height,
+        self.small_map = SmallMap.from_server_obj((width, height, self.screen.get_width(), self.screen.get_height(),
                                                    roads, juncs, self.screen, self.camera))
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],

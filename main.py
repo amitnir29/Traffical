@@ -14,16 +14,16 @@ def main():
     # size of window
     win_width, win_height = (800, 800)
     # get the simulation map
-    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/0")
+    roads, traffic_lights, all_junctions = create_map(win_width, win_height, "db/databases/generated/2")
     # init cars list
-    cars: List = generate_cars(roads, 1, p=0.9, min_len=20, with_prints=False)
+    cars: List = generate_cars(roads, 20, p=0.9, min_len=20, with_prints=False)
     # init traffic lights algorithm
     light_algos = choose_algorithm(all_junctions)
     # init simulation's stats reporter
     reporter = StatsReporter(cars, all_junctions)
     # create the graphics manager
     screen = create_screen(win_width, win_height)
-    gm = GameManager(screen, width=win_width, height=win_height, fps=10)
+    gm = GameManager(screen, fps=10)
     gm.set_small_map(roads, all_junctions)
     # while the screen is not closed, draw the current state and calculate the next state
     frames_counter = 0
