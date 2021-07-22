@@ -64,9 +64,9 @@ class ReporterJunction:
 
 
 def run(i, roads, traffic_lights, algos_indices, junctions_with_lights, reporting_junctions):
-    cars_num = 10
-    time_interval = 10
-    cars = generate_cars(roads, cars_num, p=1, min_len=6, with_prints=True)
+    print("start", i)
+    cars_num = 30
+    time_interval = 40
 
     algos = [index_to_algo[index] for index in algos_indices]
     light_algos = [algo(junction) for algo, junction in zip(algos, junctions_with_lights)]
@@ -92,6 +92,8 @@ def run(i, roads, traffic_lights, algos_indices, junctions_with_lights, reportin
     for idx in reporting_junctions:
         light_algos[idx] = ReporterJunction(junctions_with_lights[idx], report_path, 10)
 
+    cars = generate_cars(roads, cars_num, p=0.9, min_len=6, with_prints=False)
+
     j = 0
     while len(cars) > 0:
         j += 1
@@ -99,6 +101,8 @@ def run(i, roads, traffic_lights, algos_indices, junctions_with_lights, reportin
 
     with open(txt_path, "w") as txt_file:
         txt_file.write(str(j))
+
+    print("end", i)
 
 
 def main():
