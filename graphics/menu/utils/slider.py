@@ -10,13 +10,13 @@ TEXT_SIZE = 20
 
 
 class Slider:
-    def __init__(self, left_x, y, width, min_val, max_val):
+    def __init__(self, left_x, y, width, min_val, max_val, init_val=None):
         self.left_x = left_x
         self.y = y
         self.width = width
         self.min_val = min_val
         self.max_val = max_val
-        self.curr_value = min_val
+        self.curr_value = min_val if init_val is None else init_val
 
     @property
     def txt(self):

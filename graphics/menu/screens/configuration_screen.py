@@ -20,11 +20,11 @@ class ConfigurationScreen(Screen):
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
         self.back_button = Button(Point(screen.get_width() - 80, 0, ), 80,
                                   screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")
-        self.cars_amount_slider = Slider(SLIDERS_START, 300, 200, 0, 30)
-        self.path_length_slider = Slider(SLIDERS_START, 400, 200, 1, 30)
+        self.cars_amount_slider = Slider(SLIDERS_START, 300, 200, 0, 30, init_val=10)
+        self.path_length_slider = Slider(SLIDERS_START, 400, 200, 1, 30, init_val=15)
         self.pressed_slider: Slider = None
         self.sliders = [self.cars_amount_slider, self.path_length_slider]
-        self.is_small_map = CheckBox(Point(SLIDERS_START, 500), 20, 20)
+        self.is_small_map = CheckBox(Point(SLIDERS_START, 500), 20, 20, init_val=True)
         self.done_button = Button(Point(200, self.screen.get_height() - 100),
                                   self.screen.get_width() - 400, 100, "CONTINUE")
 

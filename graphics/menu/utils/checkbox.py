@@ -7,11 +7,11 @@ from server.geometry.point import Point
 
 
 class CheckBox:
-    def __init__(self, top_left: Point, width, height):
+    def __init__(self, top_left: Point, width, height, init_val=None):
         self.top_left = top_left
         self.width = width
         self.height = height
-        self.is_checked = False
+        self.is_checked = False if init_val is None else init_val
 
     def draw(self, screen: Screen):
         pygame.draw.rect(screen.screen, DARK_GRAY, [self.top_left.x, self.top_left.y, self.width, self.height], 5)
