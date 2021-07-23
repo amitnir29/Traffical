@@ -1,7 +1,7 @@
 import pygame
 
 from graphics.menu.utils.button import Button
-from graphics.menu.screens.screen_activity import Screen
+from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from server.geometry.point import Point
 
 
