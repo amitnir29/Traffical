@@ -1,7 +1,7 @@
 from typing import List
 
-from graphics.menu.menu import Menu
-from graphics.screen import create_screen, finish_screen
+from graphics.menu.screen_manager import ScreenManager
+from graphics.screen import create_screen, quit_screen
 from graphics.simaltion_graphics import SimulationGraphics
 from server.cars_generator import generate_cars
 from server.map_creation import create_map
@@ -14,7 +14,7 @@ def main():
     win_width, win_height = (800, 800)
     screen = create_screen(win_width, win_height)
     # run the menu
-    menu = Menu(screen)
+    menu = ScreenManager(screen)
     map_path, chosen_algo = menu.run()
 
     # get the simulation map
@@ -35,7 +35,7 @@ def main():
         frames_counter = frames_counter + 1
         traffic_lights, cars = next_iter(light_algos, traffic_lights, cars)
         reporter.next_iter(cars)
-    finish_screen()
+    quit_screen()
     # when run is over, report the stats
     reporter.report()
 
