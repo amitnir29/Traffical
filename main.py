@@ -1,6 +1,6 @@
 from typing import List
 
-from graphics.menu.screen_manager import ScreenManager
+from graphics.menu import screen_manager
 from graphics.screen import create_screen, quit_screen
 from graphics.simaltion_graphics import SimulationGraphics
 from server.cars_generator import generate_cars
@@ -14,8 +14,7 @@ def main():
     win_width, win_height = (800, 800)
     screen = create_screen(win_width, win_height)
     # run the menu
-    menu = ScreenManager(screen)
-    map_path, chosen_algo = menu.run()
+    map_path, chosen_algo = screen_manager.run(screen)
 
     # get the simulation map
     roads, traffic_lights, all_junctions = create_map(win_width, win_height, map_path)
