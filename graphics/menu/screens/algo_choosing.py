@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union, Type
 
 import pygame
 
@@ -6,6 +6,7 @@ from graphics.menu.algos import Algo, all_algos_list
 from graphics.menu.button import Button
 from graphics.menu.screens.helps_screens.algos_help import AlgosHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
+from graphics.menu.screens_enum import Screens
 from server.geometry.point import Point
 
 HEIGHT_OF_ALGO_ROW = 50
@@ -17,8 +18,10 @@ class AlgoChoosing(Screen):
         self.algos_list = self.__create_algos_list()
         self.help_screen = AlgosHelp(screen)
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
+        self.back_button = Button(Point(screen.get_width() - 80, 0, ), 80,
+                                  screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")  # XXX
 
-    def display(self):
+    def display(self) -> Union[Type, Screens]:
         """
         first load all small maps. say there are NUMBER_OF_SMALL_MAPS in each row and column, when text is not there.
         then add a padding to each dimension
@@ -41,6 +44,8 @@ class AlgoChoosing(Screen):
                             self.help_screen.display()
                             self.__draw_algos_menu()
                             continue
+                        if self.back_button.click_inside(press_point):
+                            return Screens.MAPS_SCREEN
                         if press_point.y < self.screen.get_height() // TITLES_SCREEN_PORTION:
                             continue
                         pressed_algo = self.__find_pressed_algo(press_point)
@@ -80,6 +85,7 @@ class AlgoChoosing(Screen):
         self.write_text("Please choose an algorithm", self.screen.get_width() // 2,
                         self.screen.get_height() // 10, 40)
         self.help_button.draw(self)
+        self.back_button.draw(self)
         # Draws the surface object to the screen.
         pygame.display.flip()
         pygame.display.update()

@@ -25,7 +25,7 @@ class SimulationRunner(Screen):
         # init simulation's stats reporter
         self.reporter = StatsReporter(self.cars, all_junctions)
 
-    def display(self):
+    def display(self) -> StatsReporter:
         gm = SimulationGraphics(self.screen, fps=10)
         gm.set_small_map(self.roads)
         # while the screen is not closed, draw the current state and calculate the next state
@@ -35,4 +35,4 @@ class SimulationRunner(Screen):
             traffic_lights, cars = next_iter(self.lights_algo, self.traffic_lights, self.cars)
             self.reporter.next_iter(cars)
         # when run is over, report the stats
-        self.reporter.report()
+        return self.reporter
