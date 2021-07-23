@@ -29,14 +29,15 @@ class SimulationGraphics:
         self.small_map: CornerSmallMap = None
 
     def set_small_map(self, roads, width=100, height=100):
-        self.small_map = CornerSmallMap.from_server_obj((width, height, self.screen.get_width(), self.screen.get_height(),
-                                                         roads, self.screen, self.camera))
+        self.small_map = CornerSmallMap.from_server_obj(
+            (width, height, self.screen.get_width(), self.screen.get_height(),
+             roads, self.screen, self.camera))
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],
-             cars: List[ICar], junctions: List[IJunction]) -> bool:
+             cars: List[ICar], junctions: List[IJunction], events, with_final_display=True) -> bool:
         self.screen.fill(self.background)
         # Check if window has been closed
-        self.handle_events()
+        self.handle_events(events)
         if not self.running:
             return False
         # Convert the data to drawables
@@ -52,8 +53,9 @@ class SimulationGraphics:
             self.small_map.draw(self.screen)
 
         # Display
-        pygame.display.flip()
-        pygame.display.update()
+        if with_final_display:
+            pygame.display.flip()
+            pygame.display.update()
         # Setting FPS
         self.clock.tick(self.fps)
         return len(cars) > 0
@@ -111,8 +113,8 @@ class SimulationGraphics:
         for point in all_points:
             point.normalize(norm_x, norm_y)
 
-    def handle_events(self):
-        for event in pygame.event.get():
+    def handle_events(self, events):
+        for event in events:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:

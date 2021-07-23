@@ -2,7 +2,7 @@ from typing import List, Union
 
 import pygame
 
-from graphics.menu.button import Button
+from graphics.menu.utils.button import Button
 from graphics.menu.screens.helps_screens.maps_help import MapsHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from graphics.menu.screens_enum import Screens
