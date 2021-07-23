@@ -3,14 +3,15 @@ import pygame
 from graphics.menu.screens.screen_activity import Screen
 
 
-class OpenScreen(Screen):
+class SimulationRunner(Screen):
+    def __init__(self, screen: pygame.Surface):
+        super().__init__(screen)
 
     def display(self):
         self.screen.fill(self.background)
         # write the text
-        self.write_text("Welcome to", self.screen.get_width() // 2, self.screen.get_height() // 4, 80)
-        self.write_text("Traffical", self.screen.get_width() // 2, self.screen.get_height() // 4 + 140, 140)
-        self.write_text("click to continue", self.screen.get_width() // 2, 3 * self.screen.get_height() // 4, 40)
+        self.write_text("This is the", self.screen.get_width() // 2, self.screen.get_height() // 4, 80)
+        self.write_text("Maps help screen", self.screen.get_width() // 2, self.screen.get_height() // 4 + 80, 80)
         # Draws the surface object to the screen.
         pygame.display.update()
         # block until click

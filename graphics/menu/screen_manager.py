@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List
 
 import pygame.font
@@ -10,6 +11,16 @@ from graphics.menu.screens.open_screen import OpenScreen
 from graphics.menu.small_maps.menu_small_map import MenuSmallMap
 from graphics.menu.small_maps.menu_small_maps_creator import load_all_small_maps
 from server.geometry.point import Point
+
+
+class Screens(Enum):
+    OPEN = 0
+    MAPS_SCREEN = 1
+    MAPS_SCREEN_HELP = 1.5
+    ALGOS_SCREEN = 2
+    ALGOS_SCREEN_HELP = 2.5
+    RUNNING = 3
+    FINISH = 4
 
 
 def run(screen: pygame.Surface, background=DARK_BLUE):

@@ -9,6 +9,7 @@ from server.geometry.point import Point
 
 TITLES_SCREEN_PORTION = 4
 
+
 class Screen(ABC):
     def __init__(self, screen: pygame.Surface, background=DARK_BLUE):
         self.screen = screen
