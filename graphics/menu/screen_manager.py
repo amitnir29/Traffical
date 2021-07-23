@@ -60,4 +60,7 @@ def __run_conf_screen(conf, open_screen, maps_screen, algos_screen, conf_screen)
     while res == Screens.ALGOS_SCREEN:
         __run_algos_screen(conf, open_screen, maps_screen, algos_screen)
         res = conf_screen.display()
-    conf.temp = res
+    cars_amount, path_min_len, is_small_map = res
+    conf.cars_amount = cars_amount
+    conf.path_min_len = path_min_len
+    conf.is_small_map = is_small_map

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Tuple
 
 import pygame
 
@@ -6,6 +6,7 @@ from graphics.menu.utils.button import Button
 from graphics.menu.screens.helps_screens.configuration_help import ConfigurationHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from graphics.menu.screens_enum import Screens
+from graphics.menu.utils.checkbox import CheckBox
 from graphics.menu.utils.slider import Slider
 from server.geometry.point import Point
 
@@ -23,8 +24,11 @@ class ConfigurationScreen(Screen):
         self.path_length_slider = Slider(SLIDERS_START, 400, 200, 1, 30)
         self.pressed_slider: Slider = None
         self.sliders = [self.cars_amount_slider, self.path_length_slider]
+        self.is_small_map = CheckBox(Point(SLIDERS_START, 500), 20, 20)
+        self.done_button = Button(Point(200, self.screen.get_height() - 100),
+                                  self.screen.get_width() - 400, 100, "CONTINUE")
 
-    def display(self) -> Union[int, Screens]:  # TODO typing
+    def display(self) -> Union[Tuple[int, int, bool], Screens]:
         """
         first load all small maps. say there are NUMBER_OF_SMALL_MAPS in each row and column, when text is not there.
         then add a padding to each dimension
@@ -52,6 +56,12 @@ class ConfigurationScreen(Screen):
                             if slider.click_on_slider(press_point):
                                 self.pressed_slider = slider
                                 break
+                        if self.is_small_map.is_click_inside(press_point):
+                            self.is_small_map.was_clicked()
+                            self.__draw_configurations()
+                        if self.done_button.click_inside(press_point):
+                            return self.cars_amount_slider.curr_value, self.path_length_slider.curr_value, \
+                                   self.is_small_map.is_checked
                 if event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         # release
@@ -73,9 +83,14 @@ class ConfigurationScreen(Screen):
         # sliders
         for slider in self.sliders:
             slider.draw(self)
-        # sliders texts
+        # check box
+        self.is_small_map.draw(self)
+        # button
+        self.done_button.draw(self)
+        # texts
         self.write_text("choose number of cars", SLIDERS_START - 200, self.cars_amount_slider.y, 20)
         self.write_text("choose min length of car path", SLIDERS_START - 200, self.path_length_slider.y, 20)
+        self.write_text("show small map", SLIDERS_START - 200, self.is_small_map.y, 20)
         # Draws the surface object to the screen.
         pygame.display.flip()
         pygame.display.update()
