@@ -7,8 +7,8 @@ from server.geometry.point import Point
 
 import server.simulation_objects.lanes.i_lane as il
 import server.simulation_objects.lanes.notified_lane as nlane
-import server.simulation_objects.lanes.unnotified_lane as unlane
 import server.simulation_objects.roadsections.i_road_section as irs
+from server.simulation_objects.lanes.lane import Lane
 
 
 class RoadSection(irs.IRoadSection):
@@ -53,7 +53,7 @@ class RoadSection(irs.IRoadSection):
             if i in notified_lanes_nums:
                 lanes.append(nlane.NotifiedLane(self, lanes_coordinates[i]))
             else:
-                lanes.append(unlane.UnnotifiedLane(self, lanes_coordinates[i]))
+                lanes.append(Lane(self, lanes_coordinates[i]))
         return lanes
 
     def get_lane(self, index: int) -> il.ILane:
