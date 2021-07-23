@@ -15,7 +15,7 @@ class RoadSection(irs.IRoadSection):
 
     def __init__(self, road_data: RoadData, notified_lanes_nums: Set[int]):
         # data from road_data
-        self.__id: int = road_data.idnum
+        self._id: int = road_data.idnum
         self.__coordinates: List[Tuple[Point, Point]] = [deepcopy(p) for p in road_data.coordinates]
         self.__number_of_lanes: int = road_data.num_lanes
         self.__max_speed: float = road_data.max_speed
@@ -27,7 +27,7 @@ class RoadSection(irs.IRoadSection):
             roads += [goes_to_lane.road for goes_to_lane in ll.goes_to_lanes]
         roads_dict = dict()
         for road in roads:
-            roads_dict[road.__id] = road
+            roads_dict[road._id] = road
         return list(roads_dict.values())
 
     @property
@@ -95,4 +95,7 @@ class RoadSection(irs.IRoadSection):
         return lines
 
     def __repr__(self):
-        return str(self.__id)
+        return str(self._id)
+
+    def __eq__(self, other):
+        return self._id == other._id
