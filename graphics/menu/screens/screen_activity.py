@@ -39,3 +39,19 @@ class Screen(ABC):
         textRect.center = (x, y)
         # write the text
         self.screen.blit(text, textRect)
+
+    def default_click_disappear(self):
+        """
+        keep the screen open until it is clicked on
+        """
+        # block until click
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        # click
+                        running = False
+                        break

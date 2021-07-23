@@ -2,6 +2,8 @@ from typing import List
 
 import pygame
 
+from graphics.menu.button import Button
+from graphics.menu.screens.helps_screens.maps_help import MapsHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from graphics.menu.small_maps.menu_small_map import MenuSmallMap
 from graphics.menu.small_maps.menu_small_maps_creator import load_all_small_maps
@@ -17,6 +19,8 @@ class MapChoosing(Screen):
         self.maps = load_all_small_maps(screen,
                                         screen.get_width() // NUMBER_OF_SMALL_MAPS - 2 * self.padding,
                                         screen.get_height() // NUMBER_OF_SMALL_MAPS - 2 * self.padding)
+        self.help_screen = MapsHelp(screen)
+        self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
 
     def display(self) -> str:
         total_delta_y = 0
@@ -32,8 +36,15 @@ class MapChoosing(Screen):
                         # click
                         # find the clicked map
                         press_point = Point(*pygame.mouse.get_pos())
+                        # first check if it is the help button
+                        if self.help_button.click_inside(press_point):
+                            self.help_screen.display()
+                            self.__draw_map_choosing_menu(total_delta_y)
+                            continue
+                        # next, check it if in the title, do nothing
                         if press_point.y < self.screen.get_height() // NUMBER_OF_SMALL_MAPS:
                             continue
+                        # else, get the map
                         pressed_map = self.__find_pressed_map(press_point)
                         if pressed_map is not None:
                             return pressed_map.path
@@ -64,7 +75,8 @@ class MapChoosing(Screen):
         pygame.draw.rect(self.screen, self.background, [0, 0, self.screen.get_width(),
                                                         self.screen.get_height() // NUMBER_OF_SMALL_MAPS])
         self.write_text("Please choose a map", self.screen.get_width() // 2,
-                        self.screen.get_height() // 10, 70)
+                        self.screen.get_height() // (2 * TITLES_SCREEN_PORTION), 50)
+        self.help_button.draw(self)
 
         # Draws the surface object to the screen.
         pygame.display.flip()

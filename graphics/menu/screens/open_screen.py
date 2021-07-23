@@ -13,14 +13,5 @@ class OpenScreen(Screen):
         self.write_text("click to continue", self.screen.get_width() // 2, 3 * self.screen.get_height() // 4, 40)
         # Draws the surface object to the screen.
         pygame.display.update()
-        # block until click
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        # click
-                        running = False
-                        break
+        # run until click
+        self.default_click_disappear()

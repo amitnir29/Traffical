@@ -12,13 +12,4 @@ class FinishScreen(Screen):
         # Draws the surface object to the screen.
         pygame.display.update()
         # block until click
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        # click
-                        running = False
-                        break
+        self.default_click_disappear()

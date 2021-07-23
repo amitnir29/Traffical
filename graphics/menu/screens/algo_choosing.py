@@ -3,6 +3,8 @@ from typing import List
 import pygame
 
 from graphics.menu.algos import Algo, all_algos_list
+from graphics.menu.button import Button
+from graphics.menu.screens.helps_screens.algos_help import AlgosHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from server.geometry.point import Point
 
@@ -13,6 +15,8 @@ class AlgoChoosing(Screen):
     def __init__(self, screen: pygame.Surface, background):
         super().__init__(screen, background)
         self.algos_list = self.__create_algos_list()
+        self.help_screen = AlgosHelp(screen)
+        self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
 
     def display(self):
         """
@@ -32,6 +36,11 @@ class AlgoChoosing(Screen):
                         # click
                         # find the clicked algo
                         press_point = Point(*pygame.mouse.get_pos())
+                        # first check if it is the help button
+                        if self.help_button.click_inside(press_point):
+                            self.help_screen.display()
+                            self.__draw_algos_menu()
+                            continue
                         if press_point.y < self.screen.get_height() // TITLES_SCREEN_PORTION:
                             continue
                         pressed_algo = self.__find_pressed_algo(press_point)
@@ -69,8 +78,8 @@ class AlgoChoosing(Screen):
         pygame.draw.rect(self.screen, self.background, [0, 0, self.screen.get_width(),
                                                         self.screen.get_height() // TITLES_SCREEN_PORTION])
         self.write_text("Please choose an algorithm", self.screen.get_width() // 2,
-                        self.screen.get_height() // 10, 50)
-
+                        self.screen.get_height() // 10, 40)
+        self.help_button.draw(self)
         # Draws the surface object to the screen.
         pygame.display.flip()
         pygame.display.update()
