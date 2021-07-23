@@ -1,12 +1,11 @@
-from typing import List, Union
+from typing import Union
 
 import pygame
 
-from graphics.menu.button import Button
+from graphics.menu.utils.button import Button
 from graphics.menu.screens.helps_screens.maps_help import MapsHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from graphics.menu.screens_enum import Screens
-from graphics.menu.small_maps.menu_small_map import MenuSmallMap
 from graphics.menu.small_maps.menu_small_maps_creator import load_all_small_maps
 from server.geometry.point import Point
 

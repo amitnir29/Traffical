@@ -10,10 +10,21 @@ from server.server_runner import next_iter
 from server.statistics.stats_reporter import StatsReporter
 
 
+class SimulationConfiguration:
+    def __init__(self):
+        self.map_path = None
+        self.chosen_algo = None
+        self.temp = None
+
+    def to_tuple(self):
+        return self.map_path, self.chosen_algo
+
+
 class SimulationRunner(Screen):
-    def __init__(self, screen: pygame.Surface, map_path, chosen_algo):
+    def __init__(self, screen: pygame.Surface, conf: SimulationConfiguration):
         super().__init__(screen)
         # get the simulation map
+        map_path, chosen_algo = conf.to_tuple()
         roads, traffic_lights, all_junctions = create_map(self.screen.get_width(), self.screen.get_height(), map_path)
         self.roads = roads
         self.traffic_lights = traffic_lights

@@ -3,7 +3,7 @@ from typing import List, Union, Type
 import pygame
 
 from graphics.menu.algos import Algo, all_algos_list
-from graphics.menu.button import Button
+from graphics.menu.utils.button import Button
 from graphics.menu.screens.helps_screens.algos_help import AlgosHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from graphics.menu.screens_enum import Screens
