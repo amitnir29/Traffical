@@ -9,6 +9,8 @@ from graphics.menu.screens_enum import Screens
 from graphics.menu.utils.slider import Slider
 from server.geometry.point import Point
 
+SLIDERS_START = 500
+
 
 class ConfigurationScreen(Screen):
     def __init__(self, screen: pygame.Surface, background):
@@ -17,8 +19,10 @@ class ConfigurationScreen(Screen):
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
         self.back_button = Button(Point(screen.get_width() - 80, 0, ), 80,
                                   screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")
-        self.cars_slider = Slider(50, 400, 200, 0, 30)
+        self.cars_amount_slider = Slider(SLIDERS_START, 300, 200, 0, 30)
+        self.path_length_slider = Slider(SLIDERS_START, 400, 200, 1, 30)
         self.pressed_slider: Slider = None
+        self.sliders = [self.cars_amount_slider, self.path_length_slider]
 
     def display(self) -> Union[int, Screens]:  # TODO typing
         """
@@ -44,17 +48,16 @@ class ConfigurationScreen(Screen):
                             continue
                         if self.back_button.click_inside(press_point):
                             return Screens.ALGOS_SCREEN
-                        if self.cars_slider.click_on_slider(press_point):
-                            self.cars_slider.is_pressed = True
-                            self.pressed_slider = self.cars_slider
+                        for slider in self.sliders:
+                            if slider.click_on_slider(press_point):
+                                self.pressed_slider = slider
+                                break
                 if event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         # release
-                        self.cars_slider.is_pressed = False
                         self.pressed_slider = None
                 if event.type == pygame.MOUSEMOTION:
                     if self.pressed_slider is not None:
-                        print("mouse move!!!", self.pressed_slider.curr_value)
                         self.pressed_slider.update_position(Point(*pygame.mouse.get_pos()))
                         self.__draw_configurations()
 
@@ -67,8 +70,12 @@ class ConfigurationScreen(Screen):
                         self.screen.get_height() // 10, 40)
         self.help_button.draw(self)
         self.back_button.draw(self)
-        # cars configurations
-        self.cars_slider.draw(self)
+        # sliders
+        for slider in self.sliders:
+            slider.draw(self)
+        # sliders texts
+        self.write_text("choose number of cars", SLIDERS_START - 200, self.cars_amount_slider.y, 20)
+        self.write_text("choose min length of car path", SLIDERS_START - 200, self.path_length_slider.y, 20)
         # Draws the surface object to the screen.
         pygame.display.flip()
         pygame.display.update()

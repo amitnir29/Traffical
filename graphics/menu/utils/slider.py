@@ -17,7 +17,6 @@ class Slider:
         self.min_val = min_val
         self.max_val = max_val
         self.curr_value = min_val
-        self.is_pressed = False
 
     @property
     def txt(self):
@@ -26,6 +25,10 @@ class Slider:
     @property
     def vals_range(self):
         return self.max_val - self.min_val
+
+    @property
+    def right_x(self):
+        return self.left_x + self.width
 
     def curr_value_to_x_center(self):
         return self.left_x + (self.curr_value - self.min_val) * self.width // self.vals_range
@@ -41,7 +44,8 @@ class Slider:
         screen.write_text(self.txt, self.left_x + self.width + TEXT_SIZE * 2, self.y, TEXT_SIZE)
 
     def click_on_slider(self, p: Point):
-        return self.curr_value_to_x_center() - BUTTON_SIZE // 2 <= p.x <= self.curr_value_to_x_center() + BUTTON_SIZE // 2 and \
+        return self.curr_value_to_x_center() - BUTTON_SIZE // 2 <= p.x <= \
+               self.curr_value_to_x_center() + BUTTON_SIZE // 2 and \
                self.y - BUTTON_SIZE // 2 <= p.y <= self.y + BUTTON_SIZE // 2
 
     def update_position(self, pos: Point):
