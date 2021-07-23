@@ -111,3 +111,9 @@ class Camera:
 
     def is_inside_camera(self, p: Point):
         return self.min_x <= p.x <= self.max_x and self.min_y <= p.y <= self.max_y
+
+    def center_at(self, p: Point):
+        self.min_x = p.x - self.delta_x // 2
+        self.max_x = p.x + self.delta_x // 2
+        self.min_y = p.y - self.delta_y // 2
+        self.max_y = p.y + self.delta_y // 2

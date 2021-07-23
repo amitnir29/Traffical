@@ -8,5 +8,5 @@ def create_screen(width, height):
     return screen
 
 
-def finish_screen():
+def quit_screen():
     pygame.quit()
