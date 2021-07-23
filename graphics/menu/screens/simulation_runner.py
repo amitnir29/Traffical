@@ -1,27 +1,38 @@
+from typing import List
+
 import pygame
 
 from graphics.menu.screens.screen_activity import Screen
+from graphics.simaltion_graphics import SimulationGraphics
+from server.cars_generator import generate_cars
+from server.map_creation import create_map
+from server.server_runner import next_iter
+from server.statistics.stats_reporter import StatsReporter
 
 
 class SimulationRunner(Screen):
-    def __init__(self, screen: pygame.Surface):
+    def __init__(self, screen: pygame.Surface, map_path, chosen_algo):
         super().__init__(screen)
+        # get the simulation map
+        roads, traffic_lights, all_junctions = create_map(self.screen.get_width(), self.screen.get_height(), map_path)
+        self.roads = roads
+        self.traffic_lights = traffic_lights
+        self.junctions = all_junctions
+        # init cars list
+        self.cars = generate_cars(roads, 1, p=0.9, min_len=20, with_prints=False)
+        # init traffic lights algorithm
+        self.lights_algo = [chosen_algo(junction) for junction in all_junctions]
+        # init simulation's stats reporter
+        self.reporter = StatsReporter(self.cars, all_junctions)
 
     def display(self):
-        self.screen.fill(self.background)
-        # write the text
-        self.write_text("This is the", self.screen.get_width() // 2, self.screen.get_height() // 4, 80)
-        self.write_text("Maps help screen", self.screen.get_width() // 2, self.screen.get_height() // 4 + 80, 80)
-        # Draws the surface object to the screen.
-        pygame.display.update()
-        # block until click
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        # click
-                        running = False
-                        break
+        gm = SimulationGraphics(self.screen, fps=10)
+        gm.set_small_map(self.roads)
+        # while the screen is not closed, draw the current state and calculate the next state
+        frames_counter = 0
+        while gm.draw(self.roads, self.traffic_lights, self.cars, self.junctions):
+            frames_counter = frames_counter + 1
+            traffic_lights, cars = next_iter(self.lights_algo, self.traffic_lights, self.cars)
+            self.reporter.next_iter(cars)
+        # when run is over, report the stats
+        self.reporter.report()
