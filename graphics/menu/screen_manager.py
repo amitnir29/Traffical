@@ -6,6 +6,7 @@ import pygame.font
 from graphics.colors import DARK_BLUE, WHITE
 from graphics.menu.algos import all_algos_list, Algo
 from graphics.menu.screens.algo_choosing import AlgoChoosing
+from graphics.menu.screens.finish_screen import FinishScreen
 from graphics.menu.screens.map_choosing import MapChoosing
 from graphics.menu.screens.open_screen import OpenScreen
 from graphics.menu.screens.simulation_runner import SimulationRunner
@@ -35,3 +36,6 @@ def run(screen: pygame.Surface, background=DARK_BLUE):
 
     sim_runner = SimulationRunner(screen, map_path, chosen_algo)
     sim_runner.display()
+
+    finish_screen = FinishScreen(screen)
+    finish_screen.display()

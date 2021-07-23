@@ -19,7 +19,7 @@ class SimulationRunner(Screen):
         self.traffic_lights = traffic_lights
         self.junctions = all_junctions
         # init cars list
-        self.cars = generate_cars(roads, 1, p=0.9, min_len=20, with_prints=False)
+        self.cars = generate_cars(roads, 1, p=0.4, min_len=3, with_prints=False)
         # init traffic lights algorithm
         self.lights_algo = [chosen_algo(junction) for junction in all_junctions]
         # init simulation's stats reporter
