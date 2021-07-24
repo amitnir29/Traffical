@@ -34,7 +34,7 @@ class SimulationGraphics:
              roads, self.screen, self.camera))
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],
-             cars: List[ICar], junctions: List[IJunction], events, with_final_display=True) -> bool:
+             cars: List[ICar], junctions: List[IJunction], events=None, with_final_display=True):
         self.screen.fill(self.background)
         # Check if window has been closed
         self.handle_events(events)
@@ -58,7 +58,6 @@ class SimulationGraphics:
             pygame.display.update()
         # Setting FPS
         self.clock.tick(self.fps)
-        return len(cars) > 0
 
     def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
                          cars: List[ICar], junctions: List[IJunction]) \
@@ -114,6 +113,8 @@ class SimulationGraphics:
             point.normalize(norm_x, norm_y)
 
     def handle_events(self, events):
+        if events is None:
+            events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 self.running = False

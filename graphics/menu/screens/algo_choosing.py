@@ -45,7 +45,7 @@ class AlgoChoosing(Screen):
                             self.__draw_algos_menu()
                             continue
                         if self.back_button.click_inside(press_point):
-                            return Screens.MAPS_SCREEN
+                            return Screens.BACK
                         if press_point.y < self.screen.get_height() // TITLES_SCREEN_PORTION:
                             continue
                         pressed_algo = self.__find_pressed_algo(press_point)

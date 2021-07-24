@@ -51,7 +51,7 @@ class ConfigurationScreen(Screen):
                             self.__draw_configurations()
                             continue
                         if self.back_button.click_inside(press_point):
-                            return Screens.ALGOS_SCREEN
+                            return Screens.BACK
                         for slider in self.sliders:
                             if slider.click_on_slider(press_point):
                                 self.pressed_slider = slider
