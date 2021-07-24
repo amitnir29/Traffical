@@ -9,6 +9,8 @@ class StatsScreen(Screen):
         self.reporter = reporter
 
     def display(self):
+        total_waiting_time, total_neg_acc_time, avg_car_waiting, median_car_waiting, var_car_waiting, \
+        car_num, total_image, cars_image = self.reporter.report()
         self.screen.fill(self.background)
         # write the text
         self.write_text("This is the", self.screen.get_width() // 2, self.screen.get_height() // 4, 80)

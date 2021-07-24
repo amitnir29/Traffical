@@ -1,19 +1,27 @@
 import os
 from collections import defaultdict
 from copy import copy
+from io import BytesIO
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
 # from xlwt import Workbook
+from PIL import Image
+
 MAGIC_ITER_NUMBER = 10
 
+
 class StatsReporter:
-    def __init__(self, cars, junctions, file_name='server/statistics/stats/try.xls'):
+    def __init__(self, cars, file_name='server/statistics/stats/try.xls'):
         self.file_name = file_name
         self.cars = copy(cars)
-        self.waiting_data = {'Iterations': [], 'Total Waiting Time': []}
+        self.car_num = len(cars)
+        self.sum_waiting_data = {'Iterations': [], 'Total Waiting Time': []}
+        self.waiting_data = {'Iteration': [], 'Waiting Cars': []}
         self.curr_iter = 0
         self.total_waiting_time = 0
+        self.total_neg_acc_time = 0
         # self.waiting_time = defaultdict(int)
         # # saves the number of iterations for each car
         # self.iterations = defaultdict(int)
@@ -31,12 +39,20 @@ class StatsReporter:
 
     def next_iter(self, cars):
         self.curr_iter += 1
+        waiting_curr = 0
         for car in cars:
             if car.get_speed() < 0.0001:
                 self.total_waiting_time += 1
-        if self.curr_iter % MAGIC_ITER_NUMBER == 0:
-            self.waiting_data['Iterations'] += [self.curr_iter]
-            self.waiting_data['Total Waiting Time'] += [self.total_waiting_time]
+                waiting_curr += 1
+            if car.get_acceleration() < 0:
+                self.total_neg_acc_time += 1
+        self.waiting_data['Iteration'] += [self.curr_iter]
+        self.waiting_data['Waiting Cars'] += [waiting_curr]
+        self.sum_waiting_data['Iterations'] += [self.curr_iter]
+        self.sum_waiting_data['Total Waiting Time'] += [self.total_waiting_time]
+        # if self.curr_iter % MAGIC_ITER_NUMBER == 0:
+        #     self.sum_waiting_data['Iterations'] += [self.curr_iter]
+        #     self.sum_waiting_data['Total Waiting Time'] += [self.total_waiting_time]
 
         # self.curr_iter += 1
         # for car in cars:
@@ -52,14 +68,77 @@ class StatsReporter:
         #     if car.get_acceleration() < 0:
         #         self.neg_acc_time[car] += 1
 
-    def report(self):
-        # general_df = pd.DataFrame(columns=['Cars', 'Jun'])
+    def report_save(self):
+        sum_waiting_df = pd.DataFrame(self.sum_waiting_data)
+        sum_waiting_df.reset_index(drop=True, inplace=True)
         waiting_df = pd.DataFrame(self.waiting_data)
         waiting_df.reset_index(drop=True, inplace=True)
-        plt.plot(waiting_df['Iterations'], waiting_df['Total Waiting Time'])
+        plt.plot(sum_waiting_df['Iterations'], sum_waiting_df['Total Waiting Time'])
         plt.xlabel('Iterations')
         plt.ylabel('Total Waiting Time')
+        plt.title('Total waiting time of the entire simulation\nin every 10 iterations')
+        plt.savefig('total.png')
         plt.show()
+        plt.scatter(waiting_df['Iteration'], waiting_df['Waiting Cars'])
+        plt.xlabel('Iteration')
+        plt.ylabel('Waiting Cars')
+        plt.savefig('cars.png')
+        plt.show()
+        avg_car_waiting = waiting_df['Waiting Cars'].mean()
+        median_car_waiting = waiting_df['Waiting Cars'].median()
+        var_car_waiting = waiting_df['Waiting Cars'].var()
+
+        return self.total_waiting_time, self.total_neg_acc_time \
+            , avg_car_waiting, median_car_waiting, var_car_waiting
+
+    """
+    def convert_depth_map_bw(depth_map, new_size=None):
+      # create a black-white theme version of the depth map, and return it.
+      fig = plt.figure()
+      plt.axis('off')
+    
+      #display the image onto a grayscale plot
+      plt.set_cmap("gray")
+      plt.imshow(depth_map)
+    
+      #save to the plot to a temp bytes IO and then read from it as an Image
+      temp_image_mem = BytesIO()
+      fig.savefig(temp_image_mem, dpi=fig.dpi, bbox_inches='tight', pad_inches=0)
+      image = Image.open(temp_image_mem)
+      img = image_to_numpy(image, new_size)
+    
+      return img
+    """
+
+    def report(self):
+        # general_df = pd.DataFrame(columns=['Cars', 'Jun'])
+        sum_waiting_df = pd.DataFrame(self.sum_waiting_data)
+        sum_waiting_df.reset_index(drop=True, inplace=True)
+        waiting_df = pd.DataFrame(self.waiting_data)
+        waiting_df.reset_index(drop=True, inplace=True)
+        plt.plot(sum_waiting_df['Iterations'], sum_waiting_df['Total Waiting Time'])
+        plt.xlabel('Iterations')
+        plt.ylabel('Total Waiting Time')
+        plt.title('Total waiting time of the entire simulation\nin each iteration')
+        temp_image_mem = BytesIO()
+        plt.savefig(temp_image_mem)
+        total_image = Image.open(temp_image_mem)
+        # image.show()
+        # plt.show()
+        plt.clf()
+        plt.scatter(waiting_df['Iteration'], waiting_df['Waiting Cars'])
+        plt.xlabel('Iteration')
+        plt.ylabel('Waiting Cars')
+        plt.title('Total Waiting cars in the entire simulation\nin each iteration')
+        temp_image_mem2 = BytesIO()
+        plt.savefig(temp_image_mem2)
+        cars_image = Image.open(temp_image_mem2)
+        # plt.show()
+        avg_car_waiting = waiting_df['Waiting Cars'].mean()
+        median_car_waiting = waiting_df['Waiting Cars'].median()
+        var_car_waiting = waiting_df['Waiting Cars'].var()
+
+        return self.total_waiting_time, self.total_neg_acc_time, avg_car_waiting, median_car_waiting, var_car_waiting, self.car_num, total_image, cars_image
         # waiting_df.to_csv('try.csv')
 
         # if os.path.exists(self.file_name):
