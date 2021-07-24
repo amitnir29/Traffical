@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import copy
-import datetime
+import math
 from copy import deepcopy
 from math import atan, degrees
 from typing import List, Optional, Tuple
@@ -129,7 +129,6 @@ class Car(ICar):
                     # update speed s.t. we do not pass the max speed and the max acceleration.
                     self._full_gass()
                 else:
-                    print("red light", self)
                     # there is a red light.
                     # update speed s.t. we do not pass the max speed, max deceleration, and light distance
                     lane_end_coordinates = self.__current_lane.coordinates[-1]
@@ -298,16 +297,18 @@ class Car(ICar):
 
     def _position_in_new_line(self, current_line, line_to_move_to):
         x_current, y_current = self.position.to_tuple()
-        m = current_line.m
-        b1 = current_line.b
+        m1 = current_line.m
+        m2 = line_to_move_to.m
         b2 = line_to_move_to.b
 
-        if -10 <= m <= 10:
-            x_expected = x_current + m * (b1 - b2) / (m ** 2 + 1)
-            y_expected = y_current + (b2 - b1) / (m ** 2 + 1)
-            return Position(x_expected, y_expected)
+        if m2 != math.inf and m2 != -math.inf:
+            x_expected = (x_current / m1 + y_current - b2) / (m2 + 1 / m1)
+            y_expected = m2 * x_expected + b2
         else:
-            return Position(line_to_move_to.p1.x, y_current)
+            x_expected = line_to_move_to.p1.x
+            y_expected = -x_expected / m1 + x_current / m1 + y_current
+
+        return Position(x_expected, y_expected)
 
     def wants_to_enter_lane(self, car: Car) -> None:
         # current_part_as_line = Lane.part_as_line(self.__current_lane.coordinates[self.__current_lane_part],
