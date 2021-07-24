@@ -1,6 +1,7 @@
 import os
 from collections import defaultdict
 from copy import copy
+from dataclasses import dataclass
 from io import BytesIO
 
 import pandas as pd
@@ -10,6 +11,23 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 MAGIC_ITER_NUMBER = 10
+
+
+@dataclass
+class ReportScreenData:
+    total_waiting_time: int
+    total_neg_acc_time: int
+    avg_car_waiting: float
+    median_car_waiting: float
+    var_car_waiting: float
+    car_num: int
+    total_waiting_image: Image
+    cars_waiting_image: Image
+    avg_car_neg_acc: float
+    median_car_neg_acc: float
+    var_car_neg_acc: float
+    total_neg_acc_image: Image
+    cars_neg_acc_image: Image
 
 
 class StatsReporter:
@@ -170,7 +188,14 @@ class StatsReporter:
         median_car_neg_acc = neg_acc_df['Neg Acc Cars'].median()
         var_car_neg_acc = neg_acc_df['Neg Acc Cars'].var()
 
-        return self.total_waiting_time, self.total_neg_acc_time, avg_car_waiting, median_car_waiting, var_car_waiting, self.car_num, total_image, cars_image
+        return ReportScreenData(total_waiting_time=self.total_waiting_time, total_neg_acc_time=self.total_neg_acc_time,
+                                avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
+                                var_car_waiting=var_car_waiting, car_num=self.car_num,
+                                total_waiting_image=total_waiting_image, cars_waiting_image=cars_waiting_image,
+                                avg_car_neg_acc=avg_car_neg_acc, median_car_neg_acc=median_car_neg_acc,
+                                var_car_neg_acc=var_car_neg_acc, total_neg_acc_image=total_neg_acc_image,
+                                cars_neg_acc_image=cars_neg_acc_image)
+        # return self.total_waiting_time, self.total_neg_acc_time, avg_car_waiting, median_car_waiting, var_car_waiting, self.car_num, total_image, cars_image
         # waiting_df.to_csv('try.csv')
 
         # if os.path.exists(self.file_name):
