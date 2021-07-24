@@ -154,16 +154,16 @@ class SimulationRunner(Screen):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit()
-            reporters.append((lights_algo.__class__.__name__, reporter))
+            reporters.append((lights_algo[0].__class__.__name__, reporter))
         return reporters
 
     def __draw_comparison(self, index, algo_name, frames_count):
         self.screen.fill(self.background)
         # write the text
-        self.write_text(f"Working on algo {index}", self.screen.get_width() // 2, self.screen.get_height() // 2 - 100,
+        self.write_text(f"Working on algo {index+1}", self.screen.get_width() // 2, self.screen.get_height() // 2 - 100,
                         70)
         self.write_text(f"{algo_name}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 40, 140)
-        self.write_text(f"frame number: {frames_count}", self.screen.get_width() // 2,
+        self.write_text(f"iteration number: {frames_count}", self.screen.get_width() // 2,
                         self.screen.get_height() // 2 + 200,
                         70)
         # Draws the surface object to the screen.
