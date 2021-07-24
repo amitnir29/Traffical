@@ -266,7 +266,7 @@ class Car(ICar):
         current_part_as_line = Lane.part_as_line(self.__current_lane.coordinates[self.__current_lane_part],
                                                  self.__current_lane.coordinates[self.__current_lane_part + 1])
         new_part_as_line = Lane.part_as_line(lane.coordinates[self.__current_lane_part],
-                                             self.__current_lane.coordinates[self.__current_lane_part + 1])
+                                             lane.coordinates[self.__current_lane_part + 1])
 
         self.__position = self._position_in_new_line(current_part_as_line, new_part_as_line)
 
