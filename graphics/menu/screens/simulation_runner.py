@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 
-from typing import List
+from typing import List, Union
 
 import pygame
 
 from graphics.colors import BLACK, RED
+from graphics.menu.screens.helps_screens.cars_error import CarsError
 from graphics.menu.screens.screen_activity import Screen
+from graphics.menu.screens_enum import Screens
 from graphics.menu.utils.button import Button
 from graphics.simaltion_graphics import SimulationGraphics
 from server.cars_generator import generate_cars
@@ -45,16 +47,21 @@ class SimulationData:
 class SimulationRunner(Screen):
     def __init__(self, screen: pygame.Surface, conf: SimulationConfiguration):
         super().__init__(screen)
-        self.data = self.__create_simulation_data(conf)
+        error_screen = CarsError(screen, background=RED)
+        data = self.__create_simulation_data(conf, error_screen)
+        self.data = data
         self.pause_button = Button(Point(self.screen.get_width() - 50, 0), 50, 50, "PAUSE")
         self.paused = False
 
-    def __create_simulation_data(self, conf: SimulationConfiguration) -> SimulationData:
+    def __create_simulation_data(self, conf: SimulationConfiguration, error_screen) -> SimulationData:
         # get the simulation map
         map_path, chosen_algo, cars_amount, path_min_len, with_small_map = conf.to_tuple()
         roads, traffic_lights, all_junctions = create_map(self.screen.get_width(), self.screen.get_height(), map_path)
         # init cars list
         cars = generate_cars(roads, cars_amount, p=0.9, min_len=path_min_len, with_prints=False)
+        if cars is None:
+            error_screen.display()
+            exit()
         # init traffic lights algorithm
         lights_algo = [chosen_algo(junction) for junction in all_junctions]
         # init simulation's stats reporter
@@ -68,8 +75,9 @@ class SimulationRunner(Screen):
         # while the screen is not closed, draw the current state and calculate the next state
         frames_counter = 0
         events = []
-        while gm.draw(self.data.roads, self.data.lights, self.data.cars, self.data.junctions, events,
-                      with_final_display=False):
+        while len(self.data.cars) > 0:
+            gm.draw(self.data.roads, self.data.lights, self.data.cars, self.data.junctions, events=events,
+                    with_final_display=False)
             self.__draw_others()
             frames_counter = frames_counter + 1
             if not self.paused:

@@ -48,7 +48,7 @@ class MapChoosing(Screen):
                             self.__draw_map_choosing_menu(total_delta_y)
                             continue
                         if self.back_button.click_inside(press_point):
-                            return Screens.OPEN
+                            return Screens.BACK
                         # next, check it if in the title, do nothing
                         if press_point.y < self.screen.get_height() // NUMBER_OF_SMALL_MAPS:
                             continue

@@ -41,7 +41,7 @@ def run(screen: pygame.Surface, background=DARK_BLUE):
 
 def __run_maps_screen(conf, open_screen, maps_screen):
     res = maps_screen.display()
-    while res == Screens.OPEN:
+    while res == Screens.BACK:
         open_screen.display()
         res = maps_screen.display()
     conf.map_path = res
@@ -49,7 +49,7 @@ def __run_maps_screen(conf, open_screen, maps_screen):
 
 def __run_algos_screen(conf, open_screen, maps_screen, algos_screen):
     res = algos_screen.display()
-    while res == Screens.MAPS_SCREEN:
+    while res == Screens.BACK:
         __run_maps_screen(conf, open_screen, maps_screen)
         res = algos_screen.display()
     conf.chosen_algo = res
@@ -57,7 +57,7 @@ def __run_algos_screen(conf, open_screen, maps_screen, algos_screen):
 
 def __run_conf_screen(conf, open_screen, maps_screen, algos_screen, conf_screen):
     res = conf_screen.display()
-    while res == Screens.ALGOS_SCREEN:
+    while res == Screens.BACK:
         __run_algos_screen(conf, open_screen, maps_screen, algos_screen)
         res = conf_screen.display()
     cars_amount, path_min_len, is_small_map = res
