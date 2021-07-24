@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import datetime
 from copy import deepcopy
 from math import atan, degrees
 from typing import List, Optional, Tuple
@@ -128,6 +129,7 @@ class Car(ICar):
                     # update speed s.t. we do not pass the max speed and the max acceleration.
                     self._full_gass()
                 else:
+                    print("red light", self)
                     # there is a red light.
                     # update speed s.t. we do not pass the max speed, max deceleration, and light distance
                     lane_end_coordinates = self.__current_lane.coordinates[-1]
@@ -267,6 +269,8 @@ class Car(ICar):
                                              self.__current_lane.coordinates[self.__current_lane_part + 1])
 
         self.__position = self._position_in_new_line(current_part_as_line, new_part_as_line)
+
+        self.__current_lane.remove_car(self)
         self.__current_lane = lane
 
         before_car: Car = lane.get_car_before(self)
