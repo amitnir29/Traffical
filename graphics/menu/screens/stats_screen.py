@@ -28,8 +28,7 @@ class StatsScreen(Screen):
                         return
                     elif event.button == 4:
                         # scroll up
-                        total_delta_y = max(0,
-                                            total_delta_y - scroll_delta_y)
+                        total_delta_y = max(0, total_delta_y - scroll_delta_y)
                         self.__draw_all_data(report_data, total_delta_y)
                     elif event.button == 5:
                         # scroll down
