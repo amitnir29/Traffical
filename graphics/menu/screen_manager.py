@@ -22,37 +22,21 @@ def run(screen: pygame.Surface, background=DARK_BLUE):
     __run_open_screen(screen, background)
 
 
-# def run_simulation_path(open_screen, screen: pygame.Surface, background=DARK_BLUE):
-#
-#
-#
-#
-#
-#     __run_maps_screen(conf, open_screen, maps_screen)
-#     __run_algos_screen(conf, open_screen, maps_screen, algos_screen)
-#     __run_conf_screen(conf, open_screen, maps_screen, algos_screen, conf_screen)
-#
-#     sim_runner = SimulationRunner(screen, conf)
-#     reporter = sim_runner.display()
-#
-#     stats_screen = StatsScreen(screen, background, reporter)
-#     finish_screen = FinishScreen(screen, background, stats_screen)
-#     finish_screen.display()
-
 def __run_open_screen(screen, background):
     open_screen = OpenScreen(screen, background)
     path = open_screen.display()
     while True:
         if path == Screens.COMPARISON_PATH:
-            pass
+            __comparison_maps_screen(screen, background)
         elif path == Screens.SIMULATION_PATH:
-            __run_maps_screen(screen, background)
+            __simulation_maps_screen(screen, background)
         else:
             raise Exception("something is wrong")
         path = open_screen.display()
 
 
-def __run_maps_screen(screen, background):
+# SIMULATION PATH
+def __simulation_maps_screen(screen, background):
     maps_screen = MapChoosing(screen, background)
     conf = SimulationConfiguration()
     while True:
@@ -60,20 +44,20 @@ def __run_maps_screen(screen, background):
         if res == Screens.BACK:
             return
         conf.map_path = res
-        __run_algos_screen(screen, background, conf)
+        __simulation_algos_screen(screen, background, conf)
 
 
-def __run_algos_screen(screen, background, conf):
+def __simulation_algos_screen(screen, background, conf):
     algos_screen = AlgoChoosing(screen, background)
     while True:
         res = algos_screen.display()
         if res == Screens.BACK:
             return
         conf.chosen_algo = res
-        __run_conf_screen(screen, background, conf)
+        __simulation_conf_screen(screen, background, conf)
 
 
-def __run_conf_screen(screen, background, conf):
+def __simulation_conf_screen(screen, background, conf):
     conf_screen = ConfigurationScreen(screen, background)
     while True:
         res = conf_screen.display()
@@ -83,16 +67,32 @@ def __run_conf_screen(screen, background, conf):
         conf.cars_amount = cars_amount
         conf.path_min_len = path_min_len
         conf.is_small_map = is_small_map
-        __run_simulation(screen, background, conf)
+        __simulation_simulation(screen, background, conf)
 
 
-def __run_simulation(screen, background, conf):
+def __simulation_simulation(screen, background, conf):
     sim_runner = SimulationRunner(screen, conf)
     reporter = sim_runner.display()
-    __run_finish_screen(screen, background, reporter)
+    __simulation_finish_screen(screen, background, reporter)
 
 
-def __run_finish_screen(screen, background, reporter):
+def __simulation_finish_screen(screen, background, reporter):
     stats_screen = StatsScreen(screen, background, reporter)
     finish_screen = FinishScreen(screen, background, stats_screen)
     finish_screen.display()
+
+
+# COMPARISON PATH
+def __comparison_maps_screen(screen, background):
+    maps_screen = MapChoosing(screen, background)
+    conf = SimulationConfiguration()
+    while True:
+        res = maps_screen.display()
+        if res == Screens.BACK:
+            return
+        conf.map_path = res
+        __comparison_algos_screen(screen, background, conf)
+
+
+def __comparison_algos_screen(screen, background, conf):
+    pass

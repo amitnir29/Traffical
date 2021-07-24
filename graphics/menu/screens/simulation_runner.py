@@ -21,16 +21,21 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 from server.statistics.stats_reporter import StatsReporter
 
 
+@dataclass
 class SimulationConfiguration:
-    def __init__(self):
-        self.map_path = None
-        self.chosen_algo = None
-        self.cars_amount = None
-        self.path_min_len = None
-        self.is_small_map = None
+    map_path = None
+    chosen_algo = None
+    cars_amount = None
+    path_min_len = None
+    is_small_map = None
 
-    def to_tuple(self):
-        return self.map_path, self.chosen_algo, self.cars_amount, self.path_min_len, self.is_small_map
+
+@dataclass
+class ComparisonConfiguration:
+    map_path = None
+    chosen_algos = None
+    cars_amount = None
+    path_min_len = None
 
 
 @dataclass
@@ -55,15 +60,15 @@ class SimulationRunner(Screen):
 
     def __create_simulation_data(self, conf: SimulationConfiguration, error_screen) -> SimulationData:
         # get the simulation map
-        map_path, chosen_algo, cars_amount, path_min_len, with_small_map = conf.to_tuple()
-        roads, traffic_lights, all_junctions = create_map(self.screen.get_width(), self.screen.get_height(), map_path)
+        roads, traffic_lights, all_junctions = create_map(self.screen.get_width(),
+                                                          self.screen.get_height(), conf.map_path)
         # init cars list
-        cars = generate_cars(roads, cars_amount, p=0.9, min_len=path_min_len, with_prints=False)
+        cars = generate_cars(roads, conf.cars_amount, p=0.9, min_len=conf.path_min_len, with_prints=False)
         if cars is None:
             error_screen.display()
             exit()
         # init traffic lights algorithm
-        lights_algo = [chosen_algo(junction) for junction in all_junctions]
+        lights_algo = [conf.chosen_algo(junction) for junction in all_junctions]
         # init simulation's stats reporter
         reporter = StatsReporter(cars, all_junctions)
         return SimulationData(roads, traffic_lights, all_junctions, cars, lights_algo, reporter, conf.is_small_map)
