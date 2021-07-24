@@ -58,7 +58,7 @@ def __simulation_algos_screen(screen, background, conf):
 
 
 def __simulation_conf_screen(screen, background, conf):
-    conf_screen = ConfigurationScreen(screen, background,simulation_mode=True)
+    conf_screen = ConfigurationScreen(screen, background, simulation_mode=True)
     while True:
         res = conf_screen.display()
         if res == Screens.BACK:
@@ -114,6 +114,7 @@ def __comparison_conf_screen(screen, background, conf):
         conf.cars_amount = cars_amount
         conf.path_min_len = path_min_len
         __comparison_run_simulation(screen, background, conf)
+
 
 def __comparison_run_simulation(screen, background, conf):
     sim_runner = SimulationRunner(screen, conf)
