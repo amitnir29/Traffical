@@ -1,10 +1,12 @@
+from copy import deepcopy
 from dataclasses import dataclass
 
-from typing import List, Union
+from typing import List, Union, Tuple, Type
 
 import pygame
 
 from graphics.colors import BLACK, RED
+from graphics.menu.algos import Algo
 from graphics.menu.screens.helps_screens.cars_error import CarsError
 from graphics.menu.screens.screen_activity import Screen
 from graphics.menu.screens_enum import Screens
@@ -49,11 +51,25 @@ class SimulationData:
     with_small_map: bool
 
 
+@dataclass
+class ComparisonData:
+    roads: List[IRoadSection]
+    lights: List[ITrafficLight]
+    junctions: List[IJunction]
+    cars: List[ICar]
+    lights_algos: List[List]
+
+
 class SimulationRunner(Screen):
-    def __init__(self, screen: pygame.Surface, conf: SimulationConfiguration):
+    def __init__(self, screen: pygame.Surface, conf: Union[SimulationConfiguration, ComparisonConfiguration]):
         super().__init__(screen)
         error_screen = CarsError(screen, background=RED)
-        data = self.__create_simulation_data(conf, error_screen)
+        if isinstance(conf, SimulationConfiguration):
+            data = self.__create_simulation_data(conf, error_screen)
+        elif isinstance(conf, ComparisonConfiguration):
+            data = self.__create_configuration_data(conf, error_screen)
+        else:
+            raise Exception("something is wrong...")
         self.data = data
         self.pause_button = Button(Point(self.screen.get_width() - 50, 0), 50, 50, "PAUSE")
         self.paused = False
@@ -73,7 +89,22 @@ class SimulationRunner(Screen):
         reporter = StatsReporter(cars, all_junctions)
         return SimulationData(roads, traffic_lights, all_junctions, cars, lights_algo, reporter, conf.is_small_map)
 
+    def __create_configuration_data(self, conf: ComparisonConfiguration, error_screen):
+        # get the simulation map
+        roads, traffic_lights, all_junctions = create_map(self.screen.get_width(),
+                                                          self.screen.get_height(), conf.map_path)
+        # init cars list
+        cars = generate_cars(roads, conf.cars_amount, p=0.9, min_len=conf.path_min_len, with_prints=False)
+        if cars is None:
+            error_screen.display()
+            exit()
+        # init traffic lights algorithm
+        lights_algos = [[chosen_algo(junction) for junction in all_junctions] for chosen_algo in conf.chosen_algos]
+        # init simulation's stats reporter
+        return ComparisonData(roads, traffic_lights, all_junctions, cars, lights_algos)
+
     def display(self) -> StatsReporter:
+        self.data: SimulationData
         gm = SimulationGraphics(self.screen, fps=10)
         if self.data.with_small_map:
             gm.set_small_map(self.data.roads)
@@ -105,6 +136,37 @@ class SimulationRunner(Screen):
 
         # when run is over, report the stats
         return self.data.reporter
+
+    def run_silent(self) -> List[Tuple[Type, StatsReporter]]:
+        self.data: ComparisonData
+        # while the screen is not closed, draw the current state and calculate the next state
+        frames_counter = 0
+        init_cars = deepcopy(self.data.cars)
+        reporters: List[Tuple[Type, StatsReporter]] = list()
+        for i, lights_algo in enumerate(self.data.lights_algos):
+            curr_cars = deepcopy(init_cars)
+            reporter = StatsReporter(curr_cars)
+            while len(curr_cars) > 0:
+                self.__draw_comparison(i, lights_algo[0].__class__.__name__, frames_counter)
+                frames_counter = frames_counter + 1
+                traffic_lights, cars = next_iter(lights_algo, self.data.lights, curr_cars)
+                reporter.next_iter(cars)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit()
+            reporters.append((lights_algo.__class__, reporter))
+        return reporters
+
+    def __draw_comparison(self, index, algo_name, frames_count):
+        self.screen.fill(self.background)
+        # write the text
+        self.write_text(f"Working on algo {index}", self.screen.get_width() // 2, self.screen.get_height() // 2 - 100,
+                        70)
+        self.write_text(f"{algo_name}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 40, 140)
+        self.write_text(f"frame number: {frames_count}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 200,
+                        70)
+        # Draws the surface object to the screen.
+        pygame.display.update()
 
     def __draw_others(self):
         self.pause_button.draw(self)
