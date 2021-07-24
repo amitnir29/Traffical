@@ -7,6 +7,7 @@ from graphics.menu.screens.finish_screen import FinishScreen
 from graphics.menu.screens.map_choosing import MapChoosing
 from graphics.menu.screens.open_screen import OpenScreen
 from graphics.menu.screens.simulation_runner import SimulationRunner, SimulationConfiguration, ComparisonConfiguration
+from graphics.menu.screens.stats_screens.comparison_stats_screen import ComparisonStatsScreen
 from graphics.menu.screens.stats_screens.simulation_stats_screen import SimulationStatsScreen
 from graphics.menu.screens_enum import Screens
 
@@ -116,6 +117,6 @@ def __comparison_run_simulation(screen, background, conf):
 
 
 def __comparison_finish_screen(screen, background, reporters):
-    stats_screen = SimulationStatsScreen(screen, background, reporters)
+    stats_screen = ComparisonStatsScreen(screen, background, reporters)
     finish_screen = FinishScreen(screen, background, stats_screen)
     finish_screen.display()
