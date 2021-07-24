@@ -150,13 +150,13 @@ class Car(ICar):
             else:
                 if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
                     # distance_to_keep = self.MIN_DISTANCE_TO_KEEP
-                    distance_to_keep = self.__speed
+                    distance_to_keep = self.__speed + self.__current_lane.lane_length() / 10
                     distance_to_move = Line(self.position, front_car.position).length() - distance_to_keep
 
                 else:
                     # TODO MIN DISTANCE depends on velocity
                     # distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
-                    distance_to_keep = self.__speed * 1.1
+                    distance_to_keep = self.__speed * 1.1 + self.__current_lane.lane_length() / 10
 
                     simulation_car = deepcopy(front_car)
                     simulation_car._advance(simulation_car.estimated_speed())
