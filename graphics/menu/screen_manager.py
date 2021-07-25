@@ -10,7 +10,7 @@ from graphics.menu.screens.configuration_screen import ConfigurationScreen
 from graphics.menu.screens.finish_screen import FinishScreen
 from graphics.menu.screens.map_choosing import MapChoosing
 from graphics.menu.screens.open_screen import OpenScreen
-from graphics.menu.screens.simulation_runner import SimulationRunner, SimulationConfiguration
+from graphics.menu.screens.simulation_runner import SimulationRunner, SimulationConfiguration, ComparisonConfiguration
 from graphics.menu.screens.stats_screen import StatsScreen
 from graphics.menu.screens_enum import Screens
 from graphics.menu.small_maps.menu_small_map import MenuSmallMap
@@ -48,17 +48,17 @@ def __simulation_maps_screen(screen, background):
 
 
 def __simulation_algos_screen(screen, background, conf):
-    algos_screen = AlgoChoosing(screen, background)
+    algos_screen = AlgoChoosing(screen, background, 1)
     while True:
         res = algos_screen.display()
         if res == Screens.BACK:
             return
-        conf.chosen_algo = res
+        conf.chosen_algo = res[0].algo_class
         __simulation_conf_screen(screen, background, conf)
 
 
 def __simulation_conf_screen(screen, background, conf):
-    conf_screen = ConfigurationScreen(screen, background)
+    conf_screen = ConfigurationScreen(screen, background,simulation_mode=True)
     while True:
         res = conf_screen.display()
         if res == Screens.BACK:
@@ -67,10 +67,10 @@ def __simulation_conf_screen(screen, background, conf):
         conf.cars_amount = cars_amount
         conf.path_min_len = path_min_len
         conf.is_small_map = is_small_map
-        __simulation_simulation(screen, background, conf)
+        __simulation_run_simulation(screen, background, conf)
 
 
-def __simulation_simulation(screen, background, conf):
+def __simulation_run_simulation(screen, background, conf):
     sim_runner = SimulationRunner(screen, conf)
     reporter = sim_runner.display()
     __simulation_finish_screen(screen, background, reporter)
@@ -85,7 +85,7 @@ def __simulation_finish_screen(screen, background, reporter):
 # COMPARISON PATH
 def __comparison_maps_screen(screen, background):
     maps_screen = MapChoosing(screen, background)
-    conf = SimulationConfiguration()
+    conf = ComparisonConfiguration()
     while True:
         res = maps_screen.display()
         if res == Screens.BACK:
@@ -95,4 +95,27 @@ def __comparison_maps_screen(screen, background):
 
 
 def __comparison_algos_screen(screen, background, conf):
-    pass
+    algos_screen = AlgoChoosing(screen, background, 2)
+    while True:
+        res = algos_screen.display()
+        if res == Screens.BACK:
+            return
+        conf.chosen_algos = [algo.algo_class for algo in res]
+        __comparison_conf_screen(screen, background, conf)
+
+
+def __comparison_conf_screen(screen, background, conf):
+    conf_screen = ConfigurationScreen(screen, background, simulation_mode=False)
+    while True:
+        res = conf_screen.display()
+        if res == Screens.BACK:
+            return
+        cars_amount, path_min_len, _ = res
+        conf.cars_amount = cars_amount
+        conf.path_min_len = path_min_len
+        __comparison_run_simulation(screen, background, conf)
+
+def __comparison_run_simulation(screen, background, conf):
+    sim_runner = SimulationRunner(screen, conf)
+    reporters = sim_runner.run_silent()
+    __simulation_finish_screen(screen, background, reporters)

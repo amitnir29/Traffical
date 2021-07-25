@@ -137,35 +137,33 @@ class SimulationRunner(Screen):
         # when run is over, report the stats
         return self.data.reporter
 
-    def run_silent(self) -> List[Tuple[str, StatsReporter]]:
+    def run_silent(self) -> List[Tuple[Type, StatsReporter]]:
         self.data: ComparisonData
         # while the screen is not closed, draw the current state and calculate the next state
+        frames_counter = 0
         init_cars = deepcopy(self.data.cars)
-        reporters: List[Tuple[str, StatsReporter]] = list()
+        reporters: List[Tuple[Type, StatsReporter]] = list()
         for i, lights_algo in enumerate(self.data.lights_algos):
-            frames_counter = 0
             curr_cars = deepcopy(init_cars)
             reporter = StatsReporter(curr_cars)
             while len(curr_cars) > 0:
-                print(len(curr_cars))
                 self.__draw_comparison(i, lights_algo[0].__class__.__name__, frames_counter)
                 frames_counter = frames_counter + 1
-                traffic_lights, curr_cars = next_iter(lights_algo, self.data.lights, curr_cars)
-                reporter.next_iter(curr_cars)
+                traffic_lights, cars = next_iter(lights_algo, self.data.lights, curr_cars)
+                reporter.next_iter(cars)
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit()
-            reporters.append((lights_algo[0].__class__.__name__, reporter))
+            reporters.append((lights_algo.__class__, reporter))
         return reporters
 
     def __draw_comparison(self, index, algo_name, frames_count):
         self.screen.fill(self.background)
         # write the text
-        self.write_text(f"Working on algo {index+1}", self.screen.get_width() // 2, self.screen.get_height() // 2 - 100,
+        self.write_text(f"Working on algo {index}", self.screen.get_width() // 2, self.screen.get_height() // 2 - 100,
                         70)
         self.write_text(f"{algo_name}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 40, 140)
-        self.write_text(f"iteration number: {frames_count}", self.screen.get_width() // 2,
-                        self.screen.get_height() // 2 + 200,
+        self.write_text(f"frame number: {frames_count}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 200,
                         70)
         # Draws the surface object to the screen.
         pygame.display.update()
