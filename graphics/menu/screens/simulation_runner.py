@@ -147,14 +147,14 @@ class SimulationRunner(Screen):
             curr_cars = deepcopy(init_cars)
             reporter = StatsReporter(curr_cars)
             while len(curr_cars) > 0:
-                self.__draw_comparison(i, lights_algo[0].__class__.__name__, frames_counter)
+                self.__draw_comparison(i, lights_algo[i].__class__.__name__, frames_counter)
                 frames_counter = frames_counter + 1
                 traffic_lights, cars = next_iter(lights_algo, self.data.lights, curr_cars)
                 reporter.next_iter(cars)
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit()
-            reporters.append((lights_algo[0].__class__.__name__, reporter))
+            reporters.append((lights_algo[i].__class__.__name__, reporter))
         return reporters
 
     def __draw_comparison(self, index, algo_name, frames_count):
