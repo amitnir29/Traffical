@@ -11,43 +11,9 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from pandas import DataFrame
 
+from server.statistics.runs_data import ReportComparisonData, ReportSimulationData
+
 MAGIC_ITER_NUMBER = 10
-
-
-@dataclass
-class ReportScreenData:
-    iteration_number: int
-    total_waiting_time: int
-    total_dec_time: int
-    avg_car_waiting: float
-    median_car_waiting: float
-    var_car_waiting: float
-    car_num: int
-    total_waiting_image: Image
-    cars_waiting_image: Image
-    avg_car_dec: float
-    median_car_dec: float
-    var_car_dec: float
-    total_dec_image: Image
-    cars_dec_image: Image
-
-
-@dataclass
-class ComparisonData:
-    iteration_number: int
-    total_waiting_time: int
-    total_dec_time: int
-    avg_car_waiting: float
-    median_car_waiting: float
-    var_car_waiting: float
-    car_num: int
-    total_waiting_df: DataFrame
-    cars_waiting_df: DataFrame
-    avg_car_dec: float
-    median_car_dec: float
-    var_car_dec: float
-    total_dec_df: DataFrame
-    cars_dec_df: DataFrame
 
 
 class StatsReporter:
@@ -102,13 +68,13 @@ class StatsReporter:
         median_car_dec = dec_df['Dec Cars'].median()
         var_car_dec = dec_df['Dec Cars'].var()
 
-        return ComparisonData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
-                              avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
-                              var_car_waiting=var_car_waiting, car_num=self.car_num,
-                              total_waiting_df=sum_waiting_df, cars_waiting_df=waiting_df,
-                              avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
-                              var_car_dec=var_car_dec, total_dec_df=sum_dec_df,
-                              cars_dec_df=dec_df, iteration_number=self.curr_iter)
+        return ReportComparisonData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
+                                    avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
+                                    var_car_waiting=var_car_waiting, car_num=self.car_num,
+                                    total_waiting_df=sum_waiting_df, cars_waiting_df=waiting_df,
+                                    avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
+                                    var_car_dec=var_car_dec, total_dec_df=sum_dec_df,
+                                    cars_dec_df=dec_df, iteration_number=self.curr_iter)
 
     def report(self):
         # Waiting data
@@ -162,10 +128,10 @@ class StatsReporter:
         median_car_dec = dec_df['Dec Cars'].median()
         var_car_dec = dec_df['Dec Cars'].var()
 
-        return ReportScreenData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
-                                avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
-                                var_car_waiting=var_car_waiting, car_num=self.car_num,
-                                total_waiting_image=total_waiting_image, cars_waiting_image=cars_waiting_image,
-                                avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
-                                var_car_dec=var_car_dec, total_dec_image=total_dec_image,
-                                cars_dec_image=cars_dec_image, iteration_number=self.curr_iter)
+        return ReportSimulationData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
+                                    avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
+                                    var_car_waiting=var_car_waiting, car_num=self.car_num,
+                                    total_waiting_image=total_waiting_image, cars_waiting_image=cars_waiting_image,
+                                    avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
+                                    var_car_dec=var_car_dec, total_dec_image=total_dec_image,
+                                    cars_dec_image=cars_dec_image, iteration_number=self.curr_iter)
