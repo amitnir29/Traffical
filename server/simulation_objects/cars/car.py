@@ -21,11 +21,8 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 
 class Car(ICar):
-    MIN_DISTANCE_TO_KEEP = ...  # TODO
-    MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
     next_car_index = 0
 
-    # TODO temp values
     def __init__(self, path: List[IRoadSection],
                  max_speed: float = 30,
                  max_speed_change: float = 10):
@@ -44,8 +41,6 @@ class Car(ICar):
         self.__current_road = None
         self.__current_lane = None
         assert len(path) > 0
-
-        self.__current_lane: ILane = None
 
         self.__speed = max_speed  # TODO remove
 
