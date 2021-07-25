@@ -145,4 +145,4 @@ class ComparisonStatsScreen(StatsScreenParent):
 
     @property
     def max_scroll(self):
-        return 800
+        return 300+500*(len(self.reporters)-1)
