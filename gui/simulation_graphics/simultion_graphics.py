@@ -137,7 +137,7 @@ class SimulationGraphics:
         all_points = all_points + points2
         """
         now, create the normalization function based on the found min/max x/y, and self.camera
-        we want linear realtions, s.t. the ratio between the caemra's min_x/max_x and width (same for y and height),
+        we want linear realtions, s.t. the ratio between the camera's min_x/max_x and width (same for y and height),
         is the same as the ratio between the shown map's part relative to the whole map size.
         which means, we want to map the min x value of that ratio to 0 and max x value of that ratio to width
         so, for x, we want a line s.t. the points: 
@@ -179,8 +179,10 @@ class SimulationGraphics:
                 # zooming in and out
                 if event.key == pygame.K_z:
                     self.camera.zoom_in(*pygame.mouse.get_pos())
+                    print(self.camera.min_x, self.camera.max_x, self.camera.min_y, self.camera.max_y)
                 if event.key == pygame.K_x:
                     self.camera.zoom_out(*pygame.mouse.get_pos())
+                    print(self.camera.min_x, self.camera.max_x, self.camera.min_y, self.camera.max_y)
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
@@ -195,7 +197,8 @@ class SimulationGraphics:
         # scale formula that looks nice:
         scale = 0.05 * pow((self.camera.width / self.camera.delta_x), 1 / 3)
         for light in traffic_lights:
-            light.draw(self.screen, scale)
+            if light.is_inside_camera(self.camera):
+                light.draw(self.screen, scale)
 
     def draw_junctions(self, junctions: List[DrawableJunction]):
         for junc in junctions:

@@ -62,7 +62,7 @@ class DrawableLight(Drawable):
         return [self.center]
 
     def is_inside_camera(self, camera: Camera):
-        return camera.is_inside_camera(self.center)
+        return 0 <= self.center.x <= camera.width and 0 <= self.center.y <= camera.height
 
     @staticmethod
     def __get_angle(line):
