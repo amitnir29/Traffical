@@ -13,7 +13,7 @@ class SimulationStatsScreen(StatsScreenParent):
         super().__init__(screen, background)
         self.reporter = reporter
 
-    def _draw_all_data(self, total_delta_y, reporter_data):
+    def __draw_all_data(self, total_delta_y, reporter_data):
         self.screen.fill(self.background)
         middle_x = self.screen.get_width() // 2
         # graphs
@@ -49,10 +49,5 @@ class SimulationStatsScreen(StatsScreenParent):
         # Draws the surface object to the screen.
         pygame.display.update()
 
-    def _reporters_data(self):
+    def __reporters_data(self):
         return self.reporter.report()
-
-    @property
-    def max_scroll(self):
-        return 500
-

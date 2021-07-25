@@ -11,10 +11,10 @@ from server.statistics.stats_reporter import ReportScreenData
 class StatsScreenParent(Screen, ABC):
 
     def display(self):
-        reporter_data = self._reporters_data()
+        reporter_data = self.__reporters_data()
         total_delta_y = 0
         scroll_delta_y = 50
-        self._draw_all_data(total_delta_y, reporter_data)
+        self.__draw_all_data(total_delta_y, reporter_data)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -27,12 +27,12 @@ class StatsScreenParent(Screen, ABC):
                     elif event.button == 4:
                         # scroll up
                         total_delta_y = max(0, total_delta_y - scroll_delta_y)
-                        self._draw_all_data(total_delta_y, reporter_data)
+                        self.__draw_all_data(total_delta_y, reporter_data)
                     elif event.button == 5:
                         # scroll down
-                        max_scroll = self.max_scroll
+                        max_scroll = 500
                         total_delta_y = min(max_scroll, total_delta_y + scroll_delta_y)
-                        self._draw_all_data(total_delta_y, reporter_data)
+                        self.__draw_all_data(total_delta_y, reporter_data)
 
     def pil_image_to_surface(self, pil_image):
         return pygame.image.fromstring(pil_image.tobytes(), pil_image.size, pil_image.mode).convert()
@@ -44,14 +44,9 @@ class StatsScreenParent(Screen, ABC):
         self.screen.blit(img, rect)
 
     @abstractmethod
-    def _draw_all_data(self, total_delta_y, reporter_data):
+    def __draw_all_data(self, total_delta_y, reporter_data):
         pass
 
     @abstractmethod
-    def _reporters_data(self):
-        pass
-
-    @property
-    @abstractmethod
-    def max_scroll(self):
+    def __reporters_data(self):
         pass

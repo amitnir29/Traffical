@@ -1,21 +1,14 @@
-from enum import Enum
-from typing import List
-
 import pygame.font
 
-from graphics.colors import DARK_BLUE, WHITE
-from graphics.menu.algos import all_algos_list, Algo
+from graphics.colors import DARK_BLUE
 from graphics.menu.screens.algo_choosing import AlgoChoosing
 from graphics.menu.screens.configuration_screen import ConfigurationScreen
 from graphics.menu.screens.finish_screen import FinishScreen
 from graphics.menu.screens.map_choosing import MapChoosing
 from graphics.menu.screens.open_screen import OpenScreen
 from graphics.menu.screens.simulation_runner import SimulationRunner, SimulationConfiguration, ComparisonConfiguration
-from graphics.menu.screens.stats_screen import StatsScreen
+from graphics.menu.screens.stats_screens.simulation_stats_screen import SimulationStatsScreen
 from graphics.menu.screens_enum import Screens
-from graphics.menu.small_maps.menu_small_map import MenuSmallMap
-from graphics.menu.small_maps.menu_small_maps_creator import load_all_small_maps
-from server.geometry.point import Point
 
 
 def run(screen: pygame.Surface, background=DARK_BLUE):
@@ -77,7 +70,7 @@ def __simulation_run_simulation(screen, background, conf):
 
 
 def __simulation_finish_screen(screen, background, reporter):
-    stats_screen = StatsScreen(screen, background, reporter)
+    stats_screen = SimulationStatsScreen(screen, background, reporter)
     finish_screen = FinishScreen(screen, background, stats_screen)
     finish_screen.display()
 
@@ -119,4 +112,10 @@ def __comparison_conf_screen(screen, background, conf):
 def __comparison_run_simulation(screen, background, conf):
     sim_runner = SimulationRunner(screen, conf)
     reporters = sim_runner.run_silent()
-    __simulation_finish_screen(screen, background, reporters)
+    __comparison_finish_screen(screen, background, reporters)
+
+
+def __comparison_finish_screen(screen, background, reporters):
+    stats_screen = SimulationStatsScreen(screen, background, reporters)
+    finish_screen = FinishScreen(screen, background, stats_screen)
+    finish_screen.display()
