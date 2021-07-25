@@ -38,6 +38,7 @@ class ComparisonConfiguration:
     chosen_algos = None
     cars_amount = None
     path_min_len = None
+    show_runs = None
 
 
 @dataclass
@@ -58,6 +59,7 @@ class ComparisonData:
     junctions: List[IJunction]
     cars: List[ICar]
     lights_algos: List[Type]
+    show_runs: bool
 
 
 class SimulationRunner(Screen):
@@ -101,7 +103,7 @@ class SimulationRunner(Screen):
             error_screen.display()
             exit()
         # init simulation's stats reporter
-        return ComparisonData(roads, traffic_lights, all_junctions, cars, conf.chosen_algos)
+        return ComparisonData(roads, traffic_lights, all_junctions, cars, conf.chosen_algos, conf.show_runs)
 
     def display(self) -> StatsReporter:
         self.data: SimulationData
@@ -139,10 +141,10 @@ class SimulationRunner(Screen):
 
     def run_silent(self) -> List[Tuple[str, StatsReporter]]:
         self.data: ComparisonData
-        # gm = SimulationGraphics(self.screen, fps=10)
+        if self.data.show_runs:
+            gm = SimulationGraphics(self.screen, fps=10)
         # while the screen is not closed, draw the current state and calculate the next state
         reporters: List[Tuple[str, StatsReporter]] = list()
-        # init_cars = deepcopy(self.data.cars)
         for i, lights_algo_class in enumerate(self.data.lights_algos):
             frames_counter = 0
             curr_cars = self.__init_cars()
@@ -152,9 +154,10 @@ class SimulationRunner(Screen):
             reporter = StatsReporter(curr_cars)
             lights_algo = [lights_algo_class(junc) for junc in self.data.junctions]
             while len(curr_cars) > 0:
-                # print(frames_counter, [light.can_pass for light in curr_lights])
-                self.__draw_comparison(i, lights_algo_class.__name__, frames_counter)
-                # gm.draw(self.data.roads, curr_lights, curr_cars, self.data.junctions, with_final_display=True)
+                if self.data.show_runs:
+                    gm.draw(self.data.roads, curr_lights, curr_cars, self.data.junctions, with_final_display=True)
+                else:
+                    self.__draw_comparison(i, lights_algo_class.__name__, frames_counter)
                 frames_counter = frames_counter + 1
                 curr_lights, curr_cars = next_iter(lights_algo, curr_lights, curr_cars)
                 reporter.next_iter(curr_cars)

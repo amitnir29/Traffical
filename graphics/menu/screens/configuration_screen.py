@@ -2,6 +2,7 @@ from typing import Union, Tuple
 
 import pygame
 
+from graphics.colors import RED
 from graphics.menu.utils.button import Button
 from graphics.menu.screens.helps_screens.configuration_help import ConfigurationHelp
 from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
@@ -25,6 +26,7 @@ class ConfigurationScreen(Screen):
         self.pressed_slider: Slider = None
         self.sliders = [self.cars_amount_slider, self.path_length_slider]
         self.is_small_map = CheckBox(Point(SLIDERS_START, 500), 20, 20, init_val=True)
+        self.show_run = CheckBox(Point(SLIDERS_START, 500), 20, 20, init_val=False)
         self.done_button = Button(Point(200, self.screen.get_height() - 100),
                                   self.screen.get_width() - 400, 100, "CONTINUE")
         self.simulation_mode = simulation_mode
@@ -61,9 +63,13 @@ class ConfigurationScreen(Screen):
                             if self.is_small_map.is_click_inside(press_point):
                                 self.is_small_map.was_clicked()
                                 self.__draw_configurations()
+                        else:
+                            if self.show_run.is_click_inside(press_point):
+                                self.show_run.was_clicked()
+                                self.__draw_configurations()
                         if self.done_button.click_inside(press_point):
-                            return self.cars_amount_slider.curr_value, self.path_length_slider.curr_value, \
-                                   self.is_small_map.is_checked
+                            b = self.is_small_map.is_checked if self.simulation_mode else self.show_run.is_checked
+                            return self.cars_amount_slider.curr_value, self.path_length_slider.curr_value, b
                 if event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         # release
@@ -88,6 +94,8 @@ class ConfigurationScreen(Screen):
         # check box
         if self.simulation_mode:
             self.is_small_map.draw(self)
+        else:
+            self.show_run.draw(self)
         # button
         self.done_button.draw(self)
         # texts
@@ -95,6 +103,11 @@ class ConfigurationScreen(Screen):
         self.write_text("choose min length of car path", SLIDERS_START - 200, self.path_length_slider.y, 20)
         if self.simulation_mode:
             self.write_text("show small map", SLIDERS_START - 200, self.is_small_map.y, 20)
+        else:
+            self.write_text("show run of algorithms", SLIDERS_START - 150, self.show_run.y, 20)
+            self.write_text("NOTE: the displaying of the runs slows the simulation down",
+                            SLIDERS_START - 80, self.show_run.y + 40, 20, color=RED)
+
         # Draws the surface object to the screen.
         pygame.display.flip()
         pygame.display.update()
