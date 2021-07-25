@@ -17,21 +17,22 @@ def run(screen: pygame.Surface, background=DARK_BLUE):
 
 
 def __run_open_screen(screen, background):
+    maps_screen = MapChoosing(screen, background) # to save computation time
     open_screen = OpenScreen(screen, background)
     path = open_screen.display()
     while True:
         if path == Screens.COMPARISON_PATH:
-            __comparison_maps_screen(screen, background)
+            __comparison_maps_screen(screen, background, maps_screen)
         elif path == Screens.SIMULATION_PATH:
-            __simulation_maps_screen(screen, background)
+            __simulation_maps_screen(screen, background, maps_screen)
         else:
             raise Exception("something is wrong")
         path = open_screen.display()
 
 
 # SIMULATION PATH
-def __simulation_maps_screen(screen, background):
-    maps_screen = MapChoosing(screen, background)
+def __simulation_maps_screen(screen, background, maps_screen):
+
     conf = SimulationConfiguration()
     while True:
         res = maps_screen.display()
@@ -77,8 +78,7 @@ def __simulation_finish_screen(screen, background, reporter):
 
 
 # COMPARISON PATH
-def __comparison_maps_screen(screen, background):
-    maps_screen = MapChoosing(screen, background)
+def __comparison_maps_screen(screen, background, maps_screen):
     conf = ComparisonConfiguration()
     while True:
         res = maps_screen.display()
