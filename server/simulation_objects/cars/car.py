@@ -13,7 +13,6 @@ from server.geometry.point import Point
 from server.simulation_objects.cars.car_state import CarState
 from server.simulation_objects.cars.i_car import ICar
 from server.simulation_objects.cars.position import Position
-from server.simulation_objects.lanes.i_lane import ILane
 from server.simulation_objects.lanes.lane import Lane
 from server.simulation_objects.lanes.notified_lane import NotifiedLane
 from server.simulation_objects.roadsections.i_road_section import IRoadSection

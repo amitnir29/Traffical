@@ -1,4 +1,4 @@
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 import pygame
 
@@ -24,7 +24,7 @@ class ConfigurationScreen(Screen):
         max_cars_amount = 30 if simulation_mode else 60
         self.cars_amount_slider = Slider(SLIDERS_START, 300, 200, 0, max_cars_amount, init_val=10)
         self.path_length_slider = Slider(SLIDERS_START, 400, 200, 1, 30, init_val=15)
-        self.pressed_slider: Slider = None
+        self.pressed_slider: Optional[Slider] = None
         self.sliders = [self.cars_amount_slider, self.path_length_slider]
         self.is_small_map = CheckBox(Point(SLIDERS_START, 500), 20, 20, init_val=True)
         self.show_run = CheckBox(Point(SLIDERS_START, 500), 20, 20, init_val=False)

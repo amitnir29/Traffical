@@ -1,5 +1,5 @@
+from copy import deepcopy
 from typing import List
-from copy import deepcopy, copy
 
 import server.simulation_objects.lanes.i_notified_lane as nlane
 import server.simulation_objects.trafficlights.i_traffic_light as itl

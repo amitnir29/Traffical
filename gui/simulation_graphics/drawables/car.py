@@ -19,7 +19,7 @@ class DrawableCar(Drawable):
     reached_target = False
     is_done = False
     fade_range = 255
-    path: str = "graphics/images/car.png"
+    path: str = "gui/simulation_graphics/images/car.png"
 
     def draw(self, screen, scale):
         car_img = pygame.image.load(self.path)

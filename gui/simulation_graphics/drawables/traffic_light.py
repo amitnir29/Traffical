@@ -21,8 +21,8 @@ class DrawableLight(Drawable):
     angle: float
     width: float = 160
     height: float = 330
-    green_path: str = "graphics/images/green_light.png"
-    red_path: str = "graphics/images/red_light.png"
+    green_path: str = "gui/simulation_graphics/images/green_light.png"
+    red_path: str = "gui/simulation_graphics/images/red_light.png"
 
     def draw(self, screen, scale):
         # # SETTING SIZES AND SCALES

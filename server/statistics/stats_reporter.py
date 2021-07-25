@@ -1,15 +1,10 @@
-import os
-from collections import defaultdict
 from copy import copy
-from dataclasses import dataclass
 from io import BytesIO
 
-import pandas as pd
 import matplotlib.pyplot as plt
-
+import pandas as pd
 # from xlwt import Workbook
 from PIL import Image
-from pandas import DataFrame
 
 from server.statistics.runs_data import ReportComparisonData, ReportSimulationData
 

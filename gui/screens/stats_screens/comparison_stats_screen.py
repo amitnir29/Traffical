@@ -48,7 +48,7 @@ class ComparisonStatsScreen(StatsScreenParent):
         texts = list()
         for i in range(len(reporters_data.algo_names)):
             texts.append((f"algo name: {reporters_data.algo_names[i]}", [
-                f"number of iterstions: {reporters_data.iteration_number[i]}",
+                f"number of iterations: {reporters_data.iteration_number[i]}",
                 f"total waiting time: {reporters_data.total_waiting_time[i]}",
                 f"total deceleration time: {reporters_data.total_dec_time[i]}",
 
@@ -149,4 +149,4 @@ class ComparisonStatsScreen(StatsScreenParent):
 
     @property
     def max_scroll(self):
-        return 300+530*(len(self.reporters)-1)
+        return 300 + 530 * (len(self.reporters) - 1)

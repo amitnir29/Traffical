@@ -13,19 +13,17 @@ MIN_LEN = 1
 def generate_cars(roads, amount: int, p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> Optional[List[ICar]]:
     tries = 0
     cars = list()
-    counter = 0
     while len(cars) < amount:
         if tries == 100 * amount:
             return None
-        car = generate_car(roads, counter, p, min_len, with_prints)           
+        car = generate_car(roads, p, min_len, with_prints)
         if car is not None:
             cars.append(car)
-            counter += 1
         tries += 1
     return cars
 
 
-def generate_car(roads: List[IRoadSection], id,  p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> Optional[ICar]:
+def generate_car(roads: List[IRoadSection],  p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> Optional[ICar]:
     if p < 0.01 or p > 0.99:
         raise Exception("p should be in [0.01,0.99]")
 

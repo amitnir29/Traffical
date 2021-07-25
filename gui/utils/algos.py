@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from dataclasses import dataclass
 from typing import Type
 
 from algorithms.algo_to_index import index_to_algo
