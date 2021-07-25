@@ -7,7 +7,7 @@ from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 class CostBased(TLManager):
-    def __init__(self, junction, time_limit=np.inf, passing_carr_revenue=5, waiting_time_to_charge=5,
+    def __init__(self, junction, time_limit=np.inf, passing_carr_revenue=5, waiting_time_to_charge=10,
                  waiting_penalty=5):
         super().__init__(junction, time_limit)
         self.passing_car_revenue = passing_carr_revenue
@@ -23,9 +23,11 @@ class CostBased(TLManager):
 
         passing_cars_gain = self.passing_car_revenue * len(passing_cars)
 
-        waiting_cars_punishment = self.waiting_penalty * len(
-            [car for car in all_cars if car not in passing_cars and self.time_tracker[
-                car] % self.waiting_time_to_charge == 0])
+        waiting_cars_punishment = sum([self.waiting_penalty * (self.time_tracker[car] // self.waiting_time_to_charge)
+                                       for car in all_cars if car not in passing_cars])
+        # waiting_cars_punishment = self.waiting_penalty * len(
+        #     [car for car in all_cars if car not in passing_cars and self.time_tracker[
+        #         car] % self.waiting_time_to_charge == 0])
 
         # passing_cars_gain = sum(lane.cars_amount() for lane in tl.lanes) * self.passing_car_revenue  # TODO fix
         #
