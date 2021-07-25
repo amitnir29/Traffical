@@ -306,11 +306,14 @@ class Car(ICar):
         m2 = line_to_move_to.m
         b2 = line_to_move_to.b
 
-        if m2 != math.inf and m2 != -math.inf and m1 * m2 == -1:
+        if m2 != math.inf and m2 != -math.inf and m1 * m2 == -1 and m1 != 0:
             x_expected = (x_current / m1 + y_current - b2) / (m2 + 1 / m1)
             y_expected = m2 * x_expected + b2
         elif m1 * m2 == -1:
             x_expected, y_expected = line_to_move_to.p1
+        elif m1 == 0:
+            x_expected = x_current
+            y_expected = m2 * x_expected + b2
         else:
             x_expected = line_to_move_to.p1.x
             y_expected = -x_expected / m1 + x_current / m1 + y_current
