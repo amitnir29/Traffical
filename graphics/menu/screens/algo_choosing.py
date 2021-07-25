@@ -2,6 +2,7 @@ from typing import List, Union, Type
 
 import pygame
 
+from graphics.colors import GREEN, WHITE
 from graphics.menu.algos import Algo, all_algos_list
 from graphics.menu.utils.button import Button
 from graphics.menu.screens.helps_screens.algos_help import AlgosHelp
@@ -13,15 +14,16 @@ HEIGHT_OF_ALGO_ROW = 50
 
 
 class AlgoChoosing(Screen):
-    def __init__(self, screen: pygame.Surface, background):
+    def __init__(self, screen: pygame.Surface, background, number_of_algos):
         super().__init__(screen, background)
         self.algos_list = self.__create_algos_list()
         self.help_screen = AlgosHelp(screen)
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
-        self.back_button = Button(Point(screen.get_width() - 80, 0, ), 80,
-                                  screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")  # XXX
+        self.back_button = Button(Point(screen.get_width() - 80, 0), 80,
+                                  screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")
+        self.number_of_algos = number_of_algos
 
-    def display(self) -> Union[Type, Screens]:
+    def display(self) -> Union[List[Algo], Screens]:
         """
         first load all small maps. say there are NUMBER_OF_SMALL_MAPS in each row and column, when text is not there.
         then add a padding to each dimension
@@ -29,6 +31,7 @@ class AlgoChoosing(Screen):
         """
         scroll_delta_y = 20
         self.__draw_algos_menu()
+        pressed_algos = list()
         # block until click
         while True:
             for event in pygame.event.get():
@@ -50,7 +53,18 @@ class AlgoChoosing(Screen):
                             continue
                         pressed_algo = self.__find_pressed_algo(press_point)
                         if pressed_algo is not None:
-                            return pressed_algo.algo_class
+                            # switch the choice
+                            if pressed_algo.is_pressed:
+                                pressed_algo.is_pressed = False
+                                pressed_algos.remove(pressed_algo)
+                            else:
+                                pressed_algo.is_pressed = True
+                                pressed_algos.append(pressed_algo)
+                                if len(pressed_algos) == self.number_of_algos:
+                                    for algo in pressed_algos:
+                                        algo.is_pressed = False
+                                    return pressed_algos
+                            self.__draw_algos_menu()
                     elif event.button == 4:
                         # scroll up
                         self.__shift_algos_rectangles(scroll_delta_y)
@@ -73,8 +87,9 @@ class AlgoChoosing(Screen):
         # draw the small maps
         for algo in self.algos_list:
             pygame.draw.rect(self.screen, self.background, [algo.x, algo.y, algo.width, algo.height])
+            color = GREEN if algo.is_pressed else WHITE
             self.write_text(str(algo.algo_class.__name__), algo.x + algo.width // 2,
-                            algo.y + algo.height // 2, 30)
+                            algo.y + algo.height // 2, 30, color=color)
 
     def __draw_algos_menu(self):
         self.screen.fill(self.background)

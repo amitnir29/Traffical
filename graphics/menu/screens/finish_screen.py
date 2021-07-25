@@ -28,7 +28,7 @@ class FinishScreen(Screen):
                             continue
                         else:
                             # quit all
-                            return
+                            quit()
 
     def __draw_screen(self):
         self.screen.fill(self.background)

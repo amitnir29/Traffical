@@ -328,7 +328,7 @@ class Car(ICar):
         self.__current_lane.remove_car(self)
 
     def __repr__(self):
-        return str([road for road in self.__path])
+        return "Car:"+str([road for road in self.__path])
 
     def get_angle(self):
         # the line from the middle of the start of the current part, to the middle of the end of the current part

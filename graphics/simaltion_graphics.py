@@ -117,7 +117,7 @@ class SimulationGraphics:
             events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
-                self.running = False
+                exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:
                     # scroll up

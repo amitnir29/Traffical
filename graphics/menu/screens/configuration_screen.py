@@ -14,7 +14,7 @@ SLIDERS_START = 500
 
 
 class ConfigurationScreen(Screen):
-    def __init__(self, screen: pygame.Surface, background):
+    def __init__(self, screen: pygame.Surface, background, simulation_mode: bool):
         super().__init__(screen, background)
         self.help_screen = ConfigurationHelp(screen)
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
@@ -27,6 +27,7 @@ class ConfigurationScreen(Screen):
         self.is_small_map = CheckBox(Point(SLIDERS_START, 500), 20, 20, init_val=True)
         self.done_button = Button(Point(200, self.screen.get_height() - 100),
                                   self.screen.get_width() - 400, 100, "CONTINUE")
+        self.simulation_mode = simulation_mode
 
     def display(self) -> Union[Tuple[int, int, bool], Screens]:
         """
@@ -56,9 +57,10 @@ class ConfigurationScreen(Screen):
                             if slider.click_on_slider(press_point):
                                 self.pressed_slider = slider
                                 break
-                        if self.is_small_map.is_click_inside(press_point):
-                            self.is_small_map.was_clicked()
-                            self.__draw_configurations()
+                        if self.simulation_mode:
+                            if self.is_small_map.is_click_inside(press_point):
+                                self.is_small_map.was_clicked()
+                                self.__draw_configurations()
                         if self.done_button.click_inside(press_point):
                             return self.cars_amount_slider.curr_value, self.path_length_slider.curr_value, \
                                    self.is_small_map.is_checked
@@ -84,13 +86,15 @@ class ConfigurationScreen(Screen):
         for slider in self.sliders:
             slider.draw(self)
         # check box
-        self.is_small_map.draw(self)
+        if self.simulation_mode:
+            self.is_small_map.draw(self)
         # button
         self.done_button.draw(self)
         # texts
         self.write_text("choose number of cars", SLIDERS_START - 200, self.cars_amount_slider.y, 20)
         self.write_text("choose min length of car path", SLIDERS_START - 200, self.path_length_slider.y, 20)
-        self.write_text("show small map", SLIDERS_START - 200, self.is_small_map.y, 20)
+        if self.simulation_mode:
+            self.write_text("show small map", SLIDERS_START - 200, self.is_small_map.y, 20)
         # Draws the surface object to the screen.
         pygame.display.flip()
         pygame.display.update()
