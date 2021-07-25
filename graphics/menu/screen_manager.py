@@ -17,7 +17,7 @@ def run(screen: pygame.Surface, background=DARK_BLUE):
 
 
 def __run_open_screen(screen, background):
-    maps_screen = MapChoosing(screen, background) # to save computation time
+    maps_screen = MapChoosing(screen, background)  # to save computation time
     open_screen = OpenScreen(screen, background)
     path = open_screen.display()
     while True:
@@ -32,7 +32,6 @@ def __run_open_screen(screen, background):
 
 # SIMULATION PATH
 def __simulation_maps_screen(screen, background, maps_screen):
-
     conf = SimulationConfiguration()
     while True:
         res = maps_screen.display()
@@ -104,9 +103,10 @@ def __comparison_conf_screen(screen, background, conf):
         res = conf_screen.display()
         if res == Screens.BACK:
             return
-        cars_amount, path_min_len, _ = res
+        cars_amount, path_min_len, show_runs = res
         conf.cars_amount = cars_amount
         conf.path_min_len = path_min_len
+        conf.show_runs = show_runs
         __comparison_run_simulation(screen, background, conf)
 
 

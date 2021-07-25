@@ -21,9 +21,9 @@ class SimulationStatsScreen(StatsScreenParent):
                         Point(210, self.screen.get_height() // TITLES_SCREEN_PORTION + 120 - total_delta_y))
         self.draw_image(self.pil_image_to_surface(reporter_data.total_waiting_image),
                         Point(590, self.screen.get_height() // TITLES_SCREEN_PORTION + 120 - total_delta_y))
-        self.draw_image(self.pil_image_to_surface(reporter_data.cars_neg_acc_image),
+        self.draw_image(self.pil_image_to_surface(reporter_data.cars_dec_image),
                         Point(210, self.screen.get_height() // TITLES_SCREEN_PORTION + 420 - total_delta_y))
-        self.draw_image(self.pil_image_to_surface(reporter_data.total_neg_acc_image),
+        self.draw_image(self.pil_image_to_surface(reporter_data.total_dec_image),
                         Point(590, self.screen.get_height() // TITLES_SCREEN_PORTION + 420 - total_delta_y))
         # texts
         texts = [
@@ -32,10 +32,10 @@ class SimulationStatsScreen(StatsScreenParent):
             f"average car waiting time: {round(reporter_data.avg_car_waiting, 3)}",
             f"median car waiting time: {reporter_data.median_car_waiting}",
             f"variance car waiting time: {round(reporter_data.var_car_waiting, 3)}",
-            f"total negative acceleration time: {reporter_data.total_neg_acc_time}",
-            f"average car negative acceleration time: {round(reporter_data.avg_car_neg_acc, 3)}",
-            f"median car negative acceleration time: {reporter_data.median_car_neg_acc}",
-            f"variance car negative acceleration time: {round(reporter_data.var_car_neg_acc, 3)}"
+            f"total deceleration time: {reporter_data.total_dec_time}",
+            f"average car deceleration time: {round(reporter_data.avg_car_dec, 3)}",
+            f"median car deceleration time: {reporter_data.median_car_dec}",
+            f"variance car deceleration time: {round(reporter_data.var_car_dec, 3)}"
         ]
         for i, txt in enumerate(texts):
             self.write_text(txt, middle_x, 800 + i * 40 - total_delta_y, 30)
