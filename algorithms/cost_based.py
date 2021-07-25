@@ -7,10 +7,10 @@ from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 class CostBased(TLManager):
-    def __init__(self, junction, time_limit=np.inf, passing_carr_revenue=5, waiting_time_to_charge=10,
+    def __init__(self, junction, time_limit=np.inf, passing_car_revenue=10, waiting_time_to_charge=5,
                  waiting_penalty=5):
         super().__init__(junction, time_limit)
-        self.passing_car_revenue = passing_carr_revenue
+        self.passing_car_revenue = passing_car_revenue
         self.waiting_time_to_charge = waiting_time_to_charge
         self.waiting_penalty = waiting_penalty
 
