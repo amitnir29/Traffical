@@ -108,6 +108,8 @@ class ComparisonStatsScreen(StatsScreenParent):
             median_car_neg_acc += [data.median_car_neg_acc]
             var_car_neg_acc += [data.var_car_neg_acc]
 
+        plt.clf()
+
         for i, data in enumerate(datas):
             plt.plot(data.total_waiting_df['Iterations'], data.total_waiting_df['Total Waiting Time'],
                      label=algo_names[i])
