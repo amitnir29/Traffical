@@ -43,4 +43,4 @@ def generate_car(roads: List[IRoadSection], id,  p=DEF_P, min_len=MIN_LEN, with_
         return None
     if with_prints:
         print(path)
-    return Car(path, id)
+    return Car(path)
