@@ -46,3 +46,7 @@ class ITrafficLight(ABC):
     @abstractmethod
     def all_cars(self):
         pass
+
+    @abstractmethod
+    def reset_time(self):
+        pass

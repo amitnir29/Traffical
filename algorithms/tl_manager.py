@@ -39,3 +39,5 @@ class TLManager(ABC):
     def init_lights(self):
         if len(self._lights) > 0:
             self._lights[0].change_light(True)
+            for light in self._lights:
+                light.reset_time()

@@ -49,3 +49,14 @@ class ICar(ABC, metaclass=IterationTrackable):
         calculate the angle at which the cars should appear, counter clock wise.
         """
         pass
+
+    @abstractmethod
+    def car_with_same_path(self) -> ICar:
+        """
+        :return: a new car object that has the same path of self
+        """
+        pass
+
+    @abstractmethod
+    def enter_first_road(self):
+        pass

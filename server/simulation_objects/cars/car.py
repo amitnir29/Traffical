@@ -25,7 +25,7 @@ class Car(ICar):
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
     # TODO temp values
-    def __init__(self, path: List[IRoadSection], initial_distance: float = 0,
+    def __init__(self, path: List[IRoadSection],
                  max_speed: float = 30,
                  max_speed_change: float = 10):
         self.__max_speed = max_speed
@@ -37,12 +37,13 @@ class Car(ICar):
         # initial_distance and destination are distances from start of the source/target roads
         self.__path = path
         self.__next_road_idx = 0
+        self.__position = None
+        self.__current_road = None
+        self.__current_lane = None
 
         assert len(path) > 0
-        initial_road_section = path[0]
 
         self.__current_lane: ILane = None
-        self._enter_road_section(initial_road_section, initial_distance)
 
         self.__speed = max_speed  # TODO remove
 
@@ -54,9 +55,13 @@ class Car(ICar):
         res.__current_road = deepcopy(self.__current_road)
         res.__current_lane = deepcopy(self.__current_lane)
         res.__path = deepcopy(self.__path)
-        res.__current_lane._cars.appendleft(res)
+        if self.__current_lane is not None:
+            res.__current_lane._cars.appendleft(res)
 
         return res
+
+    def enter_first_road(self):
+        self._enter_road_section(self.__path[0])
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
         if self.__current_lane is not None:
@@ -328,7 +333,7 @@ class Car(ICar):
         self.__current_lane.remove_car(self)
 
     def __repr__(self):
-        return "Car:"+str([road for road in self.__path])
+        return f"Car: {self.position}"
 
     def get_angle(self):
         # the line from the middle of the start of the current part, to the middle of the end of the current part
@@ -354,3 +359,6 @@ class Car(ICar):
 
     def get_acceleration(self):
         return self.__acceleration
+
+    def car_with_same_path(self) -> ICar:
+        return Car(self.__path)
