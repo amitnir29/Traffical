@@ -188,7 +188,7 @@ class SimulationGraphics:
             road.draw(self.screen)
 
     def draw_cars(self, cars: List[DrawableCar]):
-        scale = 0.05
+        scale = 0.04 * (self.camera.width / self.camera.delta_x)
         for car in cars:
             car.draw(self.screen, scale)
 

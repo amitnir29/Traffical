@@ -12,7 +12,7 @@ from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 class MLAlgo(TLManager):
-    def __init__(self, junction, model_path="trained_model_30_40.pickle", time_limit=np.inf, depth=2, time_interval=40):
+    def __init__(self, junction, model_path="trained_model_10_40.pickle", time_limit=np.inf, depth=2, time_interval=40):
         super().__init__(junction, time_limit)
 
         with open(model_path, "rb") as model_file:
