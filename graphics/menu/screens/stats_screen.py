@@ -1,10 +1,6 @@
-from dataclasses import dataclass
-
 import pygame
 
-from graphics.menu.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
-from server.geometry.point import Point
-from server.statistics.stats_reporter import ReportScreenData
+from graphics.menu.screens.screen_activity import Screen
 
 
 class StatsScreen(Screen):
@@ -13,71 +9,14 @@ class StatsScreen(Screen):
         self.reporter = reporter
 
     def display(self):
-        report_data: ReportScreenData = self.reporter.report()
-        total_delta_y = 0
-        scroll_delta_y = 50
-        self.__draw_all_data(report_data, total_delta_y)
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        # click
-                        # finish
-                        return
-                    elif event.button == 4:
-                        # scroll up
-                        total_delta_y = max(0, total_delta_y - scroll_delta_y)
-                        self.__draw_all_data(report_data, total_delta_y)
-                    elif event.button == 5:
-                        # scroll down
-                        max_scroll = 500
-                        total_delta_y = min(max_scroll, total_delta_y + scroll_delta_y)
-                        self.__draw_all_data(report_data, total_delta_y)
-
-    def __draw_all_data(self, report_data, total_delta_y):
+        total_waiting_time, total_neg_acc_time, avg_car_waiting, median_car_waiting, var_car_waiting, \
+        car_num, total_image, cars_image = self.reporter.report()
         self.screen.fill(self.background)
-        middle_x = self.screen.get_width() // 2
-
-        # graphs
-        self.draw_image(self.pil_image_to_surface(report_data.cars_waiting_image),
-                        Point(210, self.screen.get_height() // TITLES_SCREEN_PORTION + 120 - total_delta_y))
-        self.draw_image(self.pil_image_to_surface(report_data.total_waiting_image),
-                        Point(590, self.screen.get_height() // TITLES_SCREEN_PORTION + 120 - total_delta_y))
-        self.draw_image(self.pil_image_to_surface(report_data.cars_neg_acc_image),
-                        Point(210, self.screen.get_height() // TITLES_SCREEN_PORTION + 420 - total_delta_y))
-        self.draw_image(self.pil_image_to_surface(report_data.total_neg_acc_image),
-                        Point(590, self.screen.get_height() // TITLES_SCREEN_PORTION + 420 - total_delta_y))
-        # texts
-        texts = [
-            f"number of cars: {report_data.car_num}",
-            f"total waiting time: {report_data.total_waiting_time}",
-            f"average car waiting time: {round(report_data.avg_car_waiting, 3)}",
-            f"median car waiting time: {report_data.median_car_waiting}",
-            f"variance car waiting time: {round(report_data.var_car_waiting, 3)}",
-            f"total negative acceleration time: {report_data.total_neg_acc_time}",
-            f"average car negative acceleration time: {round(report_data.avg_car_neg_acc, 3)}",
-            f"median car negative acceleration time: {report_data.median_car_neg_acc}",
-            f"variance car negative acceleration time: {round(report_data.var_car_neg_acc, 3)}"
-        ]
-        for i, txt in enumerate(texts):
-            self.write_text(txt, middle_x, 800 + i * 40 - total_delta_y, 30)
-        # write header and footer
-        pygame.draw.rect(self.screen, self.background, [0, 0, self.screen.get_width(),
-                                                        self.screen.get_height() // TITLES_SCREEN_PORTION])
-        self.write_text("Simulation Statistics", middle_x, self.screen.get_height() // 8, 60)
-        pygame.draw.rect(self.screen, self.background, [0, self.screen.get_height() - 100,
-                                                        self.screen.get_width(), 100])
-        self.write_text("click to go back", middle_x, self.screen.get_height() - 50, 40)
+        # write the text
+        self.write_text("This is the", self.screen.get_width() // 2, self.screen.get_height() // 4, 80)
+        self.write_text("Stats report screen", self.screen.get_width() // 2, self.screen.get_height() // 4 + 80, 80)
+        self.write_text("click to go back", self.screen.get_width() // 2, 3 * self.screen.get_height() // 4, 40)
         # Draws the surface object to the screen.
         pygame.display.update()
-
-    def pil_image_to_surface(self, pil_image):
-        return pygame.image.fromstring(pil_image.tobytes(), pil_image.size, pil_image.mode).convert()
-
-    def draw_image(self, image, center: Point, scale=0.5):
-        img = pygame.transform.rotozoom(image, 0, scale)
-        rect = img.get_rect()
-        rect.center = center.to_tuple()
-        self.screen.blit(img, rect)
+        # block until click
+        self.default_click_disappear()
