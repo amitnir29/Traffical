@@ -93,6 +93,8 @@ def run(i, roads, traffic_lights, algos_indices, junctions_with_lights, reportin
         light_algos[idx] = ReporterJunction(junctions_with_lights[idx], report_path, 10)
 
     cars = generate_cars(roads, cars_num, p=0.9, min_len=6, with_prints=False)
+    for car in cars:
+        car.enter_first_road()
 
     j = 0
     while len(cars) > 0:

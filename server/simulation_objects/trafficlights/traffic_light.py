@@ -1,5 +1,5 @@
 from typing import List
-from copy import deepcopy
+from copy import deepcopy, copy
 
 import server.simulation_objects.lanes.i_notified_lane as nlane
 import server.simulation_objects.trafficlights.i_traffic_light as itl
@@ -44,3 +44,6 @@ class TrafficLight(itl.ITrafficLight):
     @property
     def all_cars(self):
         return sum([[car for car in lane.get_all_cars()] for lane in self.lanes], [])
+
+    def reset_time(self):
+        self.__light_time = 0

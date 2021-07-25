@@ -57,7 +57,7 @@ class ComparisonData:
     lights: List[ITrafficLight]
     junctions: List[IJunction]
     cars: List[ICar]
-    lights_algos: List[List]
+    lights_algos: List[Type]
 
 
 class SimulationRunner(Screen):
@@ -83,6 +83,8 @@ class SimulationRunner(Screen):
         if cars is None:
             error_screen.display()
             exit()
+        for car in cars:
+            car.enter_first_road()
         # init traffic lights algorithm
         lights_algo = [conf.chosen_algo(junction) for junction in all_junctions]
         # init simulation's stats reporter
@@ -98,10 +100,8 @@ class SimulationRunner(Screen):
         if cars is None:
             error_screen.display()
             exit()
-        # init traffic lights algorithm
-        lights_algos = [[chosen_algo(junction) for junction in all_junctions] for chosen_algo in conf.chosen_algos]
         # init simulation's stats reporter
-        return ComparisonData(roads, traffic_lights, all_junctions, cars, lights_algos)
+        return ComparisonData(roads, traffic_lights, all_junctions, cars, conf.chosen_algos)
 
     def display(self) -> StatsReporter:
         self.data: SimulationData
@@ -139,29 +139,46 @@ class SimulationRunner(Screen):
 
     def run_silent(self) -> List[Tuple[str, StatsReporter]]:
         self.data: ComparisonData
+        gm = SimulationGraphics(self.screen, fps=10)
         # while the screen is not closed, draw the current state and calculate the next state
-        init_cars = deepcopy(self.data.cars)
         reporters: List[Tuple[str, StatsReporter]] = list()
-        for i, lights_algo in enumerate(self.data.lights_algos):
+        # init_cars = deepcopy(self.data.cars)
+        for i, lights_algo_class in enumerate(self.data.lights_algos):
             frames_counter = 0
-            curr_cars = deepcopy(init_cars)
+            curr_cars = self.__init_cars()
+            for car in curr_cars:
+                car.enter_first_road()
+            curr_lights = self.data.lights
             reporter = StatsReporter(curr_cars)
+            lights_algo = [lights_algo_class(junc) for junc in self.data.junctions]
             while len(curr_cars) > 0:
-                print(len(curr_cars))
-                self.__draw_comparison(i, lights_algo[0].__class__.__name__, frames_counter)
+                print(frames_counter, [light.can_pass for light in curr_lights])
+                # self.__draw_comparison(i, lights_algo_class.__name__, frames_counter)
+                gm.draw(self.data.roads, curr_lights, curr_cars, self.data.junctions, with_final_display=True)
                 frames_counter = frames_counter + 1
-                traffic_lights, curr_cars = next_iter(lights_algo, self.data.lights, curr_cars)
+                curr_lights, curr_cars = next_iter(lights_algo, curr_lights, curr_cars)
                 reporter.next_iter(curr_cars)
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit()
-            reporters.append((lights_algo[0].__class__.__name__, reporter))
+            reporters.append((lights_algo_class.__name__, reporter))
         return reporters
+
+    # def __init_traffic_lights(self):
+    #     lights = self.data.lights
+    #     for light in lights:
+    #         light.change_light(False)
+    #         light.reset_time()
+    #     return lights
+
+    def __init_cars(self):
+        return [car.car_with_same_path() for car in self.data.cars]
 
     def __draw_comparison(self, index, algo_name, frames_count):
         self.screen.fill(self.background)
         # write the text
-        self.write_text(f"Working on algo {index+1}", self.screen.get_width() // 2, self.screen.get_height() // 2 - 100,
+        self.write_text(f"Working on algo {index + 1}", self.screen.get_width() // 2,
+                        self.screen.get_height() // 2 - 100,
                         70)
         self.write_text(f"{algo_name}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 40, 140)
         self.write_text(f"iteration number: {frames_count}", self.screen.get_width() // 2,
