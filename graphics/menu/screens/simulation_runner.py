@@ -84,7 +84,7 @@ class SimulationRunner(Screen):
         cars = generate_cars(roads, conf.cars_amount, p=0.9, min_len=conf.path_min_len, with_prints=False)
         if cars is None:
             error_screen.display()
-            exit()
+            raise Exception("couldnt create cars path")
         for car in cars:
             car.enter_first_road()
         # init traffic lights algorithm
@@ -101,7 +101,7 @@ class SimulationRunner(Screen):
         cars = generate_cars(roads, conf.cars_amount, p=0.9, min_len=conf.path_min_len, with_prints=False)
         if cars is None:
             error_screen.display()
-            exit()
+            raise Exception("couldnt create cars path")
         # init simulation's stats reporter
         return ComparisonData(roads, traffic_lights, all_junctions, cars, conf.chosen_algos, conf.show_runs)
 
