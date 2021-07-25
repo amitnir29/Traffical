@@ -62,7 +62,7 @@ class ComparisonData:
 class SimulationRunner(Screen):
     def __init__(self, screen: pygame.Surface, conf: Union[SimulationConfiguration, ComparisonConfiguration]):
         super().__init__(screen)
-        error_screen = CarsError(screen, background=RED)
+        error_screen = CarsError(screen)
         if isinstance(conf, SimulationConfiguration):
             data = self.__create_simulation_data(conf, error_screen)
         elif isinstance(conf, ComparisonConfiguration):
@@ -150,11 +150,13 @@ class SimulationRunner(Screen):
             curr_lights = self.data.lights
             reporter = StatsReporter(curr_cars)
             lights_algo = [lights_algo_class(junc) for junc in self.data.junctions]
+            if not self.data.show_runs:
+                self.__draw_comparison_init(i, lights_algo_class.__name__)
             while len(curr_cars) > 0:
                 if self.data.show_runs:
                     gm.draw(self.data.roads, curr_lights, curr_cars, self.data.junctions, with_final_display=True)
                 else:
-                    self.__draw_comparison(i, lights_algo_class.__name__, frames_counter)
+                    self.__draw_comparison_update(frames_counter)
                 frames_counter = frames_counter + 1
                 curr_lights, curr_cars = next_iter(lights_algo, curr_lights, curr_cars)
                 reporter.next_iter(curr_cars)
@@ -167,17 +169,21 @@ class SimulationRunner(Screen):
     def __init_cars(self):
         return [car.car_with_same_path() for car in self.data.cars]
 
-    def __draw_comparison(self, index, algo_name, frames_count):
+    def __draw_comparison_init(self, index, algo_name):
         self.screen.fill(self.background)
         # write the text
         self.write_text(f"Working on algo {index + 1}", self.screen.get_width() // 2,
                         self.screen.get_height() // 2 - 100,
                         70)
         self.write_text(f"{algo_name}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 40, 140)
-        self.write_text(f"iteration number: {frames_count}", self.screen.get_width() // 2,
-                        self.screen.get_height() // 2 + 200,
-                        70)
         # Draws the surface object to the screen.
+        pygame.display.update()
+
+    def __draw_comparison_update(self, frames_count):
+        pygame.draw.rect(self.screen, self.background,
+                         [0, self.screen.get_height() // 2 + 120, self.screen.get_width(), 150])
+        self.write_text(f"iteration number: {frames_count}", self.screen.get_width() // 2,
+                        self.screen.get_height() // 2 + 200, 70)
         pygame.display.update()
 
     def __draw_others(self):

@@ -2,6 +2,7 @@ from typing import List, Union
 
 import pygame
 
+from gui.screens.helps_screens.algos_error import AlgosError
 from gui.simulation_graphics.colors import GREEN, WHITE
 from gui.utils.algos import Algo, all_algos_list
 from gui.utils.button import Button
@@ -14,14 +15,17 @@ HEIGHT_OF_ALGO_ROW = 50
 
 
 class AlgoChoosing(Screen):
-    def __init__(self, screen: pygame.Surface, background, number_of_algos):
+    def __init__(self, screen: pygame.Surface, background, simulation_mode: bool):
         super().__init__(screen, background)
         self.algos_list = self.__create_algos_list()
         self.help_screen = AlgosHelp(screen)
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
         self.back_button = Button(Point(screen.get_width() - 80, 0), 80,
                                   screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")
-        self.number_of_algos = number_of_algos
+        self.done_button = Button(Point(200, self.screen.get_height() - 100),
+                                  self.screen.get_width() - 400, 100, "CONTINUE")
+        self.algos_error = AlgosError(screen)
+        self.simulation_mode = simulation_mode
 
     def display(self) -> Union[List[Algo], Screens]:
         """
@@ -49,6 +53,14 @@ class AlgoChoosing(Screen):
                             continue
                         if self.back_button.click_inside(press_point):
                             return Screens.BACK
+                        if not self.simulation_mode:
+                            if self.done_button.click_inside(press_point):
+                                if len(pressed_algos) == 0:
+                                    self.algos_error.display()
+                                    self.__draw_algos_menu()
+                                    continue
+                                else:
+                                    return pressed_algos
                         if press_point.y < self.screen.get_height() // TITLES_SCREEN_PORTION:
                             continue
                         pressed_algo = self.__find_pressed_algo(press_point)
@@ -60,7 +72,7 @@ class AlgoChoosing(Screen):
                             else:
                                 pressed_algo.is_pressed = True
                                 pressed_algos.append(pressed_algo)
-                                if len(pressed_algos) == self.number_of_algos:
+                                if self.simulation_mode:
                                     for algo in pressed_algos:
                                         algo.is_pressed = False
                                     return pressed_algos
@@ -101,6 +113,8 @@ class AlgoChoosing(Screen):
                         self.screen.get_height() // 10, 40)
         self.help_button.draw(self)
         self.back_button.draw(self)
+        if not self.simulation_mode:
+            self.done_button.draw(self)
         # Draws the surface object to the screen.
         pygame.display.flip()
         pygame.display.update()

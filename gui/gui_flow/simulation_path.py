@@ -21,7 +21,7 @@ def __simulation_maps_screen(screen, background, maps_screen):
 
 
 def __simulation_algos_screen(screen, background, conf):
-    algos_screen = AlgoChoosing(screen, background, 1)
+    algos_screen = AlgoChoosing(screen, background, simulation_mode=True)
     while True:
         res = algos_screen.display()
         if res == Screens.BACK:

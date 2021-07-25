@@ -22,7 +22,7 @@ def __comparison_maps_screen(screen, background, maps_screen):
 
 
 def __comparison_algos_screen(screen, background, conf):
-    algos_screen = AlgoChoosing(screen, background, 2)
+    algos_screen = AlgoChoosing(screen, background, simulation_mode=False)
     while True:
         res = algos_screen.display()
         if res == Screens.BACK:
