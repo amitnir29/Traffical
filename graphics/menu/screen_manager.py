@@ -65,7 +65,10 @@ def __simulation_conf_screen(screen, background, conf):
 
 
 def __simulation_run_simulation(screen, background, conf):
-    sim_runner = SimulationRunner(screen, conf)
+    try:
+        sim_runner = SimulationRunner(screen, conf)
+    except:
+        return
     reporter = sim_runner.display()
     __simulation_finish_screen(screen, background, reporter)
 
@@ -111,7 +114,10 @@ def __comparison_conf_screen(screen, background, conf):
 
 
 def __comparison_run_simulation(screen, background, conf):
-    sim_runner = SimulationRunner(screen, conf)
+    try:
+        sim_runner = SimulationRunner(screen, conf)
+    except:
+        return
     reporters = sim_runner.run_silent()
     __comparison_finish_screen(screen, background, reporters)
 

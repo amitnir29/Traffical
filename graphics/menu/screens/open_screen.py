@@ -10,8 +10,8 @@ class OpenScreen(Screen):
 
     def __init__(self, screen, background):
         super().__init__(screen, background)
-        self.comparison_button = Button(Point(100, 500), 250, 200, "Algos comparison", font_size=20)
-        self.simulation_button = Button(Point(450, 500), 250, 200, "Simulation runner", font_size=20)
+        self.comparison_button = Button(Point(100, 500), 250, 200, "Algos comparison", font_size=25)
+        self.simulation_button = Button(Point(450, 500), 250, 200, "Simulation runner", font_size=25)
 
     def display(self) -> Screens:
         self.__draw()

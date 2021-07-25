@@ -15,6 +15,7 @@ from server.statistics.stats_reporter import ReportScreenData, ComparisonData
 @dataclass
 class ComparisonListData:
     algo_names: List[str]
+    iteration_number: List[int]
     total_waiting_time: List[int]
     total_dec_time: List[int]
     avg_car_waiting: List[float]
@@ -47,6 +48,7 @@ class ComparisonStatsScreen(StatsScreenParent):
         texts = list()
         for i in range(len(reporters_data.algo_names)):
             texts.append((f"algo name: {reporters_data.algo_names[i]}", [
+                f"number of iterstions: {reporters_data.iteration_number[i]}",
                 f"total waiting time: {reporters_data.total_waiting_time[i]}",
                 f"total deceleration time: {reporters_data.total_dec_time[i]}",
 
@@ -78,6 +80,7 @@ class ComparisonStatsScreen(StatsScreenParent):
         pygame.display.update()
 
     def _reporters_data(self):
+        iteration_number: List[int] = []
         datas: List[ComparisonData] = []
         algo_names: List[str] = []
         total_waiting_time: List[int] = []
@@ -97,6 +100,7 @@ class ComparisonStatsScreen(StatsScreenParent):
         for name, reporter in self.reporters:
             data: ComparisonData = reporter.report_compare()
             datas += [data]
+            iteration_number += [data.iteration_number]
             car_num = data.car_num
             algo_names += [name]
             total_waiting_time += [data.total_waiting_time]
@@ -140,9 +144,9 @@ class ComparisonStatsScreen(StatsScreenParent):
             median_car_waiting=median_car_waiting, var_car_waiting=var_car_waiting,
             car_num=car_num, total_waiting_image=total_waiting_image, avg_car_dec=avg_car_dec,
             median_car_dec=median_car_dec, var_car_dec=var_car_dec,
-            total_dec_image=total_dec_image
+            total_dec_image=total_dec_image, iteration_number=iteration_number
         )
 
     @property
     def max_scroll(self):
-        return 300+500*(len(self.reporters)-1)
+        return 300+530*(len(self.reporters)-1)

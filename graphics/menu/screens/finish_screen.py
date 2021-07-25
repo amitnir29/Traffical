@@ -33,7 +33,8 @@ class FinishScreen(Screen):
     def __draw_screen(self):
         self.screen.fill(self.background)
         # write the text
-        self.write_text("Goodbye!", self.screen.get_width() // 2, self.screen.get_height() // 2, 140)
+        self.write_text("Run finished", self.screen.get_width() // 2, self.screen.get_height() // 2 - 100, 100)
+        self.write_text("Click to exit", self.screen.get_width() // 2, self.screen.get_height() // 2 + 150, 40)
         self.stats_button.draw(self)
         # Draws the surface object to the screen.
         pygame.display.update()
