@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import math
 from copy import deepcopy
 from math import atan, degrees
 from typing import List, Optional, Tuple
@@ -13,6 +14,7 @@ from server.simulation_objects.cars.car_state import CarState
 from server.simulation_objects.cars.i_car import ICar
 from server.simulation_objects.cars.position import Position
 from server.simulation_objects.lanes.i_lane import ILane
+from server.simulation_objects.lanes.lane import Lane
 from server.simulation_objects.lanes.notified_lane import NotifiedLane
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
@@ -23,7 +25,7 @@ class Car(ICar):
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
     # TODO temp values
-    def __init__(self, path: List[IRoadSection], idx: int, initial_distance: float = 0,
+    def __init__(self, path: List[IRoadSection], idx: int,
                  max_speed: float = 30,
                  max_speed_change: float = 10):
         self.__max_speed = max_speed
@@ -36,11 +38,12 @@ class Car(ICar):
         self.__path = path
         self.__next_road_idx = 0
         self.__idx = idx
+        self.__position = None
+        self.__current_road = None
+        self.__current_lane = None
         assert len(path) > 0
-        initial_road_section = path[0]
 
         self.__current_lane: ILane = None
-        self._enter_road_section(initial_road_section, initial_distance)
 
         self.__speed = max_speed  # TODO remove
 
@@ -52,16 +55,25 @@ class Car(ICar):
         res.__current_road = deepcopy(self.__current_road)
         res.__current_lane = deepcopy(self.__current_lane)
         res.__path = deepcopy(self.__path)
-        res.__current_lane._cars.appendleft(res)
+        if self.__current_lane is not None:
+            res.__current_lane._cars.appendleft(res)
 
         return res
+
+    def enter_first_road(self):
+        self._enter_road_section(self.__path[0])
 
     def _enter_road_section(self, road: IRoadSection, initial_distance: float = 0):
         if self.__current_lane is not None:
             self.__current_lane.remove_car(self)
         self.__current_road = road
         self.__next_road_idx += 1
-        self.__current_lane = road.get_lane(road.get_most_right_lane_index())
+
+        # if self.__current_lane is None:
+        self.__current_lane = road.get_lane(self.__current_road.get_most_right_lane_index())
+        # else:
+        #     self.__current_lane = [lane for lane in self.__current_lane.goes_to_lanes if lane.road == road][0]
+
         self.__current_lane.add_car(self)
         self.__current_lane_part = 0
         # put on the initial_distance from start of the road
@@ -115,7 +127,9 @@ class Car(ICar):
             # The car already moved into the lane
             self.__state.letting_car_in = None
         if self.__state.driving:
-            if front_car is None:
+            if self._should_move_lane():
+                self.move_lane(self.lane_to_move_in())
+            elif front_car is None:
                 if red_light is None or red_light.can_pass:
                     # update speed s.t. we do not pass the max speed and the max acceleration.
                     self._full_gass()
@@ -141,13 +155,13 @@ class Car(ICar):
             else:
                 if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
                     # distance_to_keep = self.MIN_DISTANCE_TO_KEEP
-                    distance_to_keep = self.__speed
+                    distance_to_keep = self.__speed + self.__current_lane.lane_length() / 10
                     distance_to_move = Line(self.position, front_car.position).length() - distance_to_keep
 
                 else:
                     # TODO MIN DISTANCE depends on velocity
                     # distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
-                    distance_to_keep = self.__speed * 1.1
+                    distance_to_keep = self.__speed * 1.1 + self.__current_lane.lane_length() / 10
 
                     simulation_car = deepcopy(front_car)
                     simulation_car._advance(simulation_car.estimated_speed())
@@ -247,18 +261,69 @@ class Car(ICar):
         return dist_left
 
     def _should_move_lane(self) -> bool:
-        curr_road_index = self.__path.index(self.__current_road)
-        if curr_road_index == len(self.__path) - 1:
+        if self.__next_road_idx == len(self.__path):
             return False
-        next_road = self.__path[curr_road_index + 1]
-        return self.__current_lane.is_going_to_road(next_road)
+        next_road = self.__path[self.__next_road_idx]
+        return not self.__current_lane.is_going_to_road(next_road)
+
+    def move_lane(self, lane):
+        current_part_as_line = Lane.part_as_line(self.__current_lane.coordinates[self.__current_lane_part],
+                                                 self.__current_lane.coordinates[self.__current_lane_part + 1])
+        new_part_as_line = Lane.part_as_line(lane.coordinates[self.__current_lane_part],
+                                             lane.coordinates[self.__current_lane_part + 1])
+
+        self.__position = self._position_in_new_line(current_part_as_line, new_part_as_line)
+
+        self.__current_lane.remove_car(self)
+        self.__current_lane = lane
+
+        before_car: Car = lane.get_car_before(self)
+        lane.insert_before(self, before_car)
+
+        if before_car is not None:
+            before_car.wants_to_enter_lane(self)
+
+        self.__state.moving_lane = lane
 
     @property
     def current_part_in_lane(self):
         return self.__current_lane_part
 
-    def wants_to_enter_lane(self, car: ICar) -> None:
-        pass
+    def lane_to_move_in(self):
+        if self.__next_road_idx == len(self.__path):
+            return self.__current_lane
+
+        next_road = self.__path[self.__next_road_idx]
+        for lane in self.__current_road.lanes:
+            if lane.is_going_to_road(next_road):
+                return lane
+
+        raise Exception
+
+    def _position_in_new_line(self, current_line, line_to_move_to):
+        x_current, y_current = self.position.to_tuple()
+        m1 = current_line.m
+        m2 = line_to_move_to.m
+        b2 = line_to_move_to.b
+
+        if m2 != math.inf and m2 != -math.inf:
+            x_expected = (x_current / m1 + y_current - b2) / (m2 + 1 / m1)
+            y_expected = m2 * x_expected + b2
+        else:
+            x_expected = line_to_move_to.p1.x
+            y_expected = -x_expected / m1 + x_current / m1 + y_current
+
+        return Position(x_expected, y_expected)
+
+    def wants_to_enter_lane(self, car: Car) -> None:
+        # current_part_as_line = Lane.part_as_line(self.__current_lane.coordinates[self.__current_lane_part],
+        #                                          self.__current_lane.coordinates[self.__current_lane_part + 1])
+        # cars_line = Lane.part_as_line(*car.__current_lane.coordinates[car.__current_lane_part])
+        # expected_position = car._position_in_new_line(cars_line, current_part_as_line)
+        path_to_move = Line(self.position, car.position)
+
+        # TODO
+        self._stop(path_to_move.length())
 
     def has_arrived_destination(self):
         last_road = self.__path[-1]
@@ -268,7 +333,7 @@ class Car(ICar):
         self.__current_lane.remove_car(self)
 
     def __repr__(self):
-        return str([road for road in self.__path])
+        return f"Car: {self.position}"
 
     def get_angle(self):
         # the line from the middle of the start of the current part, to the middle of the end of the current part
@@ -297,3 +362,6 @@ class Car(ICar):
 
     def get_id(self):
         return self.__idx
+
+    def car_with_same_path(self) -> ICar:
+        return Car(self.__path)

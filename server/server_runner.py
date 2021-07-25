@@ -28,5 +28,5 @@ def __handle_lights(light_algos, traffic_lights):
     for tl in traffic_lights:
         tl.activate()
 
-    for light_algo in light_algos:
+    for i,light_algo in enumerate(light_algos):
         light_algo.manage_lights()

@@ -10,14 +10,14 @@ WITH_PRINTS = False
 MIN_LEN = 1
 
 
-def generate_cars(roads, amount: int, p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> List[ICar]:
+def generate_cars(roads, amount: int, p=DEF_P, min_len=MIN_LEN, with_prints=WITH_PRINTS) -> Optional[List[ICar]]:
     tries = 0
     cars = list()
     counter = 0
     while len(cars) < amount:
         if tries == 100 * amount:
-            raise Exception("looks like this is not going to work, change the parameters")
-        car = generate_car(roads, counter, p, min_len, with_prints)
+            return None
+        car = generate_car(roads, counter, p, min_len, with_prints)           
         if car is not None:
             cars.append(car)
             counter += 1

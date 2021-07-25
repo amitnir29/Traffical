@@ -37,14 +37,15 @@ class SimulationGraphics:
         self.cars_not_done = None
 
     def set_small_map(self, roads, width=100, height=100):
-        self.small_map = CornerSmallMap.from_server_obj((width, height, self.screen.get_width(), self.screen.get_height(),
-                                                         roads, self.screen, self.camera))
+        self.small_map = CornerSmallMap.from_server_obj(
+            (width, height, self.screen.get_width(), self.screen.get_height(),
+             roads, self.screen, self.camera))
 
     def draw(self, roads: List[IRoadSection], lights: List[ITrafficLight],
-             cars: List[ICar], junctions: List[IJunction]) -> bool:
+             cars: List[ICar], junctions: List[IJunction], events=None, with_final_display=True):
         self.screen.fill(self.background)
         # Check if window has been closed
-        self.handle_events()
+        self.handle_events(events)
         if not self.running:
             return False
         # Convert the data to drawables
@@ -60,11 +61,11 @@ class SimulationGraphics:
             self.small_map.draw(self.screen)
 
         # Display
-        pygame.display.flip()
-        pygame.display.update()
+        if with_final_display:
+            pygame.display.flip()
+            pygame.display.update()
         # Setting FPS
         self.clock.tick(self.fps)
-        return len(cars) > 0
 
     def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
                          cars: List[ICar], junctions: List[IJunction]) \
@@ -159,10 +160,13 @@ class SimulationGraphics:
         for point in all_points:
             point.normalize(norm_x, norm_y)
 
-    def handle_events(self):
-        for event in pygame.event.get():
+    def handle_events(self, events):
+        if events is None:
+            events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 self.running = False
+                exit()
             elif event.type == pygame.KEYDOWN:
                 # moving camera to the sides
                 if event.key == pygame.K_UP:

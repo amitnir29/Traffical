@@ -1,83 +1,169 @@
 import os
 from collections import defaultdict
 from copy import copy
+from dataclasses import dataclass
+from io import BytesIO
 
-from xlwt import Workbook
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# from xlwt import Workbook
+from PIL import Image
+from pandas import DataFrame
+
+MAGIC_ITER_NUMBER = 10
+
+
+@dataclass
+class ReportScreenData:
+    total_waiting_time: int
+    total_dec_time: int
+    avg_car_waiting: float
+    median_car_waiting: float
+    var_car_waiting: float
+    car_num: int
+    total_waiting_image: Image
+    cars_waiting_image: Image
+    avg_car_dec: float
+    median_car_dec: float
+    var_car_dec: float
+    total_dec_image: Image
+    cars_dec_image: Image
+
+
+@dataclass
+class ComparisonData:
+    total_waiting_time: int
+    total_dec_time: int
+    avg_car_waiting: float
+    median_car_waiting: float
+    var_car_waiting: float
+    car_num: int
+    total_waiting_df: DataFrame
+    cars_waiting_df: DataFrame
+    avg_car_dec: float
+    median_car_dec: float
+    var_car_dec: float
+    total_dec_df: DataFrame
+    cars_dec_df: DataFrame
 
 
 class StatsReporter:
-    def __init__(self, cars, junctions, file_name='server/statistics/stats/try.xls'):
+    def __init__(self, cars, file_name='server/statistics/stats/try.xls'):
         self.file_name = file_name
         self.cars = copy(cars)
-        # saves the number of iterations for each car
-        self.iterations = defaultdict(int)
-        # saves a list for each car of it's speeds (in each iteration)
-        self.speeds = defaultdict(dict)
-        # total time spent in all of the cars
-        self.total_iterations = 0
-        # time spent in 0 velocity
-        self.waiting_time = defaultdict(int)
-        self.total_waiting_time = 0
-        # time spent in negative acc
-        self.neg_acc_time = defaultdict(int)
+        self.car_num = len(cars)
+        self.sum_waiting_data = {'Iterations': [], 'Total Waiting Time': []}
+        self.waiting_data = {'Iteration': [], 'Waiting Cars': []}
+        self.sum_dec_data = {'Iterations': [], 'Total Dec Time': []}
+        self.dec_data = {'Iteration': [], 'Dec Cars': []}
         self.curr_iter = 0
-        self.positions = defaultdict(dict)
+        self.total_waiting_time = 0
+        self.total_dec_time = 0
 
     def next_iter(self, cars):
         self.curr_iter += 1
+        waiting_curr = 0
+        dec_curr = 0
         for car in cars:
-            if car not in self.cars:
-                self.cars.append(car)
-            self.iterations[car] += 1
-            self.speeds[car][self.curr_iter] = car.get_speed()
-            self.positions[car][self.curr_iter] = (car.position.x, car.position.y)
-            self.total_iterations += 1
             if car.get_speed() < 0.0001:
-                self.waiting_time[car] += 1
                 self.total_waiting_time += 1
+                waiting_curr += 1
             if car.get_acceleration() < 0:
-                self.neg_acc_time[car] += 1
+                self.total_dec_time += 1
+                dec_curr += 1
+        self.waiting_data['Iteration'] += [self.curr_iter]
+        self.waiting_data['Waiting Cars'] += [waiting_curr]
+        self.sum_waiting_data['Iterations'] += [self.curr_iter]
+        self.sum_waiting_data['Total Waiting Time'] += [self.total_waiting_time]
+        self.dec_data['Iteration'] += [self.curr_iter]
+        self.dec_data['Dec Cars'] += [dec_curr]
+        self.sum_dec_data['Iterations'] += [self.curr_iter]
+        self.sum_dec_data['Total Dec Time'] += [self.total_dec_time]
+
+    def report_compare(self):
+        # Waiting data
+        sum_waiting_df = pd.DataFrame(self.sum_waiting_data)
+        sum_waiting_df.reset_index(drop=True, inplace=True)
+        waiting_df = pd.DataFrame(self.waiting_data)
+        waiting_df.reset_index(drop=True, inplace=True)
+        avg_car_waiting = waiting_df['Waiting Cars'].mean()
+        median_car_waiting = waiting_df['Waiting Cars'].median()
+        var_car_waiting = waiting_df['Waiting Cars'].var()
+
+        # Deceleration data
+        sum_dec_df = pd.DataFrame(self.sum_dec_data)
+        sum_dec_df.reset_index(drop=True, inplace=True)
+        dec_df = pd.DataFrame(self.dec_data)
+        dec_df.reset_index(drop=True, inplace=True)
+        avg_car_dec = dec_df['Dec Cars'].mean()
+        median_car_dec = dec_df['Dec Cars'].median()
+        var_car_dec = dec_df['Dec Cars'].var()
+
+        return ComparisonData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
+                              avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
+                              var_car_waiting=var_car_waiting, car_num=self.car_num,
+                              total_waiting_df=sum_waiting_df, cars_waiting_df=waiting_df,
+                              avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
+                              var_car_dec=var_car_dec, total_dec_df=sum_dec_df,
+                              cars_dec_df=dec_df)
 
     def report(self):
-        if os.path.exists(self.file_name):
-            os.remove(self.file_name)
-        f = open(self.file_name, "x")
-        f.close()
-        wb = Workbook()
-        cars_sheet = wb.add_sheet('Cars Sheet')
-        speeds_sheet = wb.add_sheet('Speeds Sheet')
-        positions_sheet = wb.add_sheet('Positions Sheet')
-        general_sheet = wb.add_sheet('General Sheet')
+        # Waiting data
+        sum_waiting_df = pd.DataFrame(self.sum_waiting_data)
+        sum_waiting_df.reset_index(drop=True, inplace=True)
+        waiting_df = pd.DataFrame(self.waiting_data)
+        waiting_df.reset_index(drop=True, inplace=True)
+        plt.plot(sum_waiting_df['Iterations'], sum_waiting_df['Total Waiting Time'])
+        plt.xlabel('Iterations')
+        plt.ylabel('Total Waiting Time')
+        plt.title('Total waiting time of the entire simulation\nin each iteration')
+        temp_image_mem = BytesIO()
+        plt.savefig(temp_image_mem)
+        total_waiting_image = Image.open(temp_image_mem)
 
-        general_sheet.write(0, 0, 'Max Iteration')
-        general_sheet.write(0, 1, self.curr_iter)
-        general_sheet.write(1, 0, 'Total Iterations')
-        general_sheet.write(1, 1, self.total_iterations)
-        general_sheet.write(2, 0, 'Total Waiting Time')
-        general_sheet.write(2, 1, self.total_waiting_time)
+        plt.clf()
+        plt.scatter(waiting_df['Iteration'], waiting_df['Waiting Cars'])
+        plt.xlabel('Iteration')
+        plt.ylabel('Waiting Cars')
+        plt.title('Total Waiting cars in the entire simulation\nin each iteration')
+        temp_image_mem2 = BytesIO()
+        plt.savefig(temp_image_mem2)
+        cars_waiting_image = Image.open(temp_image_mem2)
+        avg_car_waiting = waiting_df['Waiting Cars'].mean()
+        median_car_waiting = waiting_df['Waiting Cars'].median()
+        var_car_waiting = waiting_df['Waiting Cars'].var()
 
-        cars_sheet.write(0, 1, 'Iterations')
-        cars_sheet.write(0, 2, 'Waiting Time')
-        cars_sheet.write(0, 3, 'Negative Acc Time')
+        # Deceleration data
+        plt.clf()
+        sum_dec_df = pd.DataFrame(self.sum_dec_data)
+        sum_dec_df.reset_index(drop=True, inplace=True)
+        dec_df = pd.DataFrame(self.dec_data)
+        dec_df.reset_index(drop=True, inplace=True)
+        plt.plot(sum_dec_df['Iterations'], sum_dec_df['Total Dec Time'])
+        plt.xlabel('Iterations')
+        plt.ylabel('Total Dec Time')
+        plt.title('Total deceleration time of the\n entire simulation in each iteration')
+        temp_image_mem3 = BytesIO()
+        plt.savefig(temp_image_mem3)
+        total_dec_image = Image.open(temp_image_mem3)
 
-        for i in range(self.curr_iter):
-            speeds_sheet.write(0, i+1, i+1)
-            positions_sheet.write(0, i+1, i+1)
+        plt.clf()
+        plt.scatter(dec_df['Iteration'], dec_df['Dec Cars'])
+        plt.xlabel('Iteration')
+        plt.ylabel('Dec Cars')
+        plt.title('Total deceleration cars in the\nentire simulation in each iteration')
+        temp_image_mem4 = BytesIO()
+        plt.savefig(temp_image_mem4)
+        cars_dec_image = Image.open(temp_image_mem4)
+        avg_car_dec = dec_df['Dec Cars'].mean()
+        median_car_dec = dec_df['Dec Cars'].median()
+        var_car_dec = dec_df['Dec Cars'].var()
 
-        for i, car in enumerate(self.cars):
-            cars_sheet.write(i+1, 0, str(car))
-            speeds_sheet.write(i+1, 0, str(car))
-            positions_sheet.write(i+1, 0, str(car))
-            cars_sheet.write(i+1, 1, self.iterations[car])
-            cars_sheet.write(i+1, 2, self.waiting_time[car])
-            cars_sheet.write(i+1, 3, self.neg_acc_time[car])
-            speed_dict = self.speeds[car]
-            position_dict = self.positions[car]
-            for iter, speed in speed_dict.items():
-                speeds_sheet.write(i+1, iter, speed)
-            for iter, pos in position_dict.items():
-                positions_sheet.write(i+1, iter, str(pos))
-
-
-        wb.save(self.file_name)
-        # return [car.iteration for car in self.cars], sum(car.iteration for car in self.cars)
+        return ReportScreenData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
+                                avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
+                                var_car_waiting=var_car_waiting, car_num=self.car_num,
+                                total_waiting_image=total_waiting_image, cars_waiting_image=cars_waiting_image,
+                                avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
+                                var_car_dec=var_car_dec, total_dec_image=total_dec_image,
+                                cars_dec_image=cars_dec_image)

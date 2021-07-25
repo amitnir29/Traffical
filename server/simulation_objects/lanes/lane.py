@@ -52,6 +52,16 @@ class Lane(il.ILane):
         self._comes_from_junction = junction
 
     @staticmethod
+    def part_as_line(start: Tuple[Point, Point], end: Tuple[Point, Point]):
+        # calcualte the length of the line between the middle points of the start and end lines
+        start_line = Line(start[0], start[1])
+        end_line = Line(end[0], end[1])
+        start_middle = start_line.middle()
+        end_middle = end_line.middle()
+        main_line = Line(start_middle, end_middle)
+        return main_line
+
+    @staticmethod
     def _calculate_part_length(start: Tuple[Point, Point], end: Tuple[Point, Point]):
         """
         calculate the lengtth of a lane part
@@ -59,12 +69,7 @@ class Lane(il.ILane):
         :param end: the pair of points of the end
         :return: the length of the part
         """
-        # calcualte the length of the line between the middle points of the start and end lines
-        start_line = Line(start[0], start[1])
-        end_line = Line(end[0], end[1])
-        start_middle = start_line.middle()
-        end_middle = end_line.middle()
-        main_line = Line(start_middle, end_middle)
+        main_line = Lane.part_as_line(start, end)
         return main_line.length()
 
     def lane_length(self) -> float:
@@ -119,3 +124,16 @@ class Lane(il.ILane):
 
     def get_all_cars(self):
         return self._cars
+
+    def get_car_before(self, car):
+        position_in_line = self.car_position_in_lane(car)
+
+        for lane_car in reversed(self._cars):
+            if self.car_position_in_lane(lane_car) < position_in_line:
+                return lane_car
+
+        return None
+
+    def insert_before(self, car_to_insert, before_car):
+        index_of_before_car = self._cars.index(before_car) if before_car is not None else -1
+        self._cars.insert(index_of_before_car + 1, car_to_insert)

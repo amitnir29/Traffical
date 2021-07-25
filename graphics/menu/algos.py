@@ -16,3 +16,4 @@ class Algo:
     y: int
     width: int
     height: int
+    is_pressed: bool = False

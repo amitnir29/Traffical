@@ -2,7 +2,7 @@ import os
 from typing import List
 
 from db.load_map_data import get_db_road_sections
-from graphics.menu.menu_small_map import MenuSmallMap
+from graphics.menu.small_maps.menu_small_map import MenuSmallMap
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.roadsections.road_section import RoadSection
 

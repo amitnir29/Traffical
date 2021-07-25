@@ -7,15 +7,15 @@ from server.geometry.point import Point
 
 import server.simulation_objects.lanes.i_lane as il
 import server.simulation_objects.lanes.notified_lane as nlane
-import server.simulation_objects.lanes.unnotified_lane as unlane
 import server.simulation_objects.roadsections.i_road_section as irs
+from server.simulation_objects.lanes.lane import Lane
 
 
 class RoadSection(irs.IRoadSection):
 
     def __init__(self, road_data: RoadData, notified_lanes_nums: Set[int]):
         # data from road_data
-        self.__id: int = road_data.idnum
+        self._id: int = road_data.idnum
         self.__coordinates: List[Tuple[Point, Point]] = [deepcopy(p) for p in road_data.coordinates]
         self.__number_of_lanes: int = road_data.num_lanes
         self.__max_speed: float = road_data.max_speed
@@ -27,7 +27,7 @@ class RoadSection(irs.IRoadSection):
             roads += [goes_to_lane.road for goes_to_lane in ll.goes_to_lanes]
         roads_dict = dict()
         for road in roads:
-            roads_dict[road.__id] = road
+            roads_dict[road._id] = road
         return list(roads_dict.values())
 
     @property
@@ -53,7 +53,7 @@ class RoadSection(irs.IRoadSection):
             if i in notified_lanes_nums:
                 lanes.append(nlane.NotifiedLane(self, lanes_coordinates[i]))
             else:
-                lanes.append(unlane.UnnotifiedLane(self, lanes_coordinates[i]))
+                lanes.append(Lane(self, lanes_coordinates[i]))
         return lanes
 
     def get_lane(self, index: int) -> il.ILane:
@@ -95,4 +95,7 @@ class RoadSection(irs.IRoadSection):
         return lines
 
     def __repr__(self):
-        return str(self.__id)
+        return str(self._id)
+
+    def __eq__(self, other):
+        return self._id == other._id

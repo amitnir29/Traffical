@@ -52,4 +52,14 @@ class ICar(ABC, metaclass=IterationTrackable):
 
     @abstractmethod
     def get_id(self):
+		pass
+
+    def car_with_same_path(self) -> ICar:
+        """
+        :return: a new car object that has the same path of self
+        """
+        pass
+
+    @abstractmethod
+    def enter_first_road(self):
         pass
