@@ -42,7 +42,7 @@ class Car(ICar):
         self.__current_lane = None
         assert len(path) > 0
 
-        self.__speed = max_speed  # TODO remove
+        self.__speed = 0
 
     def __deepcopy__(self, memodict={}):
         res = Car.__new__(Car)
@@ -75,7 +75,6 @@ class Car(ICar):
         self.__current_lane_part = 0
         # put on the initial_distance from start of the road
         assert initial_distance <= self.__current_lane.lane_length()
-        # TODO change, it is currently on initial_distance=0:
         self.__position = Line(*self.__current_lane.coordinates[0]).middle()
         self._advance(initial_distance)
 
@@ -151,13 +150,10 @@ class Car(ICar):
                         self._stop(distance_to_stop)
             else:
                 if self._is_car_done_this_iter(front_car) and (red_light is None or red_light.can_pass):
-                    # distance_to_keep = self.MIN_DISTANCE_TO_KEEP
                     distance_to_keep = self.__speed + self.__current_lane.lane_length() / 10
                     distance_to_move = Line(self.position, front_car.position).length() - distance_to_keep
 
                 else:
-                    # TODO MIN DISTANCE depends on velocity
-                    # distance_to_keep = self.MIN_DISTANCE_TO_KEEP + self.MIN_DISTANCE_CONFIDENCE_INTERVAL
                     distance_to_keep = self.__speed * 1.1 + self.__current_lane.lane_length() / 10
 
                     simulation_car = deepcopy(front_car)
@@ -206,7 +202,6 @@ class Car(ICar):
         should also depend on lane switching.
         :return: closest red light that affects the car.
         """
-        # TODO improve
         if isinstance(self.__current_lane, NotifiedLane):
             return self.__current_lane.traffic_light
         return None
@@ -324,7 +319,6 @@ class Car(ICar):
         # expected_position = car._position_in_new_line(cars_line, current_part_as_line)
         path_to_move = Line(self.position, car.position)
 
-        # TODO
         self._stop(path_to_move.length())
 
     def has_arrived_destination(self):
