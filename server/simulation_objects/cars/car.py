@@ -23,7 +23,7 @@ class Car(ICar):
     MIN_DISTANCE_CONFIDENCE_INTERVAL = ...  # Todo
 
     # TODO temp values
-    def __init__(self, path: List[IRoadSection], initial_distance: float = 0,
+    def __init__(self, path: List[IRoadSection], idx: int, initial_distance: float = 0,
                  max_speed: float = 30,
                  max_speed_change: float = 10):
         self.__max_speed = max_speed
@@ -35,7 +35,7 @@ class Car(ICar):
         # initial_distance and destination are distances from start of the source/target roads
         self.__path = path
         self.__next_road_idx = 0
-
+        self.__idx = idx
         assert len(path) > 0
         initial_road_section = path[0]
 
@@ -294,3 +294,6 @@ class Car(ICar):
 
     def get_acceleration(self):
         return self.__acceleration
+
+    def get_id(self):
+        return self.__idx

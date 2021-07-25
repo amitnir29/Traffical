@@ -16,6 +16,9 @@ from server.geometry.point import Point
 class DrawableCar(Drawable):
     center: Point
     angle: float
+    reached_target = False
+    is_done = False
+    fade_range = 255
     path: str = "graphics/images/car.png"
 
     def draw(self, screen, scale):
@@ -23,6 +26,11 @@ class DrawableCar(Drawable):
         img = pygame.transform.rotozoom(car_img, self.angle, scale)
         rect = img.get_rect()
         rect.center = self.center.to_tuple()
+        img.set_alpha(self.fade_range)
+        if self.reached_target:
+            self.fade_range -= 50
+        if self.fade_range <= 0:
+            self.is_done = True
         screen.blit(img, rect)
 
     @staticmethod

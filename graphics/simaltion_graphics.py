@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 import pygame.font
-
+from copy import deepcopy
 from graphics.camera import Camera
 from graphics.colors import TURQUOISE
 from graphics.drawables.car import DrawableCar
@@ -15,7 +15,8 @@ from server.geometry.point import Point
 from server.simulation_objects.junctions.i_junction import IJunction
 from server.simulation_objects.roadsections.i_road_section import IRoadSection
 from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLight
-
+from copy import *
+from multiprocessing.dummy import Pool as ThreadPool
 
 class SimulationGraphics:
 
@@ -27,6 +28,13 @@ class SimulationGraphics:
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.small_map: CornerSmallMap = None
+        self.current_roads = None
+        self.current_junctions = None
+        self.current_lights = None
+        self.current_cars = None
+        self.cars_id = None
+        self.cars_done = None
+        self.cars_not_done = None
 
     def set_small_map(self, roads, width=100, height=100):
         self.small_map = CornerSmallMap.from_server_obj((width, height, self.screen.get_width(), self.screen.get_height(),
@@ -61,23 +69,62 @@ class SimulationGraphics:
     def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
                          cars: List[ICar], junctions: List[IJunction]) \
             -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar], List[DrawableJunction]]:
-        roads = [DrawableRoad.from_server_obj(road) for road in roads]
-        lights = [DrawableLight.from_server_obj(tl) for tl in lights]
-        cars = [DrawableCar.from_server_obj(car) for car in cars]
-        junctions = [DrawableJunction.from_server_obj(junc) for junc in junctions]
-        self.normalize_data(roads, lights, cars, junctions)
-        return roads, lights, cars, junctions
+        # initialize all values
+        if self.current_roads is None:
+            self.current_roads = [DrawableRoad.from_server_obj(road) for road in roads]
+            self.current_lights = [DrawableLight.from_server_obj(tl) for tl in lights]
+            self.current_cars = [DrawableCar.from_server_obj(car) for car in cars]
+            self.current_junctions = [DrawableJunction.from_server_obj(junc) for junc in junctions]
+            self.cars_id = list()
+            for car in cars:
+                self.cars_id.append(car.get_id())
+            self.cars_done = list()
+            self.cars_not_done = list(range(len(cars)))
+
+        self.current_roads = [DrawableRoad.from_server_obj(road) for road in roads]
+        self.current_junctions = [DrawableJunction.from_server_obj(junc) for junc in junctions]
+        if len(cars) != len(self.cars_not_done):
+            flag = False
+            for j in self.cars_not_done:
+                for i in range(len(cars)):
+                    if self.cars_id[j] == cars[i].get_id():
+                        flag = True
+                if not flag:
+                    self.cars_done.append(j)
+                    self.cars_not_done.remove(j)
+                    self.current_cars[j].reached_target = True
+                flag = False
+        counter = 0
+        for i in self.cars_not_done:
+            self.current_cars[i].center = deepcopy(cars[counter].position)
+            self.current_cars[i].angle = cars[counter].get_angle()
+            counter += 1
+        for i in range(len(lights)):
+            self.current_lights[i].is_green = lights[i].can_pass
+            self.current_lights[i].center = deepcopy(lights[i].coordinate)
+        self.normalize_data(self.current_roads, self.current_lights, self.current_cars, self.current_junctions)
+        # Close the pool and wait for the work to finish
+        # pool1.close()
+        # pool2.close()
+        # pool3.close()
+        # pool4.close()
+        # pool1.join()
+        # pool2.join()
+        # pool3.join()
+        # pool4.join()
+        return self.current_roads, self.current_lights, self.current_cars, self.current_junctions
 
     def normalize_data(self, roads: List[DrawableRoad], lights: List[DrawableLight],
                        cars: List[DrawableCar], junctions: List[DrawableJunction]):
         all_points: List[Point] = list()
+        points2: List[Point] = list()
         # get all points of the simulation
         for road in roads:
             all_points += road.get_all_points()
         for light in lights:
-            all_points += light.get_all_points()
+            points2 += light.get_all_points()
         for car in cars:
-            all_points += car.get_all_points()
+            points2 += car.get_all_points()
         for junc in junctions:
             all_points += junc.get_all_points()
         # get min and max x,y values of the whole map
@@ -87,6 +134,7 @@ class SimulationGraphics:
         min_y = min(y_values)
         max_x = max(x_values)
         max_y = max(y_values)
+        all_points = all_points + points2
         """
         now, create the normalization function based on the found min/max x/y, and self.camera
         we want linear realtions, s.t. the ratio between the caemra's min_x/max_x and width (same for y and height),
@@ -115,14 +163,8 @@ class SimulationGraphics:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:
-                    # scroll up
-                    self.camera.zoom_in(*pygame.mouse.get_pos())
-                elif event.button == 5:
-                    # scroll down
-                    self.camera.zoom_out(*pygame.mouse.get_pos())
             elif event.type == pygame.KEYDOWN:
+                # moving camera to the sides
                 if event.key == pygame.K_UP:
                     self.camera.up()
                 if event.key == pygame.K_DOWN:
@@ -131,6 +173,11 @@ class SimulationGraphics:
                     self.camera.right()
                 if event.key == pygame.K_LEFT:
                     self.camera.left()
+                # zooming in and out
+                if event.key == pygame.K_z:
+                    self.camera.zoom_in(*pygame.mouse.get_pos())
+                if event.key == pygame.K_x:
+                    self.camera.zoom_out(*pygame.mouse.get_pos())
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
