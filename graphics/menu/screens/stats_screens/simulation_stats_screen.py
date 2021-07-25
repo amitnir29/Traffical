@@ -13,7 +13,7 @@ class SimulationStatsScreen(StatsScreenParent):
         super().__init__(screen, background)
         self.reporter = reporter
 
-    def _draw_all_data(self, total_delta_y, reporter_data):
+    def _draw_all_data(self, total_delta_y, reporter_data:ReportScreenData):
         self.screen.fill(self.background)
         middle_x = self.screen.get_width() // 2
         # graphs
@@ -27,6 +27,7 @@ class SimulationStatsScreen(StatsScreenParent):
                         Point(590, self.screen.get_height() // TITLES_SCREEN_PORTION + 420 - total_delta_y))
         # texts
         texts = [
+            f"number of iterations: {reporter_data.iteration_number}",
             f"number of cars: {reporter_data.car_num}",
             f"total waiting time: {reporter_data.total_waiting_time}",
             f"average car waiting time: {round(reporter_data.avg_car_waiting, 3)}",
@@ -54,5 +55,5 @@ class SimulationStatsScreen(StatsScreenParent):
 
     @property
     def max_scroll(self):
-        return 500
+        return 530
 
