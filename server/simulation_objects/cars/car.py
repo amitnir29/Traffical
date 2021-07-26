@@ -312,10 +312,6 @@ class Car(ICar):
         return Position(x_expected, y_expected)
 
     def wants_to_enter_lane(self, car: Car) -> None:
-        # current_part_as_line = Lane.part_as_line(self.__current_lane.coordinates[self.__current_lane_part],
-        #                                          self.__current_lane.coordinates[self.__current_lane_part + 1])
-        # cars_line = Lane.part_as_line(*car.__current_lane.coordinates[car.__current_lane_part])
-        # expected_position = car._position_in_new_line(cars_line, current_part_as_line)
         path_to_move = Line(self.position, car.position)
 
         self._stop(path_to_move.length())
