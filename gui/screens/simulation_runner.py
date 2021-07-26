@@ -144,6 +144,7 @@ class SimulationRunner(Screen):
         # while the screen is not closed, draw the current state and calculate the next state
         reporters: List[Tuple[str, StatsReporter]] = list()
         for i, lights_algo_class in enumerate(self.data.lights_algos):
+            self.__draw_loading_screen(i,lights_algo_class.__name__)
             if self.data.show_runs:
                 gm = SimulationGraphics(self.screen, title=lights_algo_class.__name__)
             frames_counter = 0
@@ -187,6 +188,15 @@ class SimulationRunner(Screen):
                          [0, self.screen.get_height() // 2 + 120, self.screen.get_width(), 150])
         self.write_text(f"iteration number: {frames_count}", self.screen.get_width() // 2,
                         self.screen.get_height() // 2 + 200, 70)
+        pygame.display.update()
+
+    def __draw_loading_screen(self, index, algo_name):
+        self.screen.fill(self.background)
+        # write the text
+        self.write_text(f"Loading algo {index + 1}", self.screen.get_width() // 2,
+                        self.screen.get_height() // 2 - 100, 70)
+        self.write_text(f"{algo_name}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 40, 140)
+        # Draws the surface object to the screen.
         pygame.display.update()
 
     def __draw_others(self):
