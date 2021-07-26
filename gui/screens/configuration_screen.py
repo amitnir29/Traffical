@@ -17,7 +17,7 @@ SLIDERS_START = 500
 class ConfigurationScreen(Screen):
     def __init__(self, screen: pygame.Surface, background, simulation_mode: bool):
         super().__init__(screen, background)
-        self.help_screen = ConfigurationHelp(screen)
+        self.help_screen = ConfigurationHelp(screen, simulation_mode)
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
         self.back_button = Button(Point(screen.get_width() - 80, 0, ), 80,
                                   screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")
