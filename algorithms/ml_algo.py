@@ -5,6 +5,7 @@ import pandas as pd
 
 from algorithms.algo_to_index import index_to_algo, algos_list_to_num
 from algorithms.cost_based import CostBased
+from algorithms.most_crowded import MCAlgo
 from algorithms.naive import NaiveAlgo
 from algorithms.tl_manager import TLManager
 
@@ -39,7 +40,7 @@ class MLAlgo(TLManager):
 
         return traff
 
-    def _predict(self):
+    def _change_algo(self):
         def padd(arr):
             return arr + [0] * (4 - len(arr))
 
@@ -62,13 +63,10 @@ class MLAlgo(TLManager):
 
         self.running_algo: TLManager = index_to_algo.get(self.model.predict(predict_input)[0], self.running_algo)
 
-        return self.running_algo(self._junction)._manage_lights()
 
     def _manage_lights(self):
         if self._time_count % self.time_interval == 0:
-            res = self._predict()
-        else:
-            res = self._current_light
+            self._change_algo()
 
         self._time_count += 1
-        return res
+        return self.running_algo(self._junction)._manage_lights()
