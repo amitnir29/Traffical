@@ -41,7 +41,10 @@ class SimulationStatsScreen(StatsScreenParent):
             f"total deceleration time: {reporter_data.total_dec_time}",
             f"average cars decelerating time per iteration: {round(reporter_data.avg_car_dec, 3)}",
             f"median cars decelerating time per iteration: {reporter_data.median_car_dec}",
-            f"variance cars decelerating time per iteration: {round(reporter_data.var_car_dec, 3)}"
+            f"variance cars decelerating time per iteration: {round(reporter_data.var_car_dec, 3)}",
+            f"average waiting of cars per iteration: {round(reporter_data.waiting_per_car_avg, 3)}",
+            f"median waiting of cars per iteration: {reporter_data.waiting_per_car_median}",
+            f"variance waiting of cars per iteration: {round(reporter_data.waiting_per_car_variance, 3)}"
         ]
         for i, txt in enumerate(texts):
             self.write_text(txt, middle_x, 800 + i * 40 - total_delta_y, 30)
@@ -63,7 +66,7 @@ class SimulationStatsScreen(StatsScreenParent):
 
     @property
     def max_scroll(self):
-        return 530
+        return 650
 
     def _save_to_file(self):
         path = self._reporters_data().save_to_file()

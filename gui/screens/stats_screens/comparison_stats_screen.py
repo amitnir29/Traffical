@@ -44,13 +44,17 @@ class ComparisonStatsScreen(StatsScreenParent):
 
                 f"average cars decelerating per iteration: {round(reporters_data.avg_car_dec[i], 3)}",
                 f"median cars decelerating per iteration: {reporters_data.median_car_dec[i]}",
-                f"variance cars decelerating per iteration: {round(reporters_data.var_car_dec[i], 3)}"
+                f"variance cars decelerating per iteration: {round(reporters_data.var_car_dec[i], 3)}",
+
+                f"average waiting of cars per iteration: {round(reporters_data.waiting_per_car_avg[i], 3)}",
+                f"median waiting of cars per iteration: {reporters_data.waiting_per_car_median[i]}",
+                f"variance waiting of cars per iteration: {round(reporters_data.waiting_per_car_variance[i], 3)}"
             ]))
 
         self.write_text(f"number of cars: {reporters_data.car_num}", middle_x, 500 - total_delta_y, 40)
         for i, pair in enumerate(texts):
             head, data_lines = pair
-            start_i = 600 + i * 500 - total_delta_y
+            start_i = 600 + i * 600 - total_delta_y
             self.write_text(head, middle_x, start_i, 40)
             for j, data_line in enumerate(data_lines):
                 self.write_text(data_line, middle_x, start_i + 50 + j * 40, 30)
@@ -79,27 +83,31 @@ class ComparisonStatsScreen(StatsScreenParent):
         var_car_waiting: List[float] = []
         car_num: int
         total_waiting_df: Image
-        # cars_waiting_df: Image
         avg_car_dec: List[float] = []
         median_car_dec: List[float] = []
         var_car_dec: List[float] = []
         total_dec_df: Image
-        # cars_dec_df: Image
+        cars_waiting_avg: List[float] = []
+        cars_waiting_med: List[float] = []
+        cars_waiting_var: List[float] = []
 
         for name, reporter in self.reporters:
             data: ReportComparisonData = reporter.report_compare()
-            datas += [data]
-            iteration_number += [data.iteration_number]
+            datas.append(data)
+            iteration_number.append(data.iteration_number)
             car_num = data.car_num
-            algo_names += [name]
-            total_waiting_time += [data.total_waiting_time]
-            total_dec_time += [data.total_dec_time]
-            avg_car_waiting += [data.avg_car_waiting]
-            median_car_waiting += [data.median_car_waiting]
-            var_car_waiting += [data.var_car_waiting]
-            avg_car_dec += [data.avg_car_dec]
-            median_car_dec += [data.median_car_dec]
-            var_car_dec += [data.var_car_dec]
+            algo_names.append(name)
+            total_waiting_time.append(data.total_waiting_time)
+            total_dec_time.append(data.total_dec_time)
+            avg_car_waiting.append(data.avg_car_waiting)
+            median_car_waiting.append(data.median_car_waiting)
+            var_car_waiting.append(data.var_car_waiting)
+            avg_car_dec.append(data.avg_car_dec)
+            median_car_dec.append(data.median_car_dec)
+            var_car_dec.append(data.var_car_dec)
+            cars_waiting_avg.append(data.waiting_per_car_avg)
+            cars_waiting_med.append(data.waiting_per_car_median)
+            cars_waiting_var.append(data.waiting_per_car_variance)
 
         plt.clf()
 
@@ -133,12 +141,13 @@ class ComparisonStatsScreen(StatsScreenParent):
             median_car_waiting=median_car_waiting, var_car_waiting=var_car_waiting,
             car_num=car_num, total_waiting_image=total_waiting_image, avg_car_dec=avg_car_dec,
             median_car_dec=median_car_dec, var_car_dec=var_car_dec,
-            total_dec_image=total_dec_image, iteration_number=iteration_number
+            total_dec_image=total_dec_image, iteration_number=iteration_number, waiting_per_car_avg=cars_waiting_avg,
+            waiting_per_car_median=cars_waiting_med, waiting_per_car_variance=cars_waiting_var
         )
 
     @property
     def max_scroll(self):
-        return 300 + 530 * (len(self.reporters) - 1)
+        return 400 + 650 * (len(self.reporters) - 1)
 
     def _save_to_file(self):
         path = self._reporters_data().save_to_file()

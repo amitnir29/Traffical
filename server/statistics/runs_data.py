@@ -28,7 +28,9 @@ class ReportSimulationData:
     var_car_dec: float
     total_dec_image: Image
     cars_dec_image: Image
-    cars_waiting_time: Dict[int, int]
+    waiting_per_car_avg: float
+    waiting_per_car_median: float
+    waiting_per_car_variance: float
     inner_path = "/simulation"
 
     def save_to_file(self) -> Optional[str]:
@@ -43,7 +45,10 @@ class ReportSimulationData:
             "Number of Cars": self.car_num,
             "Average Deceleration Time": self.avg_car_dec,
             "Median Deceleration Time": self.median_car_dec,
-            "Variance Deceleration Time": self.var_car_dec
+            "Variance Deceleration Time": self.var_car_dec,
+            "Average Waiting Per Car": self.waiting_per_car_avg,
+            "Median Waiting Per Car": self.waiting_per_car_median,
+            "Variance Waiting Per Car": self.waiting_per_car_variance
         }
         df = pd.DataFrame(data, index=[0])
         create_required_dirs(self.inner_path)
@@ -75,7 +80,9 @@ class ReportComparisonData:
     var_car_dec: float
     total_dec_df: DataFrame
     cars_dec_df: DataFrame
-    cars_waiting_time: Dict[int, int]
+    waiting_per_car_avg: float
+    waiting_per_car_median: float
+    waiting_per_car_variance: float
 
 
 @dataclass
@@ -93,6 +100,9 @@ class ComparisonListData:
     median_car_dec: List[float]
     var_car_dec: List[float]
     total_dec_image: Image
+    waiting_per_car_avg: List[float]
+    waiting_per_car_median: List[float]
+    waiting_per_car_variance: List[float]
     inner_path = "/comparison"
 
     def save_to_file(self) -> Optional[str]:
@@ -103,7 +113,9 @@ class ComparisonListData:
                 "Variance Cars Waiting Per Iteration": self.var_car_waiting,
                 "Number of Cars": [self.car_num] * len(self.algo_names),
                 "Average Car Deceleration": self.avg_car_dec, "Median Car Deceleration": self.median_car_dec,
-                "Variance Car Deceleration": self.var_car_dec}
+                "Variance Car Deceleration": self.var_car_dec, "Average Waiting Per Car": self.waiting_per_car_avg,
+                "Median Waiting Per Car": self.waiting_per_car_median,
+                "Variance Waiting Per Car": self.waiting_per_car_variance}
         df = pd.DataFrame(data, index=list(range(len(self.algo_names))))
         create_required_dirs(self.inner_path)
         now = datetime.now()

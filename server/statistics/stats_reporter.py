@@ -3,7 +3,8 @@ from io import BytesIO
 
 import matplotlib.pyplot as plt
 import pandas as pd
-# from xlwt import Workbook
+import numpy as np
+
 from PIL import Image
 
 from server.statistics.runs_data import ReportComparisonData, ReportSimulationData
@@ -67,14 +68,21 @@ class StatsReporter:
         median_car_dec = dec_df['Dec Cars'].median()
         var_car_dec = dec_df['Dec Cars'].var()
 
+        # waiting time per car
+        w_values = np.array(list(self.cars_waiting_time.values()))
+        w_avg = np.average(w_values)
+        w_med = np.median(w_values)
+        w_var = np.var(w_values)
+
         return ReportComparisonData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
                                     avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
                                     var_car_waiting=var_car_waiting, car_num=self.car_num,
                                     total_waiting_df=sum_waiting_df, cars_waiting_df=waiting_df,
                                     avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
                                     var_car_dec=var_car_dec, total_dec_df=sum_dec_df,
-                                    cars_dec_df=dec_df, iteration_number=self.curr_iter,
-                                    cars_waiting_time=self.cars_waiting_time)
+                                    cars_dec_df=dec_df, iteration_number=self.curr_iter, waiting_per_car_avg=w_avg,
+                                    waiting_per_car_median=w_med,
+                                    waiting_per_car_variance=w_var)
 
     def report(self):
         # Waiting data
@@ -130,6 +138,12 @@ class StatsReporter:
         median_car_dec = dec_df['Dec Cars'].median()
         var_car_dec = dec_df['Dec Cars'].var()
 
+        # waiting time per car
+        w_values = np.array(list(self.cars_waiting_time.values()))
+        w_avg = np.average(w_values)
+        w_med = np.median(w_values)
+        w_var = np.var(w_values)
+
         return ReportSimulationData(algo_name=self.algo_name, total_waiting_time=self.total_waiting_time,
                                     total_dec_time=self.total_dec_time,
                                     avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
@@ -138,4 +152,5 @@ class StatsReporter:
                                     avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
                                     var_car_dec=var_car_dec, total_dec_image=total_dec_image,
                                     cars_dec_image=cars_dec_image, iteration_number=self.curr_iter,
-                                    cars_waiting_time=self.cars_waiting_time)
+                                    waiting_per_car_avg=w_avg, waiting_per_car_median=w_med,
+                                    waiting_per_car_variance=w_var)

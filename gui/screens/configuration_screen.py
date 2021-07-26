@@ -22,7 +22,7 @@ class ConfigurationScreen(Screen):
         self.back_button = Button(Point(screen.get_width() - 80, 0, ), 80,
                                   screen.get_height() // (3 * TITLES_SCREEN_PORTION), "BACK")
         max_cars_amount = 30 if simulation_mode else 60
-        self.cars_amount_slider = Slider(SLIDERS_START, 300, 200, 0, max_cars_amount, init_val=10)
+        self.cars_amount_slider = Slider(SLIDERS_START, 300, 200, 1, max_cars_amount, init_val=10)
         self.path_length_slider = Slider(SLIDERS_START, 400, 200, 1, 30, init_val=15)
         self.pressed_slider: Optional[Slider] = None
         self.sliders = [self.cars_amount_slider, self.path_length_slider]

@@ -16,7 +16,7 @@ class StatsScreenParent(Screen, ABC):
     def display(self):
         reporter_data = self._reporters_data()
         total_delta_y = 0
-        scroll_delta_y = 50
+        scroll_delta_y = 75
         self._draw_all_data(total_delta_y, reporter_data)
         while True:
             for event in pygame.event.get():
