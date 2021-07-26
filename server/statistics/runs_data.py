@@ -8,6 +8,7 @@ from PIL.Image import Image
 from pandas import DataFrame
 
 FILE_NAME_FORMAT = "%d_%m_%Y__%H_%M_%S"
+DIR_PATH = "server/statistics/results"
 
 
 @dataclass
@@ -27,6 +28,7 @@ class ReportSimulationData:
     var_car_dec: float
     total_dec_image: Image
     cars_dec_image: Image
+    inner_path = "/simulation"
 
     def save_to_file(self) -> Optional[str]:
         data = {
@@ -43,23 +45,17 @@ class ReportSimulationData:
             "Variance Deceleration Time": self.var_car_dec
         }
         df = pd.DataFrame(data, index=[0])
-        dir_path = "server/statistics/results"
-        # check if dir exists
-        try:
-            dirs = os.listdir(dir_path)
-        except FileNotFoundError:
-            # no "generated" dir. create it
-            os.mkdir(dir_path)
+        create_required_dirs(self.inner_path)
         now = datetime.now()
         dt_string = now.strftime(FILE_NAME_FORMAT)
-        os.mkdir(dir_path + "/" + dt_string)
-        new_dir_path = dir_path + "/" + dt_string
-        df.to_csv(new_dir_path + "/" + "data.csv", index=False)
-        self.total_dec_image.save(new_dir_path + "/" + "Total Deceleration.png")
-        self.total_waiting_image.save(new_dir_path + "/" + "Total Waiting.png")
-        self.cars_dec_image.save(new_dir_path + "/" + "Cars Deceleration.png")
-        self.cars_waiting_image.save(new_dir_path + "/" + "Cars Waiting.png")
-        return dir_path + "/" + dt_string
+        total_path = DIR_PATH + self.inner_path + "/" + dt_string
+        os.mkdir(total_path)
+        df.to_csv(total_path + "/" + "data.csv", index=False)
+        self.total_dec_image.save(total_path + "/" + "Total Deceleration.png")
+        self.total_waiting_image.save(total_path + "/" + "Total Waiting.png")
+        self.cars_dec_image.save(total_path + "/" + "Cars Deceleration.png")
+        self.cars_waiting_image.save(total_path + "/" + "Cars Waiting.png")
+        return total_path
 
 
 @dataclass
@@ -95,6 +91,7 @@ class ComparisonListData:
     median_car_dec: List[float]
     var_car_dec: List[float]
     total_dec_image: Image
+    inner_path = "/comparison"
 
     def save_to_file(self) -> Optional[str]:
         data = {"Algorithm Names": self.algo_names, "Number of Iterations": self.iteration_number,
@@ -104,19 +101,25 @@ class ComparisonListData:
                 "Average Car Deceleration": self.avg_car_dec, "Median Car Deceleration": self.median_car_dec,
                 "Variance Car Deceleration": self.var_car_dec}
         df = pd.DataFrame(data, index=list(range(len(self.algo_names))))
-        # df.set_, (ndex("Algorithm Names")
-        dir_path = "server/statistics/results"
-        # check if dir exists
-        try:
-            dirs = os.listdir(dir_path)
-        except FileNotFoundError:
-            # no "generated" dir. create it
-            os.mkdir(dir_path)
+        create_required_dirs(self.inner_path)
         now = datetime.now()
         dt_string = now.strftime(FILE_NAME_FORMAT)
-        os.mkdir(dir_path + "/" + dt_string)
-        new_dir_path = dir_path + "/" + dt_string
-        df.to_csv(new_dir_path + "/" + "data.csv", index=False)
-        self.total_dec_image.save(new_dir_path + "/" + "Total Deceleration.png")
-        self.total_waiting_image.save(new_dir_path + "/" + "Total Waiting.png")
-        return dir_path + "/" + dt_string
+        total_path = DIR_PATH + self.inner_path + "/" + dt_string
+        os.mkdir(total_path)
+        df.to_csv(total_path + "/" + "data.csv", index=False)
+        self.total_dec_image.save(total_path + "/" + "Total Deceleration.png")
+        self.total_waiting_image.save(total_path + "/" + "Total Waiting.png")
+        return total_path
+
+
+def create_required_dirs(inner_path):
+    try:
+        dirs = os.listdir(DIR_PATH)
+    except FileNotFoundError:
+        # no "generated" dir. create it
+        os.mkdir(DIR_PATH)
+    try:
+        dirs = os.listdir(DIR_PATH + inner_path)
+    except FileNotFoundError:
+        # no "generated" dir. create it
+        os.mkdir(DIR_PATH + inner_path)

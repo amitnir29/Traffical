@@ -64,7 +64,7 @@ class ComparisonStatsScreen(StatsScreenParent):
         self.write_text("click to go back", middle_x, self.screen.get_height() - 50, 40)
         self.save_button.draw(self)
         if self.was_saved_text is not None:
-            self.write_text(f"saved to: {self.was_saved_text}", self.screen.get_width() // 2, 20, 20)
+            self.write_text(f"saved to: {self.was_saved_text}", self.screen.get_width() // 2, 15, 15)
         # Draws the surface object to the screen.
         pygame.display.update()
 
