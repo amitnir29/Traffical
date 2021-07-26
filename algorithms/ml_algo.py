@@ -12,13 +12,16 @@ from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 class MLAlgo(TLManager):
+    model_path = "algorithms/ml_algo_files/models/trained_model_30_40_random_forest_updated.pickle"
+    with open(model_path, "rb") as model_file:
+        model = pickle.load(model_file)
+
     def __init__(self, junction,
-                 model_path="algorithms/ml_algo_files/models/trained_model_30_40_random_forest_updated.pickle",
                  time_limit=np.inf, depth=2, time_interval=40):
         super().__init__(junction, time_limit)
 
-        with open(model_path, "rb") as model_file:
-            self.model = pickle.load(model_file)
+        self.model = MLAlgo.model
+
         self.depth = depth
         self.time_interval = time_interval
 
