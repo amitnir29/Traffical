@@ -65,10 +65,7 @@ class Car(ICar):
         self.__current_road = road
         self.__next_road_idx += 1
 
-        # if self.__current_lane is None:
         self.__current_lane = road.get_lane(self.__current_road.get_most_right_lane_index())
-        # else:
-        #     self.__current_lane = [lane for lane in self.__current_lane.goes_to_lanes if lane.road == road][0]
 
         self.__current_lane.add_car(self)
         self.__current_lane_part = 0
