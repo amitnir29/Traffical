@@ -73,10 +73,10 @@ def run(i, roads, traffic_lights, algos_indices, junctions_with_lights, reportin
 
     # Some output paths
     # All junctions' reports
-    report_path = f"data/test_{cars_num}_{time_interval}/{i}.csv"
+    report_path = f"algorithms/ml_algo_files/data/test_{cars_num}_{time_interval}_updated/{i}.csv"
 
     # Amount of iterations.
-    txt_path = f"data/test_{cars_num}_{time_interval}/{i}.txt"
+    txt_path = f"algorithms/ml_algo_files/data/test_{cars_num}_{time_interval}_updated/{i}.txt"
 
     if not os.path.exists(os.path.dirname(report_path)):
         os.makedirs(os.path.dirname(report_path))

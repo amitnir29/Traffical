@@ -5,8 +5,6 @@ import pandas as pd
 
 from algorithms.algo_to_index import index_to_algo, algos_list_to_num
 from algorithms.cost_based import CostBased
-from algorithms.most_crowded import MCAlgo
-from algorithms.naive import NaiveAlgo
 from algorithms.tl_manager import TLManager
 
 from server.simulation_objects.lanes.lane import Lane
@@ -14,7 +12,9 @@ from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 class MLAlgo(TLManager):
-    def __init__(self, junction, model_path="algorithms/ml_algo_files/models/trained_model_30_40_random_forest.pickle", time_limit=np.inf, depth=2, time_interval=40):
+    def __init__(self, junction,
+                 model_path="algorithms/ml_algo_files/models/trained_model_30_40_random_forest_updated.pickle",
+                 time_limit=np.inf, depth=2, time_interval=40):
         super().__init__(junction, time_limit)
 
         with open(model_path, "rb") as model_file:
@@ -23,7 +23,7 @@ class MLAlgo(TLManager):
         self.time_interval = time_interval
 
         self._time_count = 0
-        self.running_algo: TLManager = CostBased(junction)
+        self.running_algo = CostBased(junction)
 
     @staticmethod
     def expected_traffic(tl: TrafficLight, depth):
@@ -53,7 +53,7 @@ class MLAlgo(TLManager):
         nearby_junctions_algos = padd(
             [algos_list_to_num(
                 [lane._comes_from_junction._algo for lane in tl.lanes if lane._comes_from_junction is not None]) for tl
-             in self._lights])
+                in self._lights])
         nearby_junctions_algos = {f"nearby_algos{i}": algos for i, algos in enumerate(nearby_junctions_algos)}
 
         predict_input = {**{**local_traffics, **expected_traffic}, **nearby_junctions_algos,
@@ -62,7 +62,6 @@ class MLAlgo(TLManager):
         predict_input = pd.DataFrame(predict_input, index=[0])
 
         self.running_algo: TLManager = index_to_algo.get(self.model.predict(predict_input)[0], self.running_algo)
-
 
     def _manage_lights(self):
         if self._time_count % self.time_interval == 0:
