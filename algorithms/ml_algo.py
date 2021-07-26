@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from algorithms.algo_to_index import index_to_algo, algos_list_to_num
+from algorithms.cost_based import CostBased
 from algorithms.naive import NaiveAlgo
 from algorithms.tl_manager import TLManager
 
@@ -12,7 +13,7 @@ from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 class MLAlgo(TLManager):
-    def __init__(self, junction, model_path="trained_model_30_40_random_forest.pickle", time_limit=np.inf, depth=2, time_interval=40):
+    def __init__(self, junction, model_path="algorithms/ml_algo_files/models/trained_model_30_40_random_forest.pickle", time_limit=np.inf, depth=2, time_interval=40):
         super().__init__(junction, time_limit)
 
         with open(model_path, "rb") as model_file:
@@ -21,7 +22,7 @@ class MLAlgo(TLManager):
         self.time_interval = time_interval
 
         self._time_count = 0
-        self.running_algo: TLManager = NaiveAlgo(junction)
+        self.running_algo: TLManager = CostBased(junction)
 
     @staticmethod
     def expected_traffic(tl: TrafficLight, depth):
