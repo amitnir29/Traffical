@@ -1,7 +1,10 @@
+import os
 from dataclasses import dataclass
 from io import BytesIO
 from typing import List
+from datetime import datetime
 
+import pandas as pd
 import pygame
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -146,6 +149,25 @@ class ComparisonStatsScreen(StatsScreenParent):
             median_car_dec=median_car_dec, var_car_dec=var_car_dec,
             total_dec_image=total_dec_image, iteration_number=iteration_number
         )
+
+    def save_compare(self, data_list: ComparisonListData):
+        data = {"Algorithm Names": data_list.algo_names, "Number of Iterations": data_list.iteration_number,
+                "Total Waiting Time": data_list.total_waiting_time, "Total Deceleration Time": data_list.total_dec_time,
+                "Average Car Waiting": data_list.avg_car_waiting, "Median Car Waiting": data_list.median_car_waiting,
+                "Variance Car Waiting": data_list.var_car_waiting,
+                "Number of Cars": [data_list.car_num]*len(data_list.algo_names),
+                "Average Car Deceleration": data_list.avg_car_dec, "Median Car Deceleration": data_list.median_car_dec,
+                "Variance Car Deceleration": data_list.var_car_dec}
+        df = pd.DataFrame(data)
+        df.set_index("Algorithm Names")
+        dir_path = "server/statistics/results"
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        os.mkdir(dir_path + "/" + dt_string)
+        new_dir_path = dir_path + "/" + dt_string
+        df.to_csv(new_dir_path + "/" + "data.csv")
+        data_list.total_dec_image.save(new_dir_path + "/" + "Total Deceleration.png")
+        data_list.total_waiting_image.save(new_dir_path + "/" + "Total Waiting.png")
 
     @property
     def max_scroll(self):
