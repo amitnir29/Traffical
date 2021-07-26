@@ -52,6 +52,8 @@ class AlgoChoosing(Screen):
                             self.__draw_algos_menu()
                             continue
                         if self.back_button.click_inside(press_point):
+                            for algo in pressed_algos:
+                                algo.is_pressed = False
                             return Screens.BACK
                         if not self.simulation_mode:
                             if self.done_button.click_inside(press_point):
@@ -60,6 +62,8 @@ class AlgoChoosing(Screen):
                                     self.__draw_algos_menu()
                                     continue
                                 else:
+                                    for algo in pressed_algos:
+                                        algo.is_pressed = False
                                     return pressed_algos
                         if press_point.y < self.screen.get_height() // TITLES_SCREEN_PORTION:
                             continue
