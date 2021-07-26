@@ -1,2 +1,2 @@
-data/ filter=lfs diff=lfs merge=lfs -text
+algorithms/ml_algo_files/ filter=lfs diff=lfs merge=lfs -text
 db/databases/ filter=lfs diff=lfs merge=lfs -text
