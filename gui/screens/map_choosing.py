@@ -9,7 +9,7 @@ from gui.screens.screens_enum import Screens
 from gui.simulation_graphics.small_maps.menu_small_maps_creator import load_all_small_maps
 from server.geometry.point import Point
 
-NUMBER_OF_SMALL_MAPS = TITLES_SCREEN_PORTION
+NUMBER_OF_SMALL_MAPS = 3
 
 
 class MapChoosing(Screen):

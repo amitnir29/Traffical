@@ -1,7 +1,8 @@
 import pygame
 
+from gui.screens.helps_screens.info_screen import InfoScreen
 from gui.utils.button import Button
-from gui.screens.screen_activity import Screen
+from gui.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from gui.screens.screens_enum import Screens
 from server.geometry.point import Point
 
@@ -12,6 +13,8 @@ class OpenScreen(Screen):
         super().__init__(screen, background)
         self.comparison_button = Button(Point(100, 500), 250, 200, "Algos comparison", font_size=25)
         self.simulation_button = Button(Point(450, 500), 250, 200, "Simulation runner", font_size=25)
+        self.info_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "INFO")
+        self.info_screen = InfoScreen(screen)
 
     def display(self) -> Screens:
         self.__draw()
@@ -27,6 +30,9 @@ class OpenScreen(Screen):
                             return Screens.COMPARISON_PATH
                         if self.simulation_button.click_inside(press_point):
                             return Screens.SIMULATION_PATH
+                        if self.info_button.click_inside(press_point):
+                            self.info_screen.display()
+                            self.__draw()
 
     def __draw(self):
         self.screen.fill(self.background)
@@ -35,5 +41,6 @@ class OpenScreen(Screen):
         self.write_text("Traffical", self.screen.get_width() // 2, self.screen.get_height() // 4 + 140, 140)
         self.comparison_button.draw(self)
         self.simulation_button.draw(self)
+        self.info_button.draw(self)
         # Draws the surface object to the screen.
         pygame.display.update()

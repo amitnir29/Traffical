@@ -141,11 +141,11 @@ class SimulationRunner(Screen):
 
     def run_silent(self) -> List[Tuple[str, StatsReporter]]:
         self.data: ComparisonData
-        if self.data.show_runs:
-            gm = SimulationGraphics(self.screen, fps=10)
         # while the screen is not closed, draw the current state and calculate the next state
         reporters: List[Tuple[str, StatsReporter]] = list()
         for i, lights_algo_class in enumerate(self.data.lights_algos):
+            if self.data.show_runs:
+                gm = SimulationGraphics(self.screen, title=lights_algo_class.__name__)
             frames_counter = 0
             curr_cars = self.__init_cars()
             for car in curr_cars:

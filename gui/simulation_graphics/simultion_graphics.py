@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import pygame.font
 from gui.simulation_graphics.camera import Camera
-from gui.simulation_graphics.colors import TURQUOISE
+from gui.simulation_graphics.colors import TURQUOISE, GRAY
 from gui.simulation_graphics.drawables.car import DrawableCar
 from gui.simulation_graphics.drawables.junction import DrawableJunction
 from gui.simulation_graphics.drawables.road import DrawableRoad
@@ -19,7 +19,7 @@ from copy import *
 
 class SimulationGraphics:
 
-    def __init__(self, screen: pygame.Surface, background=TURQUOISE, fps=60):
+    def __init__(self, screen: pygame.Surface, background=TURQUOISE, fps=60, title=None):
         self.running = True
         self.background = background
         self.screen = screen
@@ -34,6 +34,7 @@ class SimulationGraphics:
         self.cars_id = None
         self.cars_done = None
         self.cars_not_done = None
+        self.title = title
 
     def set_small_map(self, roads, width=100, height=100):
         self.small_map = CornerSmallMap.from_server_obj(
@@ -58,7 +59,16 @@ class SimulationGraphics:
         # draw small map
         if self.small_map is not None:
             self.small_map.draw(self.screen)
-
+        if self.title is not None:
+            font = pygame.font.Font("freesansbold.ttf", self.screen.get_width() // 30)
+            # create a text surface object, on which text is drawn on it.
+            text = font.render(self.title, True, GRAY)
+            # create a rectangular object for the text surface object
+            textRect = text.get_rect()
+            # set the center of the rectangular object.
+            textRect.center = (self.screen.get_width() // 8, self.screen.get_width() // 20)
+            # write the text
+            self.screen.blit(text, textRect)
         # Display
         if with_final_display:
             pygame.display.flip()
@@ -179,10 +189,8 @@ class SimulationGraphics:
                 # zooming in and out
                 if event.key == pygame.K_z:
                     self.camera.zoom_in(*pygame.mouse.get_pos())
-                    print(self.camera.min_x, self.camera.max_x, self.camera.min_y, self.camera.max_y)
                 if event.key == pygame.K_x:
                     self.camera.zoom_out(*pygame.mouse.get_pos())
-                    print(self.camera.min_x, self.camera.max_x, self.camera.min_y, self.camera.max_y)
 
     def draw_roads(self, roads: List[DrawableRoad]):
         for road in roads:
