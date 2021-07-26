@@ -1,4 +1,5 @@
 import pickle
+import random
 
 import numpy as np
 import pandas as pd
@@ -27,6 +28,7 @@ class MLAlgo(TLManager):
 
         self._time_count = 0
         self.running_algo = CostBased(junction)
+        self._secret = random.randint(0, 39)
 
     @staticmethod
     def expected_traffic(tl: TrafficLight, depth):
@@ -64,11 +66,14 @@ class MLAlgo(TLManager):
 
         predict_input = pd.DataFrame(predict_input, index=[0])
 
-        self.running_algo: TLManager = index_to_algo.get(self.model.predict(predict_input)[0], self.running_algo)
+        chosen_algo_class = index_to_algo.get(self.model.predict(predict_input)[0], self.running_algo.__class__)
+
+        if chosen_algo_class != self.running_algo.__class__:
+            self.running_algo: TLManager = chosen_algo_class(self._junction)
 
     def _manage_lights(self):
-        if self._time_count % self.time_interval == 0:
+        if (self._time_count + self._secret) % self.time_interval == 0:
             self._change_algo()
 
         self._time_count += 1
-        return self.running_algo(self._junction)._manage_lights()
+        return self.running_algo._manage_lights()
