@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 import pygame.font
 from gui.simulation_graphics.camera import Camera
@@ -27,13 +27,10 @@ class SimulationGraphics:
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.small_map: CornerSmallMap = None
-        self.current_roads = None
-        self.current_junctions = None
-        self.current_lights = None
-        self.current_cars = None
-        self.cars_id = None
-        self.cars_done = None
-        self.cars_not_done = None
+        self.current_roads: List[DrawableRoad] = None
+        self.current_junctions: List[DrawableJunction] = None
+        self.current_lights: List[DrawableLight] = None
+        self.current_cars: Dict[int, DrawableCar] = None  # dict from id to car
         self.title = title
 
     def set_small_map(self, roads, width=100, height=100):
@@ -49,13 +46,9 @@ class SimulationGraphics:
         if not self.running:
             return False
         # Convert the data to drawables
-        drawable_roads, drawable_lights, drawable_cars, drawable_junctions \
-            = self.create_drawables(roads, lights, cars, junctions)
+        self.update_drawables(roads, lights, cars, junctions)
         # Draw all data
-        self.draw_roads(drawable_roads)
-        self.draw_junctions(drawable_junctions)
-        self.draw_cars(drawable_cars)
-        self.draw_lights(drawable_lights)
+        self.draw_all()
         # draw small map
         if self.small_map is not None:
             self.small_map.draw(self.screen)
@@ -76,66 +69,44 @@ class SimulationGraphics:
         # Setting FPS
         self.clock.tick(self.fps)
 
-    def create_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
-                         cars: List[ICar], junctions: List[IJunction]) \
-            -> Tuple[List[DrawableRoad], List[DrawableLight], List[DrawableCar], List[DrawableJunction]]:
-        # initialize all values
-        if self.current_roads is None:
-            self.current_roads = [DrawableRoad.from_server_obj(road) for road in roads]
-            self.current_lights = [DrawableLight.from_server_obj(tl) for tl in lights]
-            self.current_cars = [DrawableCar.from_server_obj(car) for car in cars]
-            self.current_junctions = [DrawableJunction.from_server_obj(junc) for junc in junctions]
-            self.cars_id = list()
-            for car in cars:
-                self.cars_id.append(car.get_id())
-            self.cars_done = list()
-            self.cars_not_done = list(range(len(cars)))
-
+    def update_drawables(self, roads: List[IRoadSection], lights: List[ITrafficLight],
+                         cars: List[ICar], junctions: List[IJunction]):
+        # update roads and juncs
         self.current_roads = [DrawableRoad.from_server_obj(road) for road in roads]
         self.current_junctions = [DrawableJunction.from_server_obj(junc) for junc in junctions]
-        if len(cars) != len(self.cars_not_done):
-            flag = False
-            for j in self.cars_not_done:
-                for i in range(len(cars)):
-                    if self.cars_id[j] == cars[i].get_id():
-                        flag = True
-                if not flag:
-                    self.cars_done.append(j)
-                    self.cars_not_done.remove(j)
-                    self.current_cars[j].reached_target = True
-                flag = False
-        counter = 0
-        for i in self.cars_not_done:
-            self.current_cars[i].center = deepcopy(cars[counter].position)
-            self.current_cars[i].angle = cars[counter].get_angle()
-            counter += 1
-        for i in range(len(lights)):
-            self.current_lights[i].is_green = lights[i].can_pass
-            self.current_lights[i].center = deepcopy(lights[i].coordinate)
-        self.normalize_data(self.current_roads, self.current_lights, self.current_cars, self.current_junctions)
-        # Close the pool and wait for the work to finish
-        # pool1.close()
-        # pool2.close()
-        # pool3.close()
-        # pool4.close()
-        # pool1.join()
-        # pool2.join()
-        # pool3.join()
-        # pool4.join()
-        return self.current_roads, self.current_lights, self.current_cars, self.current_junctions
+        if self.current_lights is None:
+            # create lights
+            self.current_lights = [DrawableLight.from_server_obj(tl) for tl in lights]
+        if self.current_cars is None:
+            self.current_cars = {car.get_id(): DrawableCar.from_server_obj(car) for car in cars}
+        else:
+            # update cars
+            new_cars_ids: Dict[int, ICar] = {car.get_id(): car for car in cars}
+            # for each car that is now out:
+            for out_car_id in set(self.current_cars.keys()).difference(new_cars_ids):
+                out_car: DrawableCar = self.current_cars[out_car_id]
+                out_car.reached_target = True
+            # update positions of all cars
+            for car in cars:
+                self.current_cars[car.get_id()].center = deepcopy(car.position)
+                self.current_cars[car.get_id()].angle = car.get_angle()
+            # update lights
+            for i, light in enumerate(lights):
+                self.current_lights[i].is_green = lights[i].can_pass
+                self.current_lights[i].center = deepcopy(lights[i].coordinate)
+        self.normalize_data()
 
-    def normalize_data(self, roads: List[DrawableRoad], lights: List[DrawableLight],
-                       cars: List[DrawableCar], junctions: List[DrawableJunction]):
+    def normalize_data(self):
         all_points: List[Point] = list()
         points2: List[Point] = list()
         # get all points of the simulation
-        for road in roads:
+        for road in self.current_roads:
             all_points += road.get_all_points()
-        for light in lights:
+        for light in self.current_lights:
             points2 += light.get_all_points()
-        for car in cars:
+        for car in self.current_cars.values():
             points2 += car.get_all_points()
-        for junc in junctions:
+        for junc in self.current_junctions:
             all_points += junc.get_all_points()
         # get min and max x,y values of the whole map
         x_values = [p.x for p in all_points]
@@ -192,22 +163,28 @@ class SimulationGraphics:
                 if event.key == pygame.K_x:
                     self.camera.zoom_out(*pygame.mouse.get_pos())
 
-    def draw_roads(self, roads: List[DrawableRoad]):
-        for road in roads:
+    def draw_all(self):
+        self.draw_roads()
+        self.draw_junctions()
+        self.draw_cars()
+        self.draw_lights()
+
+    def draw_roads(self):
+        for road in self.current_roads:
             road.draw(self.screen)
 
-    def draw_cars(self, cars: List[DrawableCar]):
+    def draw_cars(self):
         scale = 0.04 * (self.camera.width / self.camera.delta_x)
-        for car in cars:
+        for car in self.current_cars.values():
             car.draw(self.screen, scale)
 
-    def draw_lights(self, traffic_lights: List[DrawableLight]):
+    def draw_lights(self):
         # scale formula that looks nice:
         scale = 0.05 * pow((self.camera.width / self.camera.delta_x), 1 / 3)
-        for light in traffic_lights:
+        for light in self.current_lights:
             if light.is_inside_camera(self.camera):
                 light.draw(self.screen, scale)
 
-    def draw_junctions(self, junctions: List[DrawableJunction]):
-        for junc in junctions:
+    def draw_junctions(self):
+        for junc in self.current_junctions:
             junc.draw(self.screen)
