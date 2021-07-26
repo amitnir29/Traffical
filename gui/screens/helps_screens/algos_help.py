@@ -7,7 +7,7 @@ TITLE_SCREEN_PORTION = 4
 FOOTER_SCREEN_PORTION = 10
 TITLE_TEXT_SIZE = 40
 ALGO_HEADER_TEXT_SIZE = 30
-ALGO_DATA_TEXT_SIZE = 16
+ALGO_DATA_TEXT_SIZE = 20
 ALGO_ROW_DIFF = 5
 
 
@@ -32,7 +32,7 @@ class AlgosHelp(Screen):
                         self.__draw_all(total_delta_y)
                     elif event.button == 5:
                         # scroll down
-                        max_scroll = self.screen.get_height() * 1
+                        max_scroll = 600
                         total_delta_y = min(max_scroll, total_delta_y + scroll_delta_y)
                         self.__draw_all(total_delta_y)
 
@@ -74,7 +74,10 @@ class AlgosHelp(Screen):
         curr_y += ALGO_HEADER_TEXT_SIZE + ALGO_ROW_DIFF * 5
         self.write_text("MCAlgo", self.screen.get_width() // 2, curr_y, ALGO_HEADER_TEXT_SIZE)
         curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
-        self.write_text("Most Crowded algorithm. Chooses the road with the largest number of cars heading to it.",
+        self.write_text("Most Crowded algorithm.",
+                        self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
+        curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
+        self.write_text("Chooses the road with the largest number of cars heading to it.",
                         self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
         curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
         self.write_text("When deciding on a green light, the light will stay green for a minimal time",
@@ -140,4 +143,18 @@ class AlgosHelp(Screen):
         curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
         self.write_text("For each car that waits – the cost is decreased",
                         self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
-        # TODO MLAlgo
+        # MLAlgo
+        curr_y += ALGO_HEADER_TEXT_SIZE + ALGO_ROW_DIFF * 5
+        self.write_text("MLAlgo", self.screen.get_width() // 2, curr_y, ALGO_HEADER_TEXT_SIZE)
+        curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
+        self.write_text("Using ML (random forest) that given the movement around the junction,",
+                        self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
+        curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
+        self.write_text("the expected movement in the near time (by heuristics of the number of cars",
+                        self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
+        curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
+        self.write_text("in other near junctions and the algorithms they run) and surrounding",
+                        self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
+        curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
+        self.write_text("algorithms, chooses the most efficient algorithm for the current situation.",
+                        self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
