@@ -24,6 +24,7 @@ class StatsReporter:
         self.curr_iter = 0
         self.total_waiting_time = 0
         self.total_dec_time = 0
+        self.cars_waiting_time = {car.get_id(): 0 for car in cars}
 
     def next_iter(self, cars):
         self.curr_iter += 1
@@ -36,6 +37,8 @@ class StatsReporter:
             if car.get_acceleration() < 0:
                 self.total_dec_time += 1
                 dec_curr += 1
+            if car.is_waiting():
+                self.cars_waiting_time[car.get_id()] += 1
         self.waiting_data['Iteration'] += [self.curr_iter]
         self.waiting_data['Waiting Cars'] += [waiting_curr]
         self.sum_waiting_data['Iterations'] += [self.curr_iter]
@@ -70,7 +73,8 @@ class StatsReporter:
                                     total_waiting_df=sum_waiting_df, cars_waiting_df=waiting_df,
                                     avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
                                     var_car_dec=var_car_dec, total_dec_df=sum_dec_df,
-                                    cars_dec_df=dec_df, iteration_number=self.curr_iter)
+                                    cars_dec_df=dec_df, iteration_number=self.curr_iter,
+                                    cars_waiting_time=self.cars_waiting_time)
 
     def report(self):
         # Waiting data
@@ -82,8 +86,8 @@ class StatsReporter:
         plt.clf()
         plt.plot(sum_waiting_df['Iterations'], sum_waiting_df['Total Waiting Time'])
         plt.xlabel('Iterations')
-        plt.ylabel('Total Waiting Time')
-        plt.title('Total waiting time of the entire simulation\nin each iteration')
+        plt.ylabel('Aggregated Waiting Time')
+        plt.title('Aggregated waiting time of the entire simulation\nin each iteration')
         temp_image_mem = BytesIO()
         plt.savefig(temp_image_mem)
         total_waiting_image = Image.open(temp_image_mem)
@@ -108,8 +112,8 @@ class StatsReporter:
         dec_df.reset_index(drop=True, inplace=True)
         plt.plot(sum_dec_df['Iterations'], sum_dec_df['Total Dec Time'])
         plt.xlabel('Iterations')
-        plt.ylabel('Total Dec Time')
-        plt.title('Total deceleration time of the\n entire simulation in each iteration')
+        plt.ylabel('Aggregated Dec Time')
+        plt.title('Aggregated deceleration time of the\n entire simulation in each iteration')
         temp_image_mem3 = BytesIO()
         plt.savefig(temp_image_mem3)
         total_dec_image = Image.open(temp_image_mem3)
@@ -133,4 +137,5 @@ class StatsReporter:
                                     total_waiting_image=total_waiting_image, cars_waiting_image=cars_waiting_image,
                                     avg_car_dec=avg_car_dec, median_car_dec=median_car_dec,
                                     var_car_dec=var_car_dec, total_dec_image=total_dec_image,
-                                    cars_dec_image=cars_dec_image, iteration_number=self.curr_iter)
+                                    cars_dec_image=cars_dec_image, iteration_number=self.curr_iter,
+                                    cars_waiting_time=self.cars_waiting_time)

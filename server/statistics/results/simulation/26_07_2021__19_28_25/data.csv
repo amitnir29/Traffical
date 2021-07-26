@@ -1,2 +1,0 @@
-Algorithm Name,Number of Iteration,Total Waiting Time,Total Deceleration Time,Average Waiting Time,Median Waiting Time,Variance Waiting Time,Number of Cars,Average Deceleration Time,Median Deceleration Time,Variance Deceleration Time
-NaiveAlgo,803,463,1700,0.5765877957658779,0.0,0.773117020648894,10,2.1170610211706102,2.0,2.6047334962717605

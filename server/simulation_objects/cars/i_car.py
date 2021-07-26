@@ -63,3 +63,7 @@ class ICar(ABC, metaclass=IterationTrackable):
     @abstractmethod
     def enter_first_road(self):
         pass
+
+    @abstractmethod
+    def is_waiting(self):
+        pass

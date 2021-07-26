@@ -38,13 +38,13 @@ class ComparisonStatsScreen(StatsScreenParent):
                 f"total waiting time: {reporters_data.total_waiting_time[i]}",
                 f"total deceleration time: {reporters_data.total_dec_time[i]}",
 
-                f"average car waiting time: {round(reporters_data.avg_car_waiting[i], 3)}",
-                f"median car waiting time: {reporters_data.median_car_waiting[i]}",
-                f"variance car waiting time: {round(reporters_data.var_car_waiting[i], 3)}",
+                f"average cars waiting per iteration: {round(reporters_data.avg_car_waiting[i], 3)}",
+                f"median cars waiting per iteration: {reporters_data.median_car_waiting[i]}",
+                f"variance cars waiting per iteration: {round(reporters_data.var_car_waiting[i], 3)}",
 
-                f"average car deceleration time: {round(reporters_data.avg_car_dec[i], 3)}",
-                f"median car deceleration time: {reporters_data.median_car_dec[i]}",
-                f"variance car deceleration time: {round(reporters_data.var_car_dec[i], 3)}"
+                f"average cars decelerating per iteration: {round(reporters_data.avg_car_dec[i], 3)}",
+                f"median cars decelerating per iteration: {reporters_data.median_car_dec[i]}",
+                f"variance cars decelerating per iteration: {round(reporters_data.var_car_dec[i], 3)}"
             ]))
 
         self.write_text(f"number of cars: {reporters_data.car_num}", middle_x, 500 - total_delta_y, 40)
@@ -107,8 +107,8 @@ class ComparisonStatsScreen(StatsScreenParent):
             plt.plot(data.total_waiting_df['Iterations'], data.total_waiting_df['Total Waiting Time'],
                      label=algo_names[i])
         plt.xlabel('Iterations')
-        plt.ylabel('Total Waiting Time')
-        plt.title('Total waiting time of the entire simulation\nin each iteration')
+        plt.ylabel('Aggregated Waiting Time')
+        plt.title('Aggregated waiting time of the entire simulation\nin each iteration')
         plt.legend()
         temp_image_mem = BytesIO()
         plt.savefig(temp_image_mem)
@@ -120,8 +120,8 @@ class ComparisonStatsScreen(StatsScreenParent):
             plt.plot(data.total_dec_df['Iterations'], data.total_dec_df['Total Dec Time'],
                      label=algo_names[i])
         plt.xlabel('Iterations')
-        plt.ylabel('Total Dec Time')
-        plt.title('Total deceleration time of the\n entire simulation in each iteration')
+        plt.ylabel('Aggregated Dec Time')
+        plt.title('Aggregated deceleration time of the\n entire simulation in each iteration')
         plt.legend()
         temp_image_mem2 = BytesIO()
         plt.savefig(temp_image_mem2)

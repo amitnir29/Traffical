@@ -20,6 +20,8 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 
 class Car(ICar):
+
+
     next_car_index = 0
 
     def __init__(self, path: List[IRoadSection],
@@ -360,3 +362,6 @@ class Car(ICar):
 
     def car_with_same_path(self) -> ICar:
         return Car(self.__path)
+
+    def is_waiting(self):
+        return self.__speed < 0.01

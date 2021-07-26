@@ -35,13 +35,13 @@ class SimulationStatsScreen(StatsScreenParent):
             f"number of iterations: {reporter_data.iteration_number}",
             f"number of cars: {reporter_data.car_num}",
             f"total waiting time: {reporter_data.total_waiting_time}",
-            f"average car waiting time: {round(reporter_data.avg_car_waiting, 3)}",
-            f"median car waiting time: {reporter_data.median_car_waiting}",
-            f"variance car waiting time: {round(reporter_data.var_car_waiting, 3)}",
+            f"average cars waiting per iteration: {round(reporter_data.avg_car_waiting, 3)}",
+            f"median car waiting per iteration: {reporter_data.median_car_waiting}",
+            f"variance car waiting per iteration: {round(reporter_data.var_car_waiting, 3)}",
             f"total deceleration time: {reporter_data.total_dec_time}",
-            f"average car deceleration time: {round(reporter_data.avg_car_dec, 3)}",
-            f"median car deceleration time: {reporter_data.median_car_dec}",
-            f"variance car deceleration time: {round(reporter_data.var_car_dec, 3)}"
+            f"average cars decelerating time per iteration: {round(reporter_data.avg_car_dec, 3)}",
+            f"median cars decelerating time per iteration: {reporter_data.median_car_dec}",
+            f"variance cars decelerating time per iteration: {round(reporter_data.var_car_dec, 3)}"
         ]
         for i, txt in enumerate(texts):
             self.write_text(txt, middle_x, 800 + i * 40 - total_delta_y, 30)

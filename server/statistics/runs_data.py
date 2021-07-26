@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 import pandas as pd
 from PIL.Image import Image
@@ -28,6 +28,7 @@ class ReportSimulationData:
     var_car_dec: float
     total_dec_image: Image
     cars_dec_image: Image
+    cars_waiting_time: Dict[int, int]
     inner_path = "/simulation"
 
     def save_to_file(self) -> Optional[str]:
@@ -36,9 +37,9 @@ class ReportSimulationData:
             "Number of Iteration": self.iteration_number,
             "Total Waiting Time": self.total_waiting_time,
             "Total Deceleration Time": self.total_dec_time,
-            "Average Waiting Time": self.avg_car_waiting,
-            "Median Waiting Time": self.median_car_waiting,
-            "Variance Waiting Time": self.var_car_waiting,
+            "Average Waiting Cars Per Iteration": self.avg_car_waiting,
+            "Median Waiting Cars Per Iteration": self.median_car_waiting,
+            "Variance Waiting Cars Per Iteration": self.var_car_waiting,
             "Number of Cars": self.car_num,
             "Average Deceleration Time": self.avg_car_dec,
             "Median Deceleration Time": self.median_car_dec,
@@ -74,6 +75,7 @@ class ReportComparisonData:
     var_car_dec: float
     total_dec_df: DataFrame
     cars_dec_df: DataFrame
+    cars_waiting_time: Dict[int, int]
 
 
 @dataclass
@@ -96,8 +98,10 @@ class ComparisonListData:
     def save_to_file(self) -> Optional[str]:
         data = {"Algorithm Names": self.algo_names, "Number of Iterations": self.iteration_number,
                 "Total Waiting Time": self.total_waiting_time, "Total Deceleration Time": self.total_dec_time,
-                "Average Car Waiting": self.avg_car_waiting, "Median Car Waiting": self.median_car_waiting,
-                "Variance Car Waiting": self.var_car_waiting, "Number of Cars": [self.car_num] * len(self.algo_names),
+                "Average Cars Waiting Per Iteration": self.avg_car_waiting,
+                "Median Cars Waiting Per Iteration": self.median_car_waiting,
+                "Variance Cars Waiting Per Iteration": self.var_car_waiting,
+                "Number of Cars": [self.car_num] * len(self.algo_names),
                 "Average Car Deceleration": self.avg_car_dec, "Median Car Deceleration": self.median_car_dec,
                 "Variance Car Deceleration": self.var_car_dec}
         df = pd.DataFrame(data, index=list(range(len(self.algo_names))))

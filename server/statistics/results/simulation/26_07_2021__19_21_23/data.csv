@@ -1,2 +1,0 @@
-Algorithm Name,Number of Iteration,Total Waiting Time,Total Deceleration Time,Average Waiting Time,Median Waiting Time,Variance Waiting Time,Number of Cars,Average Deceleration Time,Median Deceleration Time,Variance Deceleration Time
-MCAlgo,86,1,16,0.011627906976744186,0.0,0.011627906976744191,5,0.18604651162790697,0.0,0.3179206566347479
