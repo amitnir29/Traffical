@@ -87,7 +87,7 @@ class SimulationRunner(Screen):
         # init traffic lights algorithm
         lights_algo = [conf.chosen_algo(junction) for junction in all_junctions]
         # init simulation's stats reporter
-        reporter = StatsReporter(cars, all_junctions)
+        reporter = StatsReporter(cars, conf.chosen_algo.__name__)
         return SimulationData(roads, traffic_lights, all_junctions, cars, lights_algo, reporter, conf.is_small_map)
 
     def __create_configuration_data(self, conf: ComparisonConfiguration, error_screen):
@@ -151,7 +151,7 @@ class SimulationRunner(Screen):
             for car in curr_cars:
                 car.enter_first_road()
             curr_lights = self.data.lights
-            reporter = StatsReporter(curr_cars)
+            reporter = StatsReporter(curr_cars, lights_algo_class.__name__)
             lights_algo = [lights_algo_class(junc) for junc in self.data.junctions]
             if not self.data.show_runs:
                 self.__draw_comparison_init(i, lights_algo_class.__name__)

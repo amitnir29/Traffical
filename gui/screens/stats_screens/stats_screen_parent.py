@@ -11,6 +11,7 @@ class StatsScreenParent(Screen, ABC):
     def __init__(self, screen: pygame.Surface, background):
         super().__init__(screen, background)
         self.save_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "SAVE")
+        self.was_saved_text = None
 
     def display(self):
         reporter_data = self._reporters_data()
@@ -26,7 +27,9 @@ class StatsScreenParent(Screen, ABC):
                         # click
                         press_point = Point(*pygame.mouse.get_pos())
                         if self.save_button.click_inside(press_point):
-                            self._save_to_file()
+                            if self.was_saved_text is None:
+                                self._save_to_file()
+                                self._draw_all_data(total_delta_y, reporter_data)
                         else:
                             # finish
                             return

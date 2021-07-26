@@ -63,6 +63,8 @@ class ComparisonStatsScreen(StatsScreenParent):
                                                         self.screen.get_width(), 100])
         self.write_text("click to go back", middle_x, self.screen.get_height() - 50, 40)
         self.save_button.draw(self)
+        if self.was_saved_text is not None:
+            self.write_text(f"saved to: {self.was_saved_text}", self.screen.get_width() // 2, 20, 20)
         # Draws the surface object to the screen.
         pygame.display.update()
 
@@ -139,4 +141,6 @@ class ComparisonStatsScreen(StatsScreenParent):
         return 300 + 530 * (len(self.reporters) - 1)
 
     def _save_to_file(self):
-        self._reporters_data().save_to_file()
+        path = self._reporters_data().save_to_file()
+        if path is not None:
+            self.was_saved_text = path
