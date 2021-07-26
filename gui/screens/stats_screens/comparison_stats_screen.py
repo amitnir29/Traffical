@@ -1,7 +1,10 @@
+import os
 from dataclasses import dataclass
 from io import BytesIO
 from typing import List
+from datetime import datetime
 
+import pandas as pd
 import pygame
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -9,24 +12,7 @@ from matplotlib import pyplot as plt
 from gui.screens.screen_activity import TITLES_SCREEN_PORTION
 from gui.screens.stats_screens.stats_screen_parent import StatsScreenParent
 from server.geometry.point import Point
-from server.statistics.runs_data import ReportComparisonData
-
-
-@dataclass
-class ComparisonListData:
-    algo_names: List[str]
-    iteration_number: List[int]
-    total_waiting_time: List[int]
-    total_dec_time: List[int]
-    avg_car_waiting: List[float]
-    median_car_waiting: List[float]
-    var_car_waiting: List[float]
-    car_num: int
-    total_waiting_image: Image
-    avg_car_dec: List[float]
-    median_car_dec: List[float]
-    var_car_dec: List[float]
-    total_dec_image: Image
+from server.statistics.runs_data import ReportComparisonData, ComparisonListData
 
 
 class ComparisonStatsScreen(StatsScreenParent):
@@ -76,6 +62,9 @@ class ComparisonStatsScreen(StatsScreenParent):
         pygame.draw.rect(self.screen, self.background, [0, self.screen.get_height() - 100,
                                                         self.screen.get_width(), 100])
         self.write_text("click to go back", middle_x, self.screen.get_height() - 50, 40)
+        self.save_button.draw(self)
+        if self.was_saved_text is not None:
+            self.write_text(f"saved to: {self.was_saved_text}", self.screen.get_width() // 2, 20, 20)
         # Draws the surface object to the screen.
         pygame.display.update()
 
@@ -150,3 +139,8 @@ class ComparisonStatsScreen(StatsScreenParent):
     @property
     def max_scroll(self):
         return 300 + 530 * (len(self.reporters) - 1)
+
+    def _save_to_file(self):
+        path = self._reporters_data().save_to_file()
+        if path is not None:
+            self.was_saved_text = path

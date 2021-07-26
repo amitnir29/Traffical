@@ -1,17 +1,23 @@
+import os
+from datetime import datetime
+
+import pandas as pd
 import pygame
 
 from gui.screens.screen_activity import TITLES_SCREEN_PORTION
 from gui.screens.stats_screens.stats_screen_parent import StatsScreenParent
 from server.geometry.point import Point
 from server.statistics.runs_data import ReportSimulationData
+from server.statistics.stats_reporter import StatsReporter
 
 
 class SimulationStatsScreen(StatsScreenParent):
-    def __init__(self, screen: pygame.Surface, background, reporter):
+
+    def __init__(self, screen: pygame.Surface, background, reporter: StatsReporter):
         super().__init__(screen, background)
         self.reporter = reporter
 
-    def _draw_all_data(self, total_delta_y, reporter_data:ReportSimulationData):
+    def _draw_all_data(self, total_delta_y, reporter_data: ReportSimulationData):
         self.screen.fill(self.background)
         middle_x = self.screen.get_width() // 2
         # graphs
@@ -25,6 +31,7 @@ class SimulationStatsScreen(StatsScreenParent):
                         Point(590, self.screen.get_height() // TITLES_SCREEN_PORTION + 420 - total_delta_y))
         # texts
         texts = [
+            f"algorithm name: {reporter_data.algo_name}",
             f"number of iterations: {reporter_data.iteration_number}",
             f"number of cars: {reporter_data.car_num}",
             f"total waiting time: {reporter_data.total_waiting_time}",
@@ -45,6 +52,9 @@ class SimulationStatsScreen(StatsScreenParent):
         pygame.draw.rect(self.screen, self.background, [0, self.screen.get_height() - 100,
                                                         self.screen.get_width(), 100])
         self.write_text("click to go back", middle_x, self.screen.get_height() - 50, 40)
+        self.save_button.draw(self)
+        if self.was_saved_text is not None:
+            self.write_text(f"saved to: {self.was_saved_text}", self.screen.get_width() // 2, 20, 20)
         # Draws the surface object to the screen.
         pygame.display.update()
 
@@ -55,3 +65,7 @@ class SimulationStatsScreen(StatsScreenParent):
     def max_scroll(self):
         return 530
 
+    def _save_to_file(self):
+        path = self._reporters_data().save_to_file()
+        if path is not None:
+            self.was_saved_text = path
