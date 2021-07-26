@@ -1,3 +1,7 @@
+import os
+from datetime import datetime
+
+import pandas as pd
 import pygame
 
 from gui.screens.screen_activity import TITLES_SCREEN_PORTION
@@ -10,6 +14,31 @@ class SimulationStatsScreen(StatsScreenParent):
     def __init__(self, screen: pygame.Surface, background, reporter):
         super().__init__(screen, background)
         self.reporter = reporter
+
+    def save(self, reporter_data: ReportSimulationData):
+        data = {
+            "Number of Iteration": reporter_data.iteration_number,
+            "Total Waiting Time": reporter_data.total_waiting_time,
+            "Total Deceleration Time": reporter_data.total_dec_time,
+            "Average Waiting Time": reporter_data.avg_car_waiting,
+            "Median Waiting Time": reporter_data.median_car_waiting,
+            "Variance Waiting Time": reporter_data.var_car_waiting,
+            "Number of Cars": reporter_data.car_num,
+            "Average Deceleration Time": reporter_data.avg_car_dec,
+            "Median Deceleration Time": reporter_data.median_car_dec,
+            "Variance Deceleration Time": reporter_data.var_car_dec
+        }
+        df = pd.DataFrame(data)
+        dir_path = "server/statistics/results"
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        os.mkdir(dir_path + "/" + dt_string)
+        new_dir_path = dir_path + "/" + dt_string
+        df.to_csv(new_dir_path + "/" + "data.csv")
+        reporter_data.total_dec_image.save(new_dir_path + "/" + "Total Deceleration.png")
+        reporter_data.total_waiting_image.save(new_dir_path + "/" + "Total Waiting.png")
+        reporter_data.cars_dec_image.save(new_dir_path + "/" + "Cars Deceleration.png")
+        reporter_data.cars_waiting_image.save(new_dir_path + "/" + "Cars Waiting.png")
 
     def _draw_all_data(self, total_delta_y, reporter_data:ReportSimulationData):
         self.screen.fill(self.background)
