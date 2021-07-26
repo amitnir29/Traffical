@@ -77,6 +77,8 @@ class StatsReporter:
         sum_waiting_df.reset_index(drop=True, inplace=True)
         waiting_df = pd.DataFrame(self.waiting_data)
         waiting_df.reset_index(drop=True, inplace=True)
+
+        plt.clf()
         plt.plot(sum_waiting_df['Iterations'], sum_waiting_df['Total Waiting Time'])
         plt.xlabel('Iterations')
         plt.ylabel('Total Waiting Time')

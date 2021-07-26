@@ -12,24 +12,7 @@ from matplotlib import pyplot as plt
 from gui.screens.screen_activity import TITLES_SCREEN_PORTION
 from gui.screens.stats_screens.stats_screen_parent import StatsScreenParent
 from server.geometry.point import Point
-from server.statistics.runs_data import ReportComparisonData
-
-
-@dataclass
-class ComparisonListData:
-    algo_names: List[str]
-    iteration_number: List[int]
-    total_waiting_time: List[int]
-    total_dec_time: List[int]
-    avg_car_waiting: List[float]
-    median_car_waiting: List[float]
-    var_car_waiting: List[float]
-    car_num: int
-    total_waiting_image: Image
-    avg_car_dec: List[float]
-    median_car_dec: List[float]
-    var_car_dec: List[float]
-    total_dec_image: Image
+from server.statistics.runs_data import ReportComparisonData, ComparisonListData
 
 
 class ComparisonStatsScreen(StatsScreenParent):
@@ -79,6 +62,7 @@ class ComparisonStatsScreen(StatsScreenParent):
         pygame.draw.rect(self.screen, self.background, [0, self.screen.get_height() - 100,
                                                         self.screen.get_width(), 100])
         self.write_text("click to go back", middle_x, self.screen.get_height() - 50, 40)
+        self.save_button.draw(self)
         # Draws the surface object to the screen.
         pygame.display.update()
 
@@ -150,25 +134,9 @@ class ComparisonStatsScreen(StatsScreenParent):
             total_dec_image=total_dec_image, iteration_number=iteration_number
         )
 
-    def save_compare(self, data_list: ComparisonListData):
-        data = {"Algorithm Names": data_list.algo_names, "Number of Iterations": data_list.iteration_number,
-                "Total Waiting Time": data_list.total_waiting_time, "Total Deceleration Time": data_list.total_dec_time,
-                "Average Car Waiting": data_list.avg_car_waiting, "Median Car Waiting": data_list.median_car_waiting,
-                "Variance Car Waiting": data_list.var_car_waiting,
-                "Number of Cars": [data_list.car_num]*len(data_list.algo_names),
-                "Average Car Deceleration": data_list.avg_car_dec, "Median Car Deceleration": data_list.median_car_dec,
-                "Variance Car Deceleration": data_list.var_car_dec}
-        df = pd.DataFrame(data)
-        df.set_index("Algorithm Names")
-        dir_path = "server/statistics/results"
-        now = datetime.now()
-        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-        os.mkdir(dir_path + "/" + dt_string)
-        new_dir_path = dir_path + "/" + dt_string
-        df.to_csv(new_dir_path + "/" + "data.csv")
-        data_list.total_dec_image.save(new_dir_path + "/" + "Total Deceleration.png")
-        data_list.total_waiting_image.save(new_dir_path + "/" + "Total Waiting.png")
-
     @property
     def max_scroll(self):
         return 300 + 530 * (len(self.reporters) - 1)
+
+    def _save_to_file(self):
+        self._reporters_data().save_to_file()

@@ -2,11 +2,15 @@ from abc import ABC, abstractmethod
 
 import pygame
 
-from gui.screens.screen_activity import Screen
+from gui.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
+from gui.utils.button import Button
 from server.geometry.point import Point
 
 
 class StatsScreenParent(Screen, ABC):
+    def __init__(self, screen: pygame.Surface, background):
+        super().__init__(screen, background)
+        self.save_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "SAVE")
 
     def display(self):
         reporter_data = self._reporters_data()
@@ -20,8 +24,12 @@ class StatsScreenParent(Screen, ABC):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         # click
-                        # finish
-                        return
+                        press_point = Point(*pygame.mouse.get_pos())
+                        if self.save_button.click_inside(press_point):
+                            self._save_to_file()
+                        else:
+                            # finish
+                            return
                     elif event.button == 4:
                         # scroll up
                         total_delta_y = max(0, total_delta_y - scroll_delta_y)
@@ -47,6 +55,10 @@ class StatsScreenParent(Screen, ABC):
 
     @abstractmethod
     def _reporters_data(self):
+        pass
+
+    @abstractmethod
+    def _save_to_file(self):
         pass
 
     @property
