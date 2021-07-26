@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from algorithms.algo_to_index import index_to_algo, algos_list_to_num
-from algorithms.naive import NaiveAlgo
+from algorithms.cost_based import CostBased
 from algorithms.tl_manager import TLManager
 
 from server.simulation_objects.lanes.lane import Lane
@@ -12,16 +12,21 @@ from server.simulation_objects.trafficlights.traffic_light import TrafficLight
 
 
 class MLAlgo(TLManager):
-    def __init__(self, junction, model_path="trained_model_30_40_random_forest.pickle", time_limit=np.inf, depth=2, time_interval=40):
+    model_path = "algorithms/ml_algo_files/models/trained_model_30_40_random_forest_updated.pickle"
+    with open(model_path, "rb") as model_file:
+        model = pickle.load(model_file)
+
+    def __init__(self, junction,
+                 time_limit=np.inf, depth=2, time_interval=40):
         super().__init__(junction, time_limit)
 
-        with open(model_path, "rb") as model_file:
-            self.model = pickle.load(model_file)
+        self.model = MLAlgo.model
+
         self.depth = depth
         self.time_interval = time_interval
 
         self._time_count = 0
-        self.running_algo: TLManager = NaiveAlgo(junction)
+        self.running_algo = CostBased(junction)
 
     @staticmethod
     def expected_traffic(tl: TrafficLight, depth):
@@ -38,7 +43,7 @@ class MLAlgo(TLManager):
 
         return traff
 
-    def _predict(self):
+    def _change_algo(self):
         def padd(arr):
             return arr + [0] * (4 - len(arr))
 
@@ -51,7 +56,7 @@ class MLAlgo(TLManager):
         nearby_junctions_algos = padd(
             [algos_list_to_num(
                 [lane._comes_from_junction._algo for lane in tl.lanes if lane._comes_from_junction is not None]) for tl
-             in self._lights])
+                in self._lights])
         nearby_junctions_algos = {f"nearby_algos{i}": algos for i, algos in enumerate(nearby_junctions_algos)}
 
         predict_input = {**{**local_traffics, **expected_traffic}, **nearby_junctions_algos,
@@ -61,13 +66,9 @@ class MLAlgo(TLManager):
 
         self.running_algo: TLManager = index_to_algo.get(self.model.predict(predict_input)[0], self.running_algo)
 
-        return self.running_algo(self._junction)._manage_lights()
-
     def _manage_lights(self):
         if self._time_count % self.time_interval == 0:
-            res = self._predict()
-        else:
-            res = self._current_light
+            self._change_algo()
 
         self._time_count += 1
-        return res
+        return self.running_algo(self._junction)._manage_lights()

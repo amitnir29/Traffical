@@ -87,7 +87,7 @@ class SimulationRunner(Screen):
         # init traffic lights algorithm
         lights_algo = [conf.chosen_algo(junction) for junction in all_junctions]
         # init simulation's stats reporter
-        reporter = StatsReporter(cars, all_junctions)
+        reporter = StatsReporter(cars, conf.chosen_algo.__name__)
         return SimulationData(roads, traffic_lights, all_junctions, cars, lights_algo, reporter, conf.is_small_map)
 
     def __create_configuration_data(self, conf: ComparisonConfiguration, error_screen):
@@ -144,6 +144,7 @@ class SimulationRunner(Screen):
         # while the screen is not closed, draw the current state and calculate the next state
         reporters: List[Tuple[str, StatsReporter]] = list()
         for i, lights_algo_class in enumerate(self.data.lights_algos):
+            self.__draw_loading_screen(i,lights_algo_class.__name__)
             if self.data.show_runs:
                 gm = SimulationGraphics(self.screen, title=lights_algo_class.__name__)
             frames_counter = 0
@@ -151,7 +152,7 @@ class SimulationRunner(Screen):
             for car in curr_cars:
                 car.enter_first_road()
             curr_lights = self.data.lights
-            reporter = StatsReporter(curr_cars)
+            reporter = StatsReporter(curr_cars, lights_algo_class.__name__)
             lights_algo = [lights_algo_class(junc) for junc in self.data.junctions]
             if not self.data.show_runs:
                 self.__draw_comparison_init(i, lights_algo_class.__name__)
@@ -187,6 +188,15 @@ class SimulationRunner(Screen):
                          [0, self.screen.get_height() // 2 + 120, self.screen.get_width(), 150])
         self.write_text(f"iteration number: {frames_count}", self.screen.get_width() // 2,
                         self.screen.get_height() // 2 + 200, 70)
+        pygame.display.update()
+
+    def __draw_loading_screen(self, index, algo_name):
+        self.screen.fill(self.background)
+        # write the text
+        self.write_text(f"Loading algo {index + 1}", self.screen.get_width() // 2,
+                        self.screen.get_height() // 2 - 100, 70)
+        self.write_text(f"{algo_name}", self.screen.get_width() // 2, self.screen.get_height() // 2 + 40, 140)
+        # Draws the surface object to the screen.
         pygame.display.update()
 
     def __draw_others(self):

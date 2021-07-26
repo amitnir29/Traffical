@@ -12,7 +12,8 @@ MAGIC_ITER_NUMBER = 10
 
 
 class StatsReporter:
-    def __init__(self, cars, file_name='server/statistics/stats/try.xls'):
+    def __init__(self, cars, algo_name, file_name='server/statistics/stats/try.xls'):
+        self.algo_name = algo_name
         self.file_name = file_name
         self.cars = copy(cars)
         self.car_num = len(cars)
@@ -77,6 +78,8 @@ class StatsReporter:
         sum_waiting_df.reset_index(drop=True, inplace=True)
         waiting_df = pd.DataFrame(self.waiting_data)
         waiting_df.reset_index(drop=True, inplace=True)
+
+        plt.clf()
         plt.plot(sum_waiting_df['Iterations'], sum_waiting_df['Total Waiting Time'])
         plt.xlabel('Iterations')
         plt.ylabel('Total Waiting Time')
@@ -123,7 +126,8 @@ class StatsReporter:
         median_car_dec = dec_df['Dec Cars'].median()
         var_car_dec = dec_df['Dec Cars'].var()
 
-        return ReportSimulationData(total_waiting_time=self.total_waiting_time, total_dec_time=self.total_dec_time,
+        return ReportSimulationData(algo_name=self.algo_name, total_waiting_time=self.total_waiting_time,
+                                    total_dec_time=self.total_dec_time,
                                     avg_car_waiting=avg_car_waiting, median_car_waiting=median_car_waiting,
                                     var_car_waiting=var_car_waiting, car_num=self.car_num,
                                     total_waiting_image=total_waiting_image, cars_waiting_image=cars_waiting_image,
