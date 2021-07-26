@@ -132,6 +132,9 @@ class SimulationRunner(Screen):
                         elif self.pause_button.click_inside(press_point):
                             self.paused = True
                             break
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        self.paused = not self.paused
 
         # when run is over, report the stats
         return self.data.reporter
