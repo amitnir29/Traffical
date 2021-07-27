@@ -8,5 +8,7 @@ setup(name='Traffical',
           'pygame==2.0.1',
           'numpy==1.17.4',
           'matplotlib==3.2.1',
-          'scikit-learn==0.23.1'],
+          'scikit-learn==0.23.1',
+          'Pillow==5.3.0',
+          'jsonpickle==2.0.0'],
       )
