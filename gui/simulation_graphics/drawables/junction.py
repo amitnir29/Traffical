@@ -7,7 +7,7 @@ from typing import List
 import pygame
 
 from gui.simulation_graphics.camera import Camera
-from gui.simulation_graphics.colors import *
+from gui.utils.colors import *
 from gui.simulation_graphics.drawables.drawable import Drawable
 from server.geometry.point import Point
 from server.simulation_objects.junctions.i_junction import IJunction

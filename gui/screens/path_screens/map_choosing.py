@@ -2,19 +2,20 @@ from typing import Union
 
 import pygame
 
-from gui.utils.button import Button
 from gui.screens.helps_screens.maps_help import MapsHelp
-from gui.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
+from gui.screens.path_screens.path_screen import PathScreen
+from gui.screens.screen_activity import TITLES_SCREEN_PORTION
 from gui.screens.screens_enum import Screens
 from gui.simulation_graphics.small_maps.menu_small_maps_creator import load_all_small_maps
+from gui.utils.button import Button
 from server.geometry.point import Point
 
 NUMBER_OF_SMALL_MAPS = 3
 
 
-class MapChoosing(Screen):
-    def __init__(self, screen: pygame.Surface, background):
-        super().__init__(screen, background)
+class MapChoosing(PathScreen):
+    def __init__(self, screen: pygame.Surface):
+        super().__init__(screen)
         self.padding = 10
         self.maps = load_all_small_maps(screen,
                                         screen.get_width() // NUMBER_OF_SMALL_MAPS - 2 * self.padding,

@@ -1,13 +1,13 @@
 import pygame
 
-from gui.screens.screen_activity import Screen
+from gui.screens.helps_screens.help_screen import HelpScreen
 
 HELP_START_PORTION = 3
 HELP_TEXT_SIZE = 20
 LINE_HEIGHT = HELP_TEXT_SIZE + 5
 
 
-class InfoScreen(Screen):
+class InfoScreen(HelpScreen):
 
     def display(self):
         self.screen.fill(self.background)

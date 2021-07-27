@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 
 import pygame
 
-from gui.simulation_graphics.colors import DARK_BLUE, WHITE
+from gui.utils.colors import WHITE
 
 TITLES_SCREEN_PORTION = 4
 
 
 class Screen(ABC):
-    def __init__(self, screen: pygame.Surface, background=DARK_BLUE):
+    def __init__(self, screen: pygame.Surface, background):
         self.screen = screen
         self.background = background
 

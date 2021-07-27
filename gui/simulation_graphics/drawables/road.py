@@ -7,7 +7,7 @@ from typing import List, Tuple
 import pygame
 
 from gui.simulation_graphics.camera import Camera
-from gui.simulation_graphics.colors import *
+from gui.utils.colors import *
 from gui.simulation_graphics.drawables.drawable import Drawable
 from server.geometry.point import Point
 from server.simulation_objects.roadsections.i_road_section import IRoadSection

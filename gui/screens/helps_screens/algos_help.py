@@ -1,7 +1,7 @@
 import pygame
 
-from gui.screens.screen_activity import Screen
-from gui.simulation_graphics.colors import RED
+from gui.screens.helps_screens.help_screen import HelpScreen
+from gui.utils.colors import RED
 
 TITLE_SCREEN_PORTION = 4
 FOOTER_SCREEN_PORTION = 10
@@ -11,7 +11,7 @@ ALGO_DATA_TEXT_SIZE = 20
 ALGO_ROW_DIFF = 5
 
 
-class AlgosHelp(Screen):
+class AlgosHelp(HelpScreen):
 
     def display(self):
         total_delta_y = 0
@@ -45,8 +45,8 @@ class AlgosHelp(Screen):
 
     def __draw_titles(self):
         # title
-        pygame.draw.rect(self.screen, RED, [0, 0, self.screen.get_width(),
-                                            self.screen.get_height() // TITLE_SCREEN_PORTION])
+        pygame.draw.rect(self.screen, self.background, [0, 0, self.screen.get_width(),
+                                                        self.screen.get_height() // TITLE_SCREEN_PORTION])
         self.write_text("In this screen you choose an", self.screen.get_width() // 2,
                         self.screen.get_height() // (4 * TITLE_SCREEN_PORTION), TITLE_TEXT_SIZE)
         self.write_text("algorithm which will determine the ", self.screen.get_width() // 2,
@@ -55,7 +55,7 @@ class AlgosHelp(Screen):
                         self.screen.get_height() // (4 * TITLE_SCREEN_PORTION) + TITLE_TEXT_SIZE * 2,
                         TITLE_TEXT_SIZE)
         # footer
-        pygame.draw.rect(self.screen, RED,
+        pygame.draw.rect(self.screen, self.background,
                          [0, (FOOTER_SCREEN_PORTION - 1) * self.screen.get_height() // FOOTER_SCREEN_PORTION,
                           self.screen.get_width(), self.screen.get_height() // FOOTER_SCREEN_PORTION])
         self.write_text("click to go back", self.screen.get_width() // 2,

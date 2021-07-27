@@ -4,12 +4,13 @@ import pygame
 
 from gui.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
 from gui.utils.button import Button
+from gui.utils.colors import LIGHT_ORANGE
 from server.geometry.point import Point
 
 
 class StatsScreenParent(Screen, ABC):
-    def __init__(self, screen: pygame.Surface, background):
-        super().__init__(screen, background)
+    def __init__(self, screen: pygame.Surface):
+        super().__init__(screen, background=LIGHT_ORANGE)
         self.save_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "SAVE")
         self.was_saved_text = None
 

@@ -2,21 +2,22 @@ from typing import Union, Tuple, Optional
 
 import pygame
 
-from gui.simulation_graphics.colors import RED
-from gui.utils.button import Button
 from gui.screens.helps_screens.configuration_help import ConfigurationHelp
-from gui.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
+from gui.screens.path_screens.path_screen import PathScreen
+from gui.screens.screen_activity import TITLES_SCREEN_PORTION
 from gui.screens.screens_enum import Screens
+from gui.utils.button import Button
 from gui.utils.checkbox import CheckBox
+from gui.utils.colors import RED
 from gui.utils.slider import Slider
 from server.geometry.point import Point
 
 SLIDERS_START = 500
 
 
-class ConfigurationScreen(Screen):
-    def __init__(self, screen: pygame.Surface, background, simulation_mode: bool):
-        super().__init__(screen, background)
+class ConfigurationScreen(PathScreen):
+    def __init__(self, screen: pygame.Surface, simulation_mode: bool):
+        super().__init__(screen)
         self.help_screen = ConfigurationHelp(screen, simulation_mode)
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")
         self.back_button = Button(Point(screen.get_width() - 80, 0, ), 80,

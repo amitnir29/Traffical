@@ -1,13 +1,13 @@
 import pygame
 
-from gui.screens.screen_activity import Screen
+from gui.screens.helps_screens.help_screen import HelpScreen
 
 HELP_START_PORTION = 3
 HELP_TEXT_SIZE = 30
 LINE_HEIGHT = HELP_TEXT_SIZE + 5
 
 
-class ConfigurationHelp(Screen):
+class ConfigurationHelp(HelpScreen):
     def __init__(self, screen: pygame.Surface, is_simulation_mode: bool):
         super().__init__(screen)
         self.simulation_mode = is_simulation_mode

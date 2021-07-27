@@ -1,6 +1,6 @@
 import pygame
 
-from gui.simulation_graphics.colors import DARK_GRAY, GREEN
+from gui.utils.colors import DARK_GRAY, GREEN
 from gui.screens.screen_activity import Screen
 from server.geometry.point import Point
 

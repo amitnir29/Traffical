@@ -2,21 +2,22 @@ from typing import List, Union
 
 import pygame
 
-from gui.screens.helps_screens.algos_error import AlgosError
-from gui.simulation_graphics.colors import GREEN, WHITE
+from gui.screens.error_screens.algos_error import AlgosError
+from gui.screens.helps_screens.algos_help import AlgosHelp
+from gui.screens.path_screens.path_screen import PathScreen
+from gui.screens.screen_activity import TITLES_SCREEN_PORTION
+from gui.screens.screens_enum import Screens
 from gui.utils.algos import Algo, all_algos_list
 from gui.utils.button import Button
-from gui.screens.helps_screens.algos_help import AlgosHelp
-from gui.screens.screen_activity import Screen, TITLES_SCREEN_PORTION
-from gui.screens.screens_enum import Screens
+from gui.utils.colors import GREEN, WHITE
 from server.geometry.point import Point
 
 HEIGHT_OF_ALGO_ROW = 50
 
 
-class AlgoChoosing(Screen):
-    def __init__(self, screen: pygame.Surface, background, simulation_mode: bool):
-        super().__init__(screen, background)
+class AlgoChoosing(PathScreen):
+    def __init__(self, screen: pygame.Surface, simulation_mode: bool):
+        super().__init__(screen)
         self.algos_list = self.__create_algos_list()
         self.help_screen = AlgosHelp(screen)
         self.help_button = Button(Point(0, 0), 80, screen.get_height() // (3 * TITLES_SCREEN_PORTION), "HELP")

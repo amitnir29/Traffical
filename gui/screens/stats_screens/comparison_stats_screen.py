@@ -1,10 +1,6 @@
-import os
-from dataclasses import dataclass
 from io import BytesIO
 from typing import List
-from datetime import datetime
 
-import pandas as pd
 import pygame
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -17,8 +13,8 @@ from server.statistics.runs_data import ReportComparisonData, ComparisonListData
 
 class ComparisonStatsScreen(StatsScreenParent):
 
-    def __init__(self, screen: pygame.Surface, background, reporters):
-        super().__init__(screen, background)
+    def __init__(self, screen: pygame.Surface, reporters):
+        super().__init__(screen)
         self.reporters = reporters
 
     def _draw_all_data(self, total_delta_y, reporters_data: ComparisonListData):

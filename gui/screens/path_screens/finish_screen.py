@@ -1,14 +1,14 @@
 import pygame
 
+from gui.screens.path_screens.path_screen import PathScreen
 from gui.utils.button import Button
-from gui.screens.screen_activity import Screen
 from server.geometry.point import Point
 
 
-class FinishScreen(Screen):
+class FinishScreen(PathScreen):
 
-    def __init__(self, screen: pygame.Surface, background, stats_screen):
-        super().__init__(screen, background)
+    def __init__(self, screen: pygame.Surface, stats_screen):
+        super().__init__(screen)
         self.stats_button = Button(Point(200, 600), 400, 200, "Statistics")
         self.stats_screen = stats_screen
 

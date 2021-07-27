@@ -1,12 +1,9 @@
 import pygame
 
-from gui.screens.screen_activity import Screen
-from gui.simulation_graphics.colors import RED
+from gui.screens.error_screens.error_screen import ErrorScreen
 
 
-class AlgosError(Screen):
-    def __init__(self, screen: pygame.Surface):
-        super().__init__(screen, background=RED)
+class AlgosError(ErrorScreen):
 
     def display(self):
         self.screen.fill(self.background)

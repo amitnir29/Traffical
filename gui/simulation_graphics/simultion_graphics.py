@@ -1,8 +1,8 @@
-from typing import List, Tuple, Dict
+from typing import List, Dict
 
 import pygame.font
 from gui.simulation_graphics.camera import Camera
-from gui.simulation_graphics.colors import TURQUOISE, GRAY
+from gui.utils.colors import TURQUOISE, GRAY
 from gui.simulation_graphics.drawables.car import DrawableCar
 from gui.simulation_graphics.drawables.junction import DrawableJunction
 from gui.simulation_graphics.drawables.road import DrawableRoad

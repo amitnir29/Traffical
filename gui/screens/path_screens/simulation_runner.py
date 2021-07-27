@@ -1,14 +1,13 @@
 from dataclasses import dataclass
-
 from typing import List, Union, Tuple, Type
 
 import pygame
 
-from gui.simulation_graphics.colors import RED
-from gui.screens.helps_screens.cars_error import CarsError
-from gui.screens.screen_activity import Screen
-from gui.utils.button import Button
+from gui.screens.error_screens.cars_error import CarsError
+from gui.screens.path_screens.path_screen import PathScreen
 from gui.simulation_graphics.simultion_graphics import SimulationGraphics
+from gui.utils.button import Button
+from gui.utils.colors import RED
 from server.cars_generator import generate_cars
 from server.geometry.point import Point
 from server.map_creation import create_map
@@ -59,7 +58,7 @@ class ComparisonData:
     show_runs: bool
 
 
-class SimulationRunner(Screen):
+class SimulationRunner(PathScreen):
     def __init__(self, screen: pygame.Surface, conf: Union[SimulationConfiguration, ComparisonConfiguration]):
         super().__init__(screen)
         error_screen = CarsError(screen)
@@ -144,7 +143,7 @@ class SimulationRunner(Screen):
         # while the screen is not closed, draw the current state and calculate the next state
         reporters: List[Tuple[str, StatsReporter]] = list()
         for i, lights_algo_class in enumerate(self.data.lights_algos):
-            self.__draw_loading_screen(i,lights_algo_class.__name__)
+            self.__draw_loading_screen(i, lights_algo_class.__name__)
             if self.data.show_runs:
                 gm = SimulationGraphics(self.screen, title=lights_algo_class.__name__)
             frames_counter = 0

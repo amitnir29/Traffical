@@ -4,7 +4,7 @@ from typing import List
 
 import pygame
 
-from gui.simulation_graphics.colors import *
+from gui.utils.colors import *
 from gui.simulation_graphics.drawables.road import DrawableRoad
 from server.geometry.point import Point
 from server.simulation_objects.roadsections.i_road_section import IRoadSection

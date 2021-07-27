@@ -1,7 +1,3 @@
-import os
-from datetime import datetime
-
-import pandas as pd
 import pygame
 
 from gui.screens.screen_activity import TITLES_SCREEN_PORTION
@@ -13,8 +9,8 @@ from server.statistics.stats_reporter import StatsReporter
 
 class SimulationStatsScreen(StatsScreenParent):
 
-    def __init__(self, screen: pygame.Surface, background, reporter: StatsReporter):
-        super().__init__(screen, background)
+    def __init__(self, screen: pygame.Surface, reporter: StatsReporter):
+        super().__init__(screen)
         self.reporter = reporter
 
     def _draw_all_data(self, total_delta_y, reporter_data: ReportSimulationData):

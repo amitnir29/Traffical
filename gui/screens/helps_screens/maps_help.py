@@ -1,9 +1,9 @@
 import pygame
 
-from gui.screens.screen_activity import Screen
+from gui.screens.helps_screens.help_screen import HelpScreen
 
 
-class MapsHelp(Screen):
+class MapsHelp(HelpScreen):
 
     def display(self):
         self.screen.fill(self.background)
