@@ -1,0 +1,2 @@
+Algorithm Name,Number of Iteration,Total Waiting Time,Total Deceleration Time,Average Waiting Cars Per Iteration,Median Waiting Cars Per Iteration,Variance Waiting Cars Per Iteration,Number of Cars,Average Deceleration Time,Median Deceleration Time,Variance Deceleration Time,Average Waiting Per Car,Median Waiting Per Car,Variance Waiting Per Car
+CostBased,303,44,189,0.14521452145214522,0.0,0.16427338098048144,15,0.6237623762376238,0.0,0.6195659301029386,2.933333333333333,1.0,29.66222222222222
