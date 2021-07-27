@@ -99,7 +99,6 @@ class SimulationGraphics:
 
     def normalize_data(self):
         all_points: List[Point] = list()
-        points2: List[Point] = list()
         # get all points of the simulation
         for road in self.current_roads:
             all_points += road.get_all_points()
@@ -117,7 +116,6 @@ class SimulationGraphics:
         min_y = min(y_values)
         max_x = max(x_values)
         max_y = max(y_values)
-        all_points = all_points + points2
         """
         now, create the normalization function based on the found min/max x/y, and self.camera
         we want linear realtions, s.t. the ratio between the camera's min_x/max_x and width (same for y and height),
