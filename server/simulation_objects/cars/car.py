@@ -20,8 +20,6 @@ from server.simulation_objects.trafficlights.i_traffic_light import ITrafficLigh
 
 
 class Car(ICar):
-
-
     next_car_index = 0
 
     def __init__(self, path: List[IRoadSection],
