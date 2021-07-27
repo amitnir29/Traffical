@@ -84,12 +84,13 @@ class SimulationGraphics:
             new_cars_ids: Dict[int, ICar] = {car.get_id(): car for car in cars}
             # for each car that is now out:
             for out_car_id in set(self.current_cars.keys()).difference(new_cars_ids):
-                out_car: DrawableCar = self.current_cars[out_car_id]
-                out_car.reached_target = True
+                self.current_cars[out_car_id].reached_target = True
             # update positions of all cars
             for car in cars:
-                self.current_cars[car.get_id()].center = deepcopy(car.position)
-                self.current_cars[car.get_id()].angle = car.get_angle()
+                draw_car: DrawableCar = self.current_cars[car.get_id()]
+                if not draw_car.reached_target:
+                    draw_car.center = deepcopy(car.position)
+                    draw_car.angle = car.get_angle()
             # update lights
             for i, light in enumerate(lights):
                 self.current_lights[i].is_green = lights[i].can_pass
@@ -98,14 +99,13 @@ class SimulationGraphics:
 
     def normalize_data(self):
         all_points: List[Point] = list()
-        points2: List[Point] = list()
         # get all points of the simulation
         for road in self.current_roads:
             all_points += road.get_all_points()
         for light in self.current_lights:
-            points2 += light.get_all_points()
+            all_points += light.get_all_points()
         for car in self.current_cars.values():
-            points2 += car.get_all_points()
+            all_points += car.get_all_points()
         for junc in self.current_junctions:
             all_points += junc.get_all_points()
         # get min and max x,y values of the whole map
@@ -115,7 +115,6 @@ class SimulationGraphics:
         min_y = min(y_values)
         max_x = max(x_values)
         max_y = max(y_values)
-        all_points = all_points + points2
         """
         now, create the normalization function based on the found min/max x/y, and self.camera
         we want linear realtions, s.t. the ratio between the camera's min_x/max_x and width (same for y and height),

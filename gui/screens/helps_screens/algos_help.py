@@ -147,7 +147,7 @@ class AlgosHelp(HelpScreen):
         curr_y += ALGO_HEADER_TEXT_SIZE + ALGO_ROW_DIFF * 5
         self.write_text("MLAlgo", self.screen.get_width() // 2, curr_y, ALGO_HEADER_TEXT_SIZE)
         curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
-        self.write_text("Using ML (random forest) that given the movement around the junction,",
+        self.write_text("Using ML that given the movement around the junction,",
                         self.screen.get_width() // 2, curr_y, ALGO_DATA_TEXT_SIZE)
         curr_y += ALGO_DATA_TEXT_SIZE + ALGO_ROW_DIFF
         self.write_text("the expected movement in the near time (by heuristics of the number of cars",
